@@ -1,293 +1,408 @@
-import React, { Component } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
-    KeyboardAvoidingView,Button, View,Image, StatusBar,StyleSheet, Text, TouchableOpacity, ScrollView, FlatList,TextInput
+    KeyboardAvoidingView, Button, View,Modal, Image,Alert, StatusBar,Pressable, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
+import NetInfo from '@react-native-community/netinfo'
 
-// import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-// import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-// import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-// import RBSheet from "react-native-raw-bottom-sheet";
-// import { Neomorph } from 'react-native-neomorph-shadows';
-// import LinearGradient from 'react-native-linear-gradient';
-// import { NeuView } from 'react-native-neu-element';
-const axios = require('axios');
+import ActivityLoader from './ActivityLoader'
 
-// import Helper from '../../helper/helper';
-// import colors from '../../config/colors';
-// import config from '../../config/config';
-// import styles from '../../config/styles';
-// import Footer from '../../components/Footer';
-// import { strings } from '../../helper/i18n';
-// import CustomTextInput from '../../components/CustomTextInput';
-// import CustomTextView from '../../components/CustomeTextView';
+const ResetPassword = ({ navigation }) =>  {
 
-var helper;
-let isDarkMode;
-let backgroundStyle;
+    const [netInfo, setNetInfo] = useState('');
+    let cloneEmail="";
+    
+    const [error, setError] = useState({
+        errorEmail: 'Please enter email',
+        errorCorrectEmail: 'Please enter correct email'
 
-export default class ResetPassword extends Component {
-
-    constructor(props) {
-        super(props);
-        // helper = new Helper()
-        
-        //  backgroundStyle = {
-        //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-        // };
-
-        this.state = ({
-            full_name: '',
-            country_code: '',
-            phone: '',
-            email: '',
-            password: '',
-            confirm_password: '',
-            isIAgree: true,
-
-            languages: [
-                {
-                    'name': 'English',
-                    'lang': 'English',
-                    'code': 'en'
-                },
-                {
-                    'name': 'עִברִית',
-                    'lang': 'Hebrew',
-                    'code': 'he'
-                }
-            ]
-        })
-    }
-
-    componentDidMount = async () => {
-    }
+    })
+    const [emails, setEmail] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false);
+    const [isEmailEmty, setIsEmailEmty] = useState(false)
+    const [isEmailCorrect, setIsEmailCorrect] = useState(false)
 
 
-
-    // initLogin = async () => {
-    //     if (!this.state.full_name) {
-    //         // helper.warningToast('Please enter the full name')
-    //         return;
-    //     }
-    //     if (!this.state.phone) {
-    //         helper.warningToast('Please enter the mobile number')
-    //         return;
-    //     }
-    //     if (!this.state.email) {
-    //         helper.warningToast('Please enter the email')
-    //         return;
-    //     }
-    //     var mailFormat = config.emailPattern;
-    //     if (!mailFormat.test(this.state.email)) {
-    //         helper.warningToast('Please enter the valid email')
-    //         return;
-    //     }
-    //     if (!this.state.password) {
-    //         helper.warningToast('Please enter the valid password')
-    //         return;
-    //     }
-    //     if (this.state.password != this.state.confirm_password) {
-    //         helper.warningToast('Please make sure both passwords are same')
-    //         return;
-    //     }
-    //     // if (!this.state.isIAgree) {
-    //     //     helper.warningToast('Please agree the condition.')
-    //     //     return;
-    //     // }
-    //             console.log('signup_ body ', {
-    //             "email": this.state.email,
-    //             "password": this.state.password,
-    //             "full_name": this.state.full_name,
-    //             "phone": this.state.country_code + this.state.phone
-    //         });
-
-    //     await axios({
-    //         method: 'post',
-    //         url: config.Base_Url + config.signup_url,
-    //         data: {
-    //             "email": this.state.email,
-    //             "password": this.state.password,
-    //             "full_name": this.state.full_name,
-    //             "phone": this.state.country_code + this.state.phone
-    //         }
-    //     })
-    //         .then(async (response) => {
-    //             // handle success
-    //             console.log('signup_url ', response.data);
-    //             var status = response.data.statuscode;
-    //             if (status == 1) {
-    //                 // closeOverlay()
-    //                 var token = response.data.token;
-    //                 var user = response.data.data;
-    //                 await helper.storeData('token', token)
-    //                 await helper.storeData('user', JSON.stringify(user))
-    //                 helper.successToast(response.data.message)
-    //                 this.props.navigation.navigate('Home')
-    //             } else {
-    //             console.log('catch else ',response);
-    //                 helper.errorToast(response.data.message)
-    //             }
-    //             // if (status == 1) {
-    //             //     // closeOverlay()
-    //             //     helper.successToast(response.data.message)
-    //             //     this.props.navigation.navigate('OTP')
-    //             // } else {
-    //             //     helper.errorToast(response.data.message)
-    //             // }
-    //         })
-    //         .catch((error) => {
-    //             // handle error
-    //             console.log('catch error ',error);
-    //             helper.errorToast(config.catcherror)
-    //         })
-    // }
-
-    _onIAgree = () => {
-        this.setState({
-            isIAgree: !this.state.isIAgree,
+    useEffect(() => {
+        // Subscribe to network state updates
+        const unsubscribe = NetInfo.addEventListener((state) => {
+            setNetInfo(
+                `Connection type: ${state.type}
+            Is connected?: ${state.isConnected}
+            IP Address: ${state.details.ipAddress}`,
+            );
         });
-    };
 
-    _selectLanguage = async (item) => {
-        this.RBSheet.close();
+        return () => {
+            // Unsubscribe to network state updates
+            unsubscribe();
+        };
+    }, []);
+
+
+    const handleValidEmail = (val) => {
+        if (val.trim().length > 0) {
+            let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+            if (reg.test(val) === true) {
+                console.log("email=" + val)
+                setIsEmailCorrect(false)
+                setIsEmailEmty(false)
+                return false
+            } else {
+                setIsEmailCorrect(true)
+                setIsEmailEmty(false)
+                return true
+            }
+
+            setIsEmailEmty(false)
+            return false
+        } else {
+            setIsEmailEmty(true)
+            return true
+        }
+
     }
 
-    render() {
-        const { navigation } = this.props;
+    if (isLoading) {
         return (
-            <View style={styles.parentView}>
-                  <ScrollView>
-                <View style={styles.scrollView}>
+            <ActivityLoader />
+        )
 
-                    <View style={{alignItems:"center",justifyContent:"center",paddingVertical:70}}>
-                    <Image style={{height:80,width:"100%",}}
-                   source={require('../assest/splash.png')}
-                   />
+
+    }
+
+    const checkInternet = () => {
+        Alert.alert("Alert", "Please check internet", [
+            { text: 'Okay' }
+        ])
+
+    }
+
+    const forgotPassword =() => {
+        NetInfo.fetch().then((state) => {
+
+            if (state.isConnected) {
+           
+              const isEmail=handleValidEmail(emails)
+             
+           
+                if (isEmail) {
+                   
+                    return
+                }
+                setIsLoading(true)
+               const data={email:emails}
+               console.log(data)
+                fetch("http://50.28.104.48:3003/api/user/forgotPassword", {
+                    method: 'post',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }).then((result) => {
+
+                    result.json().then((res) => {
+                        setIsLoading(false)
+                        cloneEmail=emails
+                        // setEmail("")
+                        if (res.code == 200) {
+                         
+                            success(res.message)
+                        } else {
+                          
+                            failure(res.message)
+                        }
+                        console.log(res)
+                    })
+
+                })
+            } else {
+                checkInternet()
+            }
+
+
+
+        });
+
+
+    }
+
+   
+
+    const success = (msg) => {
+
+        setModalVisible(true)
+        // Alert.alert("Success", msg, [
+        //     { text: 'Okay', onPress: () => {navigation.navigate('ResetPasswordTwo',{email:cloneEmail})} }
+        // ])
+    }
+
+    const goToForword=()=>{
+        console.log("Email=="+emails)
+        navigation.navigate('ResetPasswordTwo',{email:emails})
+    }
+ 
+
+
+    const failure = (msg) => {
+        Alert.alert("Failure", msg, [
+            { text: 'Okay' }
+        ])
+
+    }
+
+
+        return (
+            <>
+            <StatusBar hidden={false} barStyle= 'light-content' backgroundColor="#0076B5" />
+            <View style={styles.parentView}>
+                <ScrollView style={{backgroundColor:"white"}}>
+                    <View style={styles.scrollView}>
+
+                        <View style={{ alignItems: "center", justifyContent: "center", paddingVertical: 60,paddingHorizontal:20 }}>
+                            <Image style={{ height: 80, width: "100%", }}
+                                source={require('../assest/splash.png')}
+                            />
+
+                        </View>
+
+                        <View style={{
+                            paddingHorizontal: 20,
+                            paddingVertical: 40
+                        }}>
+
+
+                        <Text style={styles.headerText}>Reset Password</Text>
+
+                        <Text style={[styles.paragraph,{lineHeight: 20}]}>
+                            We just need your registered{" "}
+                            <Text style={styles.highlight}>Email Address{" "}<Text style={styles.paragraph}>to send verification code</Text></Text>
+                        </Text>
+
+
+
+                        <View style={styles.textBackground}>
+                            <TextInput style={styles.text}
+                             placeholder="Please enter email"
+                             value={emails}
+                             autoCapitalize='none'
+                             onChangeText={text => setEmail(text)}
+                            ></TextInput>
+
+                            <Image style={styles.image}
+                                source={require('../assest/email_ic.png')}
+                            />
+
+                        </View>
+                        {isEmailEmty && <Text style={styles.errorText}>{error.errorEmail}</Text>}
+                        {isEmailCorrect && <Text style={styles.errorText}>{error.errorCorrectEmail}</Text>}
+
+                        <TouchableOpacity onPress={() => forgotPassword()}><Text style={styles.button}>Send</Text></TouchableOpacity>
+
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={modalVisible}
+                            onRequestClose={() => {
+                                setModalVisible(false);
+                                
+                            }}>
+                            <View style={styles.centeredView}>
+                                <View style={styles.modalView}>
+                                    <View style={[styles.header]}>
+                                        <View style={{ paddingVertical: 20, backgroundColor: "#0076B5", alignItems: "center" }} >
+
+                                            <Pressable onPress={() => { setModalVisible(false)}}><Image
+                                                source={require('../assest/cross.png')}
+                                                style={styles.iconCross}
+                                            /></Pressable>
+                                            <Text style={[styles.modalText, { color: '#FFFFFF' }]}>
+                                                Resend Verification code code
+                                            </Text>
+                                        </View>
+
+                                        <View style={{ padding: 25 }}>
+                                            <Text style={[styles.modalText, { lineHeight: 20, color: "#707070" }]}>
+                                                We are sending verification code to this email address. please recheck it before continue{' '}
+                                            </Text>
+                                            <Pressable
+                                                style={[styles.button, styles.buttonClose, { marginTop: 25, backgroundColor: '#0076B5' }]}
+                                                onPress={() => {
+                                                    goToForword()
+                                                    setModalVisible(!modalVisible)
+                                                   
+                                                    
+                                                }
+                                                }>
+                                                <Text style={styles.textStyle}>Continue</Text>
+                                            </Pressable>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
+                        </View>
 
                     </View>
 
-              
-                <Text style={styles.headerText}>Reset Password</Text> 
 
-                <Text style={styles.paragraph}>
-                We just need your registered{" "}
-        <Text style={styles.highlight}>Email Address{" "}<Text style={styles.paragraph}>to send verification code</Text></Text>
-      </Text>
-
-        
-
-               <View style={styles.textBackground}> 
-               <TextInput style={styles.text} >Enter your email address</TextInput>
-       
-               <Image style={styles.image}
-                   source={require('../assest/email_ic.png')}
-                   />
-       
-             </View> 
-
-             <TouchableOpacity onPress={()=>navigation.navigate('ResetPasswordTwo')}><Text style={styles.button}>Send</Text></TouchableOpacity> 
-                        
-                                    </View>
-                                     
-                                    
-                                    </ScrollView>
+                </ScrollView>
             </View>
+            </>
         )
     }
 
- 
-}
+
+
 
 const styles = StyleSheet.create({
-    parentView:{
-        backgroundColor:'white',
-        paddingHorizontal:20,
-        paddingVertical:40
+    parentView: {
+        flex:1,
+        backgroundColor: '#fff'
     },
-    textBackground:{
-    
+    errorText: {
+        fontSize: 11,
+        fontWeight: "bold",
+        marginTop: 2,
+        color: 'red'
+    },
+    textBackground: {
+
         backgroundColor: '#FFFFFF',
         width: "100%",
-        marginTop:25,
-        flexDirection:"row",
+        marginTop: 25,
+        flexDirection: "row",
         height: 50,
         borderColor: '#EEF3F7',
         borderWidth: 1,
         borderRadius: 5,
-        alignItems:"center"
-        
+        alignItems: "center"
+
     },
     button: {
         backgroundColor: "#0076B5",
         color: "white",
         borderRadius: 50,
         width: "100%",
-        justifyContent:"center",
+        justifyContent: "center",
         height: 50,
-        marginTop:25,
+        marginTop: 25,
         borderRadius: 5,
-        alignItems:"center",
-        textAlign:"center",
-        textAlignVertical:"center"
+        alignItems: "center",
+        textAlign: "center",
+        textAlignVertical: "center"
     },
     buttonText: {
         color: "white"
     },
-    headerText:{
-        color:'#1D3557',
-        marginTop:30,
+    headerText: {
+        color: '#1D3557',
+        marginTop: 30,
         fontWeight: "bold",
-        fontSize:20
+        fontSize: 20
     },
-    image:{
-        height:20,
-        width:20,
-        marginEnd:15,
-        justifyContent:"flex-end"
+
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
     },
-    socialImage:{
-        height:60,
-        width:60,
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    iconCross: {
+        position: 'absolute',
+        left: 125,
+        bottom: 1,
+        width: 15,
+        height: 15,
+        padding:5
+    },
+    buttonOpen: {
+        backgroundColor: '"#0076B5"',
+    },
+    buttonClose: {
+        backgroundColor: '"#0076B5"',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalText: {
+        textAlign: 'center',
+    },
+    buttonText: {
+        color: "white"
+    },
+    headerText: {
+        color: '#1D3557',
+        fontWeight: "bold",
+        fontSize: 20
+    },
+    image: {
+        height: 20,
+        width: 20,
+        marginEnd: 15,
+        justifyContent: "flex-end"
+    },
+    socialImage: {
+        height: 60,
+        width: 60,
     },
     scrollView: {
-        backgroundColor: 'white'
-      },
+        backgroundColor: '#fff'
+    },
     text: {
-     fontSize:12,
-     marginStart:10,
-     fontWeight: "bold",
-     marginEnd:20,
-     flex:1,
-     justifyContent:"flex-start",
-     color:'#707070'
+        fontSize: 12,
+        marginStart: 10,
+        fontWeight: "bold",
+        marginEnd: 20,
+        flex: 1,
+        justifyContent: "flex-start",
+        color: '#707070'
     },
     paragraph: {
-        marginTop:20,
+        marginTop: 20,
         fontSize: 14,
         fontWeight: "normal",
         color: "#707070",
-      },
-      highlight: {
-        color: "#0076B5",
-      },
-    password: {
-        fontSize:12,
-        marginStart:10,
-        marginEnd:20,
-        flex:1,
-        justifyContent:"flex-start",
-        color:'#707070'
-       },
-    subHeaderText:{
-        fontSize:14,
-        fontWeight: "bold",
-        marginTop:20,
-        color:'#707070'
     },
-   box2:{
-    justifyContent:'space-evenly',
-    height:'50%',
-    paddingHorizontal:30
-   }
-  });
+    highlight: {
+        color: "#0076B5",
+    },
+    password: {
+        fontSize: 12,
+        marginStart: 10,
+        marginEnd: 20,
+        flex: 1,
+        justifyContent: "flex-start",
+        color: '#707070'
+    },
+    subHeaderText: {
+        fontSize: 14,
+        fontWeight: "bold",
+        marginTop: 20,
+        color: '#707070'
+    },
+    box2: {
+        justifyContent: 'space-evenly',
+        height: '50%',
+        paddingHorizontal: 30
+    }
+});
+
+export default ResetPassword
