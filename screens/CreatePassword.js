@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import {
     KeyboardAvoidingView, Button, View, Image, StatusBar,Alert, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
-
+import { useFocusEffect } from '@react-navigation/native';
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import NetInfo from '@react-native-community/netinfo'
 import ActivityLoader from './ActivityLoader'
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 
 const CreatePassword = ({ navigation, route }) => {
@@ -19,6 +21,8 @@ const CreatePassword = ({ navigation, route }) => {
 
     const [isConfirmPassword, setIsConfirmPassword] = useState(false)
     const [isConfirmPassCorrect, setIsConfirmPassCorrect] = useState(false)
+    const {t, i18n} = useTranslation();
+    const [currentLanguage,setLanguage] =useState('en');
 
     const [error, setError] = useState({
         errorPass: 'Please enter Password',
@@ -35,6 +39,15 @@ const CreatePassword = ({ navigation, route }) => {
     const { otp } = route.params
 
 
+    useFocusEffect(
+        React.useCallback(() => {
+        changeLanguage(currentLanguage)
+    
+          return () => {
+          };
+        }, [])
+      );
+
     useEffect(() => {
         // Subscribe to network state updates
         const unsubscribe = NetInfo.addEventListener((state) => {
@@ -50,6 +63,14 @@ const CreatePassword = ({ navigation, route }) => {
             unsubscribe();
         };
     }, []);
+
+
+    const changeLanguage = value => {
+        i18n
+          .changeLanguage(value)
+          .then(() => setLanguage(value))
+          .catch(err => console.log(err));
+      };
 
 
     const handleValidPassword = (val) => {
@@ -198,15 +219,15 @@ const CreatePassword = ({ navigation, route }) => {
                         }}>
 
 
-                    <Text style={styles.headerText}>Create New Password</Text>
+                    <Text style={styles.headerText}>{t('Create New Password')}</Text>
 
                     <Text style={styles.paragraph}>
-                        Your New Password Must be Different from Previously Used Password.
+                    {t('Your New Password')}
                     </Text>
 
 
 
-                    <Text style={styles.subHeaderText}>New Password</Text>
+                    <Text style={styles.subHeaderText}>{t('New Password')}</Text>
 
 
                     <View style={styles.textBackground}>
@@ -229,9 +250,9 @@ const CreatePassword = ({ navigation, route }) => {
 
                         </TouchableOpacity>
                     </View>
-                    {isPassword && <Text style={styles.errorText}>{error.errorPass}</Text>}
+                    {isPassword && <Text style={styles.errorText}>{t('Please enter Password')}</Text>}
 
-                    <Text style={styles.subHeaderText}>Confirm Password</Text>
+                    <Text style={styles.subHeaderText}>{t('Confirm Password')}</Text>
 
 
                     <View style={styles.textBackground}>
@@ -244,10 +265,10 @@ const CreatePassword = ({ navigation, route }) => {
 
 
                     </View>
-                    {isConfirmPassword && <Text style={styles.errorText}>{error.errorCorrectPass}</Text>}
-                    {isConfirmPassCorrect && <Text style={styles.errorText}>{error.errorpassMatch}</Text>}
+                    {isConfirmPassword && <Text style={styles.errorText}>{t('Please enter Confirm Password')}</Text>}
+                    {isConfirmPassCorrect && <Text style={styles.errorText}>{t('Password and Confirm')}</Text>}
 
-                    <TouchableOpacity onPress={() => resetPassword()}><Text style={styles.button}>Reset Password</Text></TouchableOpacity>
+                    <TouchableOpacity onPress={() => resetPassword()}><Text style={styles.button}>{t('Reset Password')}</Text></TouchableOpacity>
 
                     </View>
                 </View>

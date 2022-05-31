@@ -11,6 +11,10 @@ import ActivityLoader from './ActivityLoader'
 import { AuthContext } from './component/context';
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
+
 
 
 const SignIn = ({ navigation }) => {
@@ -31,6 +35,19 @@ const SignIn = ({ navigation }) => {
     const [isEmailCorrect, setIsEmailCorrect] = useState(false)
     const [isPassword, setIsPassword] = useState(false)
 
+    const {t, i18n} = useTranslation();
+  
+    const [currentLanguage,setLanguage] =useState('en');
+    
+    useFocusEffect(
+        React.useCallback(() => {
+        changeLanguage(currentLanguage)
+    
+          return () => {
+          };
+        }, [])
+      );
+
     useEffect(() => {
         // Subscribe to network state updates
         const unsubscribe = NetInfo.addEventListener((state) => {
@@ -46,6 +63,16 @@ const SignIn = ({ navigation }) => {
             unsubscribe();
         };
     }, []);
+
+
+
+
+    const changeLanguage = value => {
+        i18n
+          .changeLanguage(value)
+          .then(() => setLanguage(value))
+          .catch(err => console.log(err));
+      };
 
 
     const handleValidEmail = (val) => {
@@ -190,7 +217,7 @@ const SignIn = ({ navigation }) => {
                             paddingHorizontal: 20,
                             paddingVertical: 20
                         }}>
-                            <Text style={styles.headerText}>Login</Text>
+                            <Text style={styles.headerText}>{t('Login')}</Text>
 
                             <View style={styles.textBackground}>
                                 <TextInput style={styles.text}
@@ -205,8 +232,8 @@ const SignIn = ({ navigation }) => {
                                 />
 
                             </View>
-                            {isEmailEmty && <Text style={styles.errorText}>{error.errorEmail}</Text>}
-                            {isEmailCorrect && <Text style={styles.errorText}>{error.errorCorrectEmail}</Text>}
+                            {isEmailEmty && <Text style={styles.errorText}>{t('Please enter email')}</Text>}
+                            {isEmailCorrect && <Text style={styles.errorText}>{t('Please enter correct email')}</Text>}
 
 
                             <View style={styles.textBackground}>
@@ -219,16 +246,16 @@ const SignIn = ({ navigation }) => {
                                 />
 
                             </View>
-                            {isPassword && <Text style={styles.errorText}>{error.errorPass}</Text>}
+                            {isPassword && <Text style={styles.errorText}>{t('Please enter Password')}</Text>}
 
-                            <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}><Text style={{ textAlign: "right", marginTop: 20, fontWeight: "normal", color: "#098DD4" }}>Forgot Password?</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigation.navigate('ResetPassword')}><Text style={{ textAlign: "right", marginTop: 20, fontWeight: "normal", color: "#098DD4" }}>{t('Forgot Password')}</Text></TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => login()}><Text style={styles.button}>Sign In</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => login()}><Text style={styles.button}>{t('Sign In')}</Text></TouchableOpacity>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                                 <View style={{ flex: 1, height: 1, backgroundColor: '#707070', marginTop: 30, marginEnd: 10 }} />
                                 <View>
-                                    <Text style={{ textAlign: 'center', flex: 1, color: "#707070", fontSize: 14, fontWeight: "normal", marginTop: 25 }}>Or continue with</Text>
+                                    <Text style={{ textAlign: 'center', flex: 1, color: "#707070", fontSize: 14, fontWeight: "normal", marginTop: 25 }}>{t('Or continue with')}</Text>
                                 </View>
                                 <View style={{ flex: 1, height: 1, backgroundColor: '#707070', marginTop: 30, marginStart: 10 }} />
 
@@ -254,8 +281,8 @@ const SignIn = ({ navigation }) => {
                             </View>
 
                             <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}><Text style={styles.paragraph}>
-                                New User? Join Now{" "}
-                                <Text style={styles.highlight}>Sing up{" "}<Text style={styles.paragraph}>here</Text></Text>
+                            {t('New User Join Now')}{" "}
+                                <Text style={styles.highlight}>{t('Sing up')}{" "}<Text style={styles.paragraph}>{t('here')}</Text></Text>
                             </Text></TouchableOpacity>
 
                         </View>

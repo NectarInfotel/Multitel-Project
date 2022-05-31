@@ -2,9 +2,11 @@ import React, { useRef, useState, useEffect } from 'react';
 import {
     KeyboardAvoidingView, SafeAreaView, Modal, Button, Pressable,View, Image, Alert, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
-
+import { useFocusEffect } from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo'
 import ActivityLoader from './ActivityLoader'
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 const ResetPasswordTwo = ({ navigation, route }) => {
 
@@ -17,10 +19,20 @@ const ResetPasswordTwo = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [netInfo, setNetInfo] = useState('');
     const [otp, setOtp] = useState({ 1: '', 2: '', 3: '', 4: '' })
+    const {t, i18n} = useTranslation();
+  
+    const [currentLanguage,setLanguage] =useState('en');
 
     const { email } = route.params
 
-
+    useFocusEffect(
+        React.useCallback(() => {
+        changeLanguage(currentLanguage)
+    
+          return () => {
+          };
+        }, [])
+      );
 
     useEffect(() => {
         // Subscribe to network state updates
@@ -37,6 +49,14 @@ const ResetPasswordTwo = ({ navigation, route }) => {
             unsubscribe();
         };
     }, []);
+
+
+    const changeLanguage = value => {
+        i18n
+          .changeLanguage(value)
+          .then(() => setLanguage(value))
+          .catch(err => console.log(err));
+      };
 
     if (isLoading) {
         return (
@@ -189,10 +209,10 @@ return (
                             paddingVertical: 40
                         }}>
 
-                        <Text style={styles.headerText}>Verify Your Email Address</Text>
+                        <Text style={styles.headerText}>{t('Verify Your Email Address')}</Text>
 
                         <Text style={styles.paragraph}>
-                            Please Enter The 4 Digit Code Send to{" "}
+                        {t('Please Enter Code')}{" "}
                             <Text style={styles.highlight}>{email}</Text>
                         </Text>
 
@@ -248,14 +268,14 @@ return (
 
 
                         <TouchableOpacity onPress={() => { forgotPassword() }}><Text style={styles.resendTxt}>
-                            Don't receive the code?{" "}
-                            <Text style={styles.highlight}>RESEND</Text>
+                        {t('Don receive the code')}{" "}
+                            <Text style={styles.highlight}>{t('RESEND')}</Text>
                         </Text></TouchableOpacity>
 
 
 
 
-                        <TouchableOpacity onPress={() => checkOtp()}><Text style={styles.button}>Confirm</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => checkOtp()}><Text style={styles.button}>{t('Confirm')}</Text></TouchableOpacity>
 
                         <Modal
                             animationType="slide"

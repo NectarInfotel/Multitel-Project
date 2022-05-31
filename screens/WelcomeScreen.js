@@ -1,20 +1,27 @@
-import React, { Component } from 'react';
+import React, { useState,useEffect } from 'react';
 import {
     KeyboardAvoidingView, Button, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
-export default class WelcomeScreen extends Component {
+const WelcomeScreen = ({ navigation }) =>{  
+    
+    const {t, i18n} = useTranslation();
+  
+    const [currentLanguage,setLanguage] =useState('en');
+    
+    useEffect(()=>{
+        changeLanguage(currentLanguage)
+    },[])
 
-    constructor(props) {
-        super(props);
-     
-    }
+    const changeLanguage = value => {
+        i18n
+          .changeLanguage(value)
+          .then(() => setLanguage(value))
+          .catch(err => console.log(err));
+      };
 
-    componentDidMount = async () => {
-    }
-
-    render() {
-        const { navigation } = this.props;
         return (
             <>
             <StatusBar hidden={false} barStyle= 'light-content' backgroundColor="#0076B5" />
@@ -30,9 +37,9 @@ export default class WelcomeScreen extends Component {
                         </View>
 
 
-                        <Text style={styles.superFastText}>Private. Secure. Super Fast</Text>
+                        <Text style={styles.superFastText}>{t('Private. Secure. Super Fast')}</Text>
 
-                        <Text style={styles.headerText}>The Internet you Deserve</Text>
+                        <Text style={styles.headerText}>{t('The Internet you Deserve')}</Text>
 
                         <View style={{ height: 100, width: "100%", marginBottom: 10, marginTop: 30, justifyContent: "center", alignItems: "center" }}>
                             <Image style={{ height: 65, width: "100%" }}
@@ -43,11 +50,11 @@ export default class WelcomeScreen extends Component {
 
 
                         
-                        <TouchableOpacity onPress={()=>navigation.navigate('SignIn')}><Text style={styles.button}>Let's Started</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={()=>navigation.navigate('SignIn')}><Text style={styles.button}>{t('Let Started')}</Text></TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}><Text style={styles.paragraph}>
-                            By continuing, I agree to the{" "}
-                            <Text style={styles.highlight}>terms and conditions</Text>
+                        <TouchableOpacity onPress={() => {}}><Text style={styles.paragraph}>
+                            {t('By continuing, I agree to the')}{" "}
+                            <Text style={styles.highlight}>{t('terms and conditions')}</Text>
                         </Text></TouchableOpacity> 
 
                          
@@ -59,10 +66,12 @@ export default class WelcomeScreen extends Component {
             </View>
             </>
         )
-    }
+    
 
 
 }
+
+export default WelcomeScreen
 
 const styles = StyleSheet.create({
     parentView: {

@@ -7,6 +7,9 @@ import CheckBox from '@react-native-community/checkbox';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
+import { useFocusEffect } from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 
 const SignUpScreen = ({ navigation }) => {
@@ -48,6 +51,19 @@ const SignUpScreen = ({ navigation }) => {
     const [isConfirmPassCorrect, setIsConfirmPassCorrect] = useState(false)
 
 
+    const {t, i18n} = useTranslation();
+  
+    const [currentLanguage,setLanguage] =useState('en');
+    
+    useFocusEffect(
+        React.useCallback(() => {
+        changeLanguage(currentLanguage)
+    
+          return () => {
+          };
+        }, [])
+      );
+
     useEffect(() => {
         // Subscribe to network state updates
         const unsubscribe = NetInfo.addEventListener((state) => {
@@ -64,7 +80,12 @@ const SignUpScreen = ({ navigation }) => {
         };
     }, []);
 
-
+    const changeLanguage = value => {
+        i18n
+          .changeLanguage(value)
+          .then(() => setLanguage(value))
+          .catch(err => console.log(err));
+      };
 
 
     if (isLoading) {
@@ -225,9 +246,9 @@ const SignUpScreen = ({ navigation }) => {
                         <View style={styles.scrollView}>
 
 
-                            <Text style={styles.headerText}>Sign UP</Text>
+                            <Text style={styles.headerText}>{t('Sign Up')}</Text>
 
-                            <Text style={styles.subHeaderText}>Name</Text>
+                            <Text style={styles.subHeaderText}>{t('Name')}</Text>
 
 
                             <View style={styles.textBackground}>
@@ -243,9 +264,9 @@ const SignUpScreen = ({ navigation }) => {
 
                             </View>
 
-                            {isFirstName && <Text style={styles.errorText}>{error.errorFirstName}</Text>}
+                            {isFirstName && <Text style={styles.errorText}>{t('Please enter full name')}</Text>}
 
-                            <Text style={styles.subHeaderText}>Email Address</Text>
+                            <Text style={styles.subHeaderText}>{t('Email Address')}</Text>
 
 
                             <View style={styles.textBackground}>
@@ -259,10 +280,10 @@ const SignUpScreen = ({ navigation }) => {
                                 />
 
                             </View>
-                            {isEmailEmty && <Text style={styles.errorText}>{error.errorEmail}</Text>}
-                            {isEmailCorrect && <Text style={styles.errorText}>{error.errorCorrectEmail}</Text>}
+                            {isEmailEmty && <Text style={styles.errorText}>{t('Please enter email')}</Text>}
+                            {isEmailCorrect && <Text style={styles.errorText}>{t('Please enter correct email')}</Text>}
 
-                            <Text style={styles.subHeaderText} >Password</Text>
+                            <Text style={styles.subHeaderText} >{t('Password')}</Text>
 
 
                             <View style={styles.textBackground}>
@@ -275,9 +296,9 @@ const SignUpScreen = ({ navigation }) => {
                                 />
 
                             </View>
-                            {isPassword && <Text style={styles.errorText}>{error.errorPass}</Text>}
+                            {isPassword && <Text style={styles.errorText}>{t('Please enter Password')}</Text>}
 
-                            <Text style={styles.subHeaderText}>Confirm Password</Text>
+                            <Text style={styles.subHeaderText}>{t('Confirm Password')}</Text>
 
 
 
@@ -291,8 +312,8 @@ const SignUpScreen = ({ navigation }) => {
                                 />
 
                             </View>
-                            {isConfirmPassword && <Text style={styles.errorText}>{error.errorCorrectPass}</Text>}
-                            {isConfirmPassCorrect && <Text style={styles.errorText}>{error.errorpassMatch}</Text>}
+                            {isConfirmPassword && <Text style={styles.errorText}>{t('Please enter Confirm Password')}</Text>}
+                            {isConfirmPassCorrect && <Text style={styles.errorText}>{t('Password and Confirm')}</Text>}
 
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 20, marginBottom: 20 }}>
                                 <CheckBox
@@ -301,17 +322,17 @@ const SignUpScreen = ({ navigation }) => {
                                     onValueChange={(newValue) => setToggleCheckBox(newValue)}
                                 />
                                 <Text style={styles.paragraph}>
-                                    I Agree with{" "}
-                                    <Text style={styles.highlight}>Privacy{" "}<Text style={styles.paragraph}>and{" "}<Text style={styles.highlight}>Policy</Text></Text></Text>
+                                {t('I Agree with')}{" "}
+                                    <Text style={styles.highlight}>{t('Privacy')}{" "}<Text style={styles.paragraph}>{t('and')}{" "}<Text style={styles.highlight}>{t('Policy')}</Text></Text></Text>
                                 </Text>
                             </View>
 
-                            <TouchableOpacity onPress={() => { submit() }}><Text style={styles.button}>Confirm</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { submit() }}><Text style={styles.button}>{t('Confirm')}</Text></TouchableOpacity>
                             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
 
                                 <View style={{ flex: 1, height: 1, backgroundColor: '#707070', marginTop: 30, marginEnd: 10 }} />
                                 <View>
-                                    <Text style={{ textAlign: 'center', flex: 1, color: "#707070", fontSize: 14, fontWeight: "normal", marginTop: 25 }}>Or continue with</Text>
+                                    <Text style={{ textAlign: 'center', flex: 1, color: "#707070", fontSize: 14, fontWeight: "normal", marginTop: 25 }}>{t('Or continue with')}</Text>
                                 </View>
                                 <View style={{ flex: 1, height: 1, backgroundColor: '#707070', marginTop: 30, marginStart: 10 }} />
 
@@ -337,8 +358,8 @@ const SignUpScreen = ({ navigation }) => {
                             </View>
                             <TouchableOpacity onPress={() => { navigation.goBack() }}>
                                 <Text style={[styles.paragraph, { marginTop: 20 }]}>
-                                    Already have an account?{" "}
-                                    <Text style={styles.highlight}>Sing In{" "}</Text>
+                                {t('Already have')}{" "}
+                                    <Text style={styles.highlight}>{t('Sing In')}{" "}</Text>
                                 </Text>
                             </TouchableOpacity>
                         </View>

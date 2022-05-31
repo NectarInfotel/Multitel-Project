@@ -3,9 +3,10 @@ import {
     KeyboardAvoidingView, Button, View,Modal, Image,Alert, StatusBar,Pressable, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
 import NetInfo from '@react-native-community/netinfo'
-
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ActivityLoader from './ActivityLoader'
+import { useFocusEffect } from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 const ResetPassword = ({ navigation }) =>  {
 
@@ -23,6 +24,19 @@ const ResetPassword = ({ navigation }) =>  {
     const [isEmailEmty, setIsEmailEmty] = useState(false)
     const [isEmailCorrect, setIsEmailCorrect] = useState(false)
 
+    const {t, i18n} = useTranslation();
+  
+    const [currentLanguage,setLanguage] =useState('en');
+    
+    useFocusEffect(
+        React.useCallback(() => {
+        changeLanguage(currentLanguage)
+    
+          return () => {
+          };
+        }, [])
+      );
+
 
     useEffect(() => {
         // Subscribe to network state updates
@@ -39,6 +53,13 @@ const ResetPassword = ({ navigation }) =>  {
             unsubscribe();
         };
     }, []);
+
+    const changeLanguage = value => {
+        i18n
+          .changeLanguage(value)
+          .then(() => setLanguage(value))
+          .catch(err => console.log(err));
+      };
 
 
     const handleValidEmail = (val) => {
@@ -174,11 +195,11 @@ const ResetPassword = ({ navigation }) =>  {
                         }}>
 
 
-                        <Text style={styles.headerText}>Reset Password</Text>
+                        <Text style={styles.headerText}>{t('Reset Password')}</Text>
 
                         <Text style={[styles.paragraph,{lineHeight: 20}]}>
-                            We just need your registered{" "}
-                            <Text style={styles.highlight}>Email Address{" "}<Text style={styles.paragraph}>to send verification code</Text></Text>
+                        {t('We just need your registered')}{" "}
+                            <Text style={styles.highlight}>{t('Email Address')}{" "}<Text style={styles.paragraph}>{t('to send verification code')}</Text></Text>
                         </Text>
 
 
@@ -196,10 +217,10 @@ const ResetPassword = ({ navigation }) =>  {
                             />
 
                         </View>
-                        {isEmailEmty && <Text style={styles.errorText}>{error.errorEmail}</Text>}
-                        {isEmailCorrect && <Text style={styles.errorText}>{error.errorCorrectEmail}</Text>}
+                        {isEmailEmty && <Text style={styles.errorText}>{t('Please enter email')}</Text>}
+                        {isEmailCorrect && <Text style={styles.errorText}>{t('Please enter correct email')}</Text>}
 
-                        <TouchableOpacity onPress={() => forgotPassword()}><Text style={styles.button}>Send</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => forgotPassword()}><Text style={styles.button}>{t('Send')}</Text></TouchableOpacity>
 
                         <Modal
                             animationType="slide"
@@ -219,13 +240,13 @@ const ResetPassword = ({ navigation }) =>  {
                                                 style={styles.iconCross}
                                             /></Pressable>
                                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>
-                                                Resend Verification code code
+                                            {t('Resend Verification Code')}
                                             </Text>
                                         </View>
 
                                         <View style={{ padding: 25 }}>
                                             <Text style={[styles.modalText, { lineHeight: 20, color: "#707070" }]}>
-                                                We are sending verification code to this email address. please recheck it before continue{' '}
+                                            {t('We are sending verification')}{' '}
                                             </Text>
                                             <Pressable
                                                 style={[styles.button, styles.buttonClose, { marginTop: 25, backgroundColor: '#0076B5' }]}
@@ -236,7 +257,7 @@ const ResetPassword = ({ navigation }) =>  {
                                                     
                                                 }
                                                 }>
-                                                <Text style={styles.textStyle}>Continue</Text>
+                                                <Text style={styles.textStyle}>{t('Continue')}</Text>
                                             </Pressable>
                                         </View>
                                     </View>
