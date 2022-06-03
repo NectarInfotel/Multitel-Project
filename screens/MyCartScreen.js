@@ -8,6 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     KeyboardAvoidingView, SafeAreaView, Modal, Alert, View, Image, Pressable, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 
 
@@ -56,6 +58,8 @@ const MyCartScreen = ({ navigation }) => {
     const [totalPrice, setTotalPrice] = useState('')
     const [modalVisible, setModalVisible] = useState(false);
     const [isItem, setIstem] = useState({});
+    const [currentLanguage, setLanguage] = useState('en');
+    const { t, i18n } = useTranslation();
 
 
     useEffect(() => {
@@ -75,6 +79,10 @@ const MyCartScreen = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
+        changeLanguage(currentLanguage)
+    }, [])
+
+    useEffect(() => {
         setListCart([])
         getCartScreen()
     }, []);
@@ -88,6 +96,13 @@ const MyCartScreen = ({ navigation }) => {
 
 
     }
+
+    const changeLanguage = value => {
+        i18n
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
 
     const success = (msg) => {
         Alert.alert("Success", msg, [
@@ -118,7 +133,7 @@ const MyCartScreen = ({ navigation }) => {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignContent: "center" }}>
 
-                <Text style={{ textAlign: 'center', color: "black" }}> Sorry, No Data Present</Text>
+                <Text style={{ textAlign: 'center', color: "black" }}>{t('Sorry, No Data Present')}</Text>
 
             </View>
 
@@ -257,14 +272,14 @@ const MyCartScreen = ({ navigation }) => {
                         color: '#1D3557',
                         marginStart: 10,
                         flex: 1
-                    }} >My Cart</Text>
+                    }} >{t('My Cart')}</Text>
 
                     <View style={styles.rectangleShapeView}>
 
                         <Image style={{ height: 24, width: 24 }}
                             source={require('../assest/add_cart.png')}
                         />
-                        <Text style={{ color: "#098DD4", fontWeight: "normal", fontSize: 14, marginStart: 5 }}>Add Items</Text>
+                        <Text numberOfLines={1} style={{ color: "#098DD4", fontWeight: "normal", fontSize: 14, marginStart: 5 }}>{t('Add Items')}</Text>
                     </View>
 
                     <Image style={{ height: 40, width: 40, marginEnd: 15 }}
@@ -283,13 +298,13 @@ const MyCartScreen = ({ navigation }) => {
                             />
 
                             <View style={{ flexDirection: "row", justifyContent: "space-between", marginStart: 20, marginEnd: 20, marginBottom: 15 }}>
-                                <Text style={{ color: "#1D3557", fontWeight: "bold", fontSize: 20 }}>Total Price</Text>
+                                <Text style={{ color: "#1D3557", fontWeight: "bold", fontSize: 20 }}>{t('Total Price')}</Text>
 
                                 <Text style={{ color: "#1D3557", fontWeight: "bold", fontSize: 24, marginStart: 30 }}>{totalPrice}</Text>
 
                             </View>
                             <View style={{marginStart:20,marginEnd:20,marginBottom:20}}>
-                            <Text style={styles.button}>Continue</Text>
+                            <Text style={styles.button}>{t('Continue')}</Text>
                             </View>
                         </>
                         :
@@ -302,7 +317,7 @@ const MyCartScreen = ({ navigation }) => {
                     transparent={true}
                     visible={modalVisible}
                     onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
+
                         setModalVisible(!modalVisible);
                     }}>
                     <View style={styles.centeredView}>
@@ -317,18 +332,18 @@ const MyCartScreen = ({ navigation }) => {
                                         style={{ width: 60, height: 60 }}
                                     />
                                     <Text style={[styles.modalText, { color: "#707070", fontSize: 15, fontWeight: "bold", marginTop: 10 }]}>
-                                        WANT TO DELETE
+                                        {t('WANT TO DELETE')}
                                     </Text>
 
                                     <Text style={[styles.modalText, { color: "#707070", fontSize: 12, fontWeight: "normal", marginTop: 10 }]}>
-                                        Are you sure you want to delete this item?
+                                    {t('delete this item')}
                                     </Text>
                                     <View style={{ flexDirection: "row",alignItems:"center",marginTop:20 }}>
-                                       <TouchableOpacity style={{flex:1,backgroundColor:"#707070",padding:10,borderRadius:5,marginEnd:10}} onPress={()=>{ setModalVisible(!modalVisible)}}><Text style={{color:'#fff',textAlign:'center'}}>Cancel</Text></TouchableOpacity>
+                                       <TouchableOpacity style={{flex:1,backgroundColor:"#707070",padding:10,borderRadius:5,marginEnd:10}} onPress={()=>{ setModalVisible(!modalVisible)}}><Text style={{color:'#fff',textAlign:'center'}}>{t('Cancel')}</Text></TouchableOpacity>
                                        <TouchableOpacity style={{flex:1,backgroundColor:"#0076B5",padding:10,borderRadius:5,marginStart:10}} 
                                        onPress={()=>{
                                            setModalVisible(!modalVisible)
-                                           deleteCart(isItem)}}><Text style={{color:'#fff',textAlign:'center'}}>Delete</Text></TouchableOpacity>
+                                           deleteCart(isItem)}}><Text style={{color:'#fff',textAlign:'center'}}>{t('Delete')}</Text></TouchableOpacity>
                                     </View>
                                 </View>
                             </View>

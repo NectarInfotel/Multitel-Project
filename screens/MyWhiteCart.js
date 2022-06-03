@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Text, Pressable } from 'react-native'
 
 import { Card } from 'react-native-paper';
 
-const MyWhiteCart = (item,deleteCart) => {
+const MyWhiteCart = (item,deleteCart,t) => {
 
   let price="$"+item.product.price
   return (
@@ -35,7 +35,7 @@ const MyWhiteCart = (item,deleteCart) => {
               <View style={{ flexDirection: "row" }}><Text style={{ color: "#098DD4", fontWeight: "normal", fontSize: 12 }}>{price}</Text><Text style={{ color: "#707070", fontWeight: "normal", fontSize: 12, marginStart: 2, textDecorationLine: 'line-through' }}>$1000</Text></View>
               <View style={styles.rectangleShapeView}>
 
-                <Text style={{ color: "#fff", fontWeight: "normal", fontSize: 8 }}>Know More</Text>
+                <Text style={{ color: "#fff", fontWeight: "normal", fontSize: 8 }}>{t('Know More')}</Text>
 
               </View>
 

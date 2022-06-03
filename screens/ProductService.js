@@ -6,7 +6,8 @@ import ProductCart from './ProductCart';
 import {
     KeyboardAvoidingView, SafeAreaView, Button, View, Image, StatusBar,Alert, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
-
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage  from '@react-native-async-storage/async-storage';
@@ -22,6 +23,8 @@ const ProductService = ({ navigation }) =>{
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
     const [listProduct, setListProduct] = useState([])
+    const [currentLanguage, setLanguage] = useState('po');
+    const { t, i18n } = useTranslation();
    
    const  formatData=(dataList,numColumns)=>{
         const totalRows=Math.floor(dataList.length/numColumns)
@@ -57,6 +60,10 @@ const ProductService = ({ navigation }) =>{
     }, []);
 
     useEffect(() => {
+        changeLanguage(currentLanguage)
+    }, []);
+
+    useEffect(() => {
         getProductService()
     }, []);
 
@@ -68,6 +75,13 @@ const ProductService = ({ navigation }) =>{
 
 
     }
+
+    const changeLanguage = value => {
+        i18n
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
 
     const checkInternet = () => {
         Alert.alert("Alert", "Please check internet", [
@@ -213,7 +227,7 @@ const ProductService = ({ navigation }) =>{
                         /></TouchableOpacity>
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:10,alignItems:"center"}}>
-                    <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20}}>Other Products Services</Text>
+                    <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20}}>{t('Other Products Services')}</Text>
                     <Image
                             source={require('../assest/filter.png')}
                             style={{ height: 15, width: 15,marginEnd:20 }}
@@ -222,7 +236,7 @@ const ProductService = ({ navigation }) =>{
                     <FlatList style={{marginTop:10}}
                     data={formatData(listProduct,numColumns)}
                     numColumns={2}
-                    renderItem={({ item }) =>ProductCart(item,navigation,addFavorite)}
+                    renderItem={({ item }) =>ProductCart(item,navigation,addFavorite,t)}
                     keyExtractor={(item) => item.uid}
                 />
 

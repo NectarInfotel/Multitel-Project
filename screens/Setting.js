@@ -1,11 +1,13 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    KeyboardAvoidingView, Button, View, Switch,Alert, SafeAreaView, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
+    KeyboardAvoidingView, Button, View, Switch, Alert, SafeAreaView, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
 
 import NetInfo from '@react-native-community/netinfo'
 import ActivityLoader from './ActivityLoader'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
+import './langauge/i18n';
 
 
 const Setting = ({ navigation }) => {
@@ -22,6 +24,8 @@ const Setting = ({ navigation }) => {
 
     const [isConfirmPassword, setIsConfirmPassword] = useState(false)
     const [isConfirmPassCorrect, setIsConfirmPassCorrect] = useState(false)
+    const [currentLanguage, setLanguage] = useState('po');
+    const { t, i18n } = useTranslation();
 
     const [error, setError] = useState({
         errorPass: 'Please enter Password',
@@ -52,6 +56,17 @@ const Setting = ({ navigation }) => {
             unsubscribe();
         };
     }, []);
+
+    useEffect(() => {
+        changeLanguage(currentLanguage)
+    }, []);
+
+    const changeLanguage = value => {
+        i18n
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
 
 
     const handleValidPassword = (val) => {
@@ -88,6 +103,16 @@ const Setting = ({ navigation }) => {
 
     }
 
+    const setEnglishLangauge=()=>{
+        AsyncStorage.setItem("langauge","en")
+        navigation.goBack()
+    }
+
+    const setPortugueseLangauge=()=>{
+        AsyncStorage.setItem("langauge","po")
+        navigation.goBack()
+    }
+
 
     if (isLoading) {
         return (
@@ -97,7 +122,7 @@ const Setting = ({ navigation }) => {
 
     }
 
-    const changePassword = async() => {
+    const changePassword = async () => {
 
 
         const isPass = handleValidPassword(newPassword)
@@ -108,13 +133,13 @@ const Setting = ({ navigation }) => {
             return
         }
         const token = await AsyncStorage.getItem("access_token")
-        const email =await AsyncStorage.getItem("email")
-        const password =await AsyncStorage.getItem("password")
+        const email = await AsyncStorage.getItem("email")
+        const password = await AsyncStorage.getItem("password")
         NetInfo.fetch().then((state) => {
 
             if (state.isConnected) {
 
-               
+
                 setIsLoading(true)
                 const data = { email: email, oldPassword: password, password: newPassword }
                 console.log(data)
@@ -161,7 +186,7 @@ const Setting = ({ navigation }) => {
     }
 
     const success = (msg) => {
-        AsyncStorage.setItem("password",newPassword)
+        AsyncStorage.setItem("password", newPassword)
         setNewPassword('')
         setConfirmPass('')
         Alert.alert("Success", msg, [
@@ -180,150 +205,199 @@ const Setting = ({ navigation }) => {
 
     return (
         <>
-        <StatusBar hidden={false} barStyle= 'light-content' backgroundColor="#0076B5" />
-        <SafeAreaView style={styles.container}>
-            <View style={styles.parentView}>
-                <View style={{ flexDirection: "row", width: "100%", backgroundColor: "#FAFAFA", height: 60, alignItems: "center" }}>
-                    <TouchableOpacity onPress={() => { navigation.goBack() }}><Image
-                        source={require('../assest/left_arrow.png')}
-                        style={{ height: 15, width: 15, marginStart: 20 }}
-                    /></TouchableOpacity>
-                    <Text style={{
-                        fontSize: 20,
-                        fontWeight: "bold",
-                        color: '#1D3557',
-                        marginStart: 10,
-                        flex: 1
-                    }} >Settings</Text>
+            <StatusBar hidden={false} barStyle='light-content' backgroundColor="#0076B5" />
+            <SafeAreaView style={styles.container}>
+                <View style={styles.parentView}>
+                    <View style={{ flexDirection: "row", width: "100%", backgroundColor: "#FAFAFA", height: 60, alignItems: "center" }}>
+                        <TouchableOpacity onPress={() => { navigation.goBack() }}><Image
+                            source={require('../assest/left_arrow.png')}
+                            style={{ height: 15, width: 15, marginStart: 20 }}
+                        /></TouchableOpacity>
+                        <Text style={{
+                            fontSize: 20,
+                            fontWeight: "bold",
+                            color: '#1D3557',
+                            marginStart: 10,
+                            flex: 1
+                        }} >{t('Settings')}</Text>
 
 
-                </View>
+                    </View>
 
-                {/* <ScrollView> */}
+                    {/* <ScrollView> */}
                     <View style={styles.scrollView}>
 
-                        <View style={{height:"80%"}}>
-                        
-                        <TouchableOpacity onPress={() => { 
-                            setIsSecondView(false)
-                            setIsFirstView(!isFirstView) }}>
-                            <View>
-                                <View style={{ width: "100%", backgroundColor: "#EEF3F7", height: 1, marginTop: 10 }}></View>
-                                <View style={styles.subHeaderView} >
+                        <View style={{ height: "80%" }}>
 
-                                    <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>Change Password</Text>
-                                    {!isFirstView ? <Image style={{ width: 10, height: 10, marginRight: 10 }}
-                                        source={require('../assest/right_arrow.png')}
-                                    /> : <Image style={{ width: 10, height: 10, marginRight: 10 }}
-                                        source={require('../assest/down_arrow.png')} />}
+                            <TouchableOpacity onPress={() => {
+                                setIsSecondView(false)
+                                setIsThirdView(false)
+                                setIsFirstView(!isFirstView)
+                            }}>
+                                <View>
+                                    <View style={{ width: "100%", backgroundColor: "#EEF3F7", height: 1, marginTop: 10 }}></View>
+                                    <View style={styles.subHeaderView} >
 
+                                        <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('Change Password')}</Text>
+                                        {!isFirstView ? <Image style={{ width: 10, height: 10, marginRight: 10 }}
+                                            source={require('../assest/right_arrow.png')}
+                                        /> : <Image style={{ width: 10, height: 10, marginRight: 10 }}
+                                            source={require('../assest/down_arrow.png')} />}
+
+
+                                    </View>
+                                    {!isFirstView ?
+                                        <View style={{ width: "100%", backgroundColor: "#EEF3F7", height: 1, marginTop: 10 }}></View>
+                                        : null}
 
                                 </View>
-                                {!isFirstView ?
-                                    <View style={{ width: "100%", backgroundColor: "#EEF3F7", height: 1, marginTop: 10 }}></View>
-                                    : null}
-
-                            </View>
-                        </TouchableOpacity>
+                            </TouchableOpacity>
 
 
-                        {isFirstView ? <View>
-                            <View>
-                                <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1, marginTop: 20 }}>Password</Text></View>
+                            {isFirstView ? <View>
+                                <View>
+                                    <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1, marginTop: 20 }}>{t('Password')}</Text></View>
 
-                            <View style={styles.textBackground}>
-                                <TextInput secureTextEntry={true} style={styles.text}
-                                    placeholder="Please enter password"
-                                    value={newPassword}
-                                    onChangeText={(text) => { setNewPassword(text) }}
-                                ></TextInput>
+                                <View style={styles.textBackground}>
+                                    <TextInput secureTextEntry={true} style={styles.text}
+                                        placeholder={t('Please enter password')}
+                                        value={newPassword}
+                                        onChangeText={(text) => { setNewPassword(text) }}
+                                    ></TextInput>
 
-                                <Image style={styles.image}
-                                    source={require('../assest/lock_icon.png')}
-                                />
-
-                            </View>
-                            {isPassword && <Text style={styles.errorText}>{error.errorPass}</Text>}
-
-                            <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1, marginTop: 20 }}>Confirm Password</Text>
-
-
-                            <View style={styles.textBackground}>
-                                <TextInput secureTextEntry={true} style={styles.text}
-                                    placeholder="Please enter confirm password"
-                                    value={confirmPass}
-                                    onChangeText={(text) => { setConfirmPass(text) }}
-                                ></TextInput>
-
-                                <Image style={styles.image}
-                                    source={require('../assest/lock_icon.png')}
-                                />
-
-                            </View>
-                            {isConfirmPassword && <Text style={styles.errorText}>{error.errorCorrectPass}</Text>}
-                            {isConfirmPassCorrect && <Text style={styles.errorText}>{error.errorpassMatch}</Text>}
-                        </View> : null}
-
-                        <TouchableOpacity onPress={() => {
-                            setIsFirstView(false)
-                            setIsSecondView(!isSecondView) }}>
-                            <View>
-                                <View style={{ width: "100%", backgroundColor: "#EEF3F7", height: 1, marginTop: 10 }}></View>
-                                <View style={styles.subHeaderView} >
-
-                                    <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>Account Activity</Text>
-                                    {!isSecondView ? <Image style={{ width: 10, height: 10, marginRight: 10 }}
-                                        source={require('../assest/right_arrow.png')}
-                                    /> : <Image style={{ width: 10, height: 10, marginRight: 10 }}
-                                        source={require('../assest/down_arrow.png')} />}
-
+                                    <Image style={styles.image}
+                                        source={require('../assest/lock_icon.png')}
+                                    />
 
                                 </View>
-                                {!isSecondView ?
+                                {isPassword && <Text style={styles.errorText}>{t('Please enter password')}</Text>}
+
+                                <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1, marginTop: 20 }}>{t('Confirm Password')}</Text>
+
+
+                                <View style={styles.textBackground}>
+                                    <TextInput secureTextEntry={true} style={styles.text}
+                                        placeholder={t('Please enter Confirm Password')}
+                                        value={confirmPass}
+                                        onChangeText={(text) => { setConfirmPass(text) }}
+                                    ></TextInput>
+
+                                    <Image style={styles.image}
+                                        source={require('../assest/lock_icon.png')}
+                                    />
+
+                                </View>
+                                {isConfirmPassword && <Text style={styles.errorText}>{t('Please enter Confirm Password')}</Text>}
+                                {isConfirmPassCorrect && <Text style={styles.errorText}>{t('Password and Confirm')}</Text>}
+                            </View> : null}
+
+                            <TouchableOpacity onPress={() => {
+                                setIsFirstView(false)
+                                setIsThirdView(!isThirdView)
+                                setIsSecondView(false)
+                            }}>
+                                <View>
                                     <View style={{ width: "100%", backgroundColor: "#EEF3F7", height: 1, marginTop: 10 }}></View>
-                                    : null}
+                                    <View style={styles.subHeaderView} >
 
-                            </View>
-                        </TouchableOpacity>
+                                        <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('Language')}</Text>
+                                        {!isThirdView ? <Image style={{ width: 10, height: 10, marginRight: 10 }}
+                                            source={require('../assest/right_arrow.png')}
+                                        /> : <Image style={{ width: 10, height: 10, marginRight: 10 }}
+                                            source={require('../assest/down_arrow.png')} />}
 
 
-                        {isSecondView ? <View>
-                            <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+                                    </View>
+                                    {!isThirdView ?
+                                        <View style={{ width: "100%", backgroundColor: "#EEF3F7", height: 1, marginTop: 10 }}></View>
+                                        : null}
 
-                                <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>Push Notification</Text>
+                                </View>
+                            </TouchableOpacity>
+                            {isThirdView ? <View>
+                                <TouchableOpacity onPress={()=>{setEnglishLangauge()}}><View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
 
-                                <Switch
-                                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                                    thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                                    ios_backgroundColor="#3e3e3e"
-                                    onValueChange={toggleSwitch}
-                                    value={isEnabled}
-                                />
+                                    <Image style={styles.image}
+                                        source={require('../assest/english_flag.png')}
+                                    /><Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('English')}</Text>
 
-                            </View>
-                            <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
 
-                                <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>Delete Account</Text>
 
-                                <Switch
-                                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                                    thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                                    ios_backgroundColor="#3e3e3e"
-                                    onValueChange={toggleSwitch}
-                                    value={isEnabled}
-                                />
+                                </View></TouchableOpacity>
+                                <TouchableOpacity onPress={()=>{setPortugueseLangauge()}}><View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
 
-                            </View>
-                        </View> : null}
+                                    <Image style={styles.image}
+                                        source={require('../assest/portuguese_flag.png')}
+                                    /><Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('Portuguese')}</Text>
+
+
+
+                                </View></TouchableOpacity>
+                            </View> : null}
+
+
+                            <TouchableOpacity onPress={() => {
+                                setIsFirstView(false)
+                                setIsThirdView(false)
+                                setIsSecondView(!isSecondView)
+                            }}>
+                                <View>
+                                    <View style={{ width: "100%", backgroundColor: "#EEF3F7", height: 1, marginTop: 10 }}></View>
+                                    <View style={styles.subHeaderView} >
+
+                                        <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('Account Activity')}</Text>
+                                        {!isSecondView ? <Image style={{ width: 10, height: 10, marginRight: 10 }}
+                                            source={require('../assest/right_arrow.png')}
+                                        /> : <Image style={{ width: 10, height: 10, marginRight: 10 }}
+                                            source={require('../assest/down_arrow.png')} />}
+
+
+                                    </View>
+                                    {!isSecondView ?
+                                        <View style={{ width: "100%", backgroundColor: "#EEF3F7", height: 1, marginTop: 10 }}></View>
+                                        : null}
+
+                                </View>
+                            </TouchableOpacity>
+
+
+                            {isSecondView ? <View>
+                                <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+
+                                    <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('Push Notification')}</Text>
+
+                                    <Switch
+                                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                                        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={toggleSwitch}
+                                        value={isEnabled}
+                                    />
+
+                                </View>
+                                <View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+
+                                    <Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('Delete Account')}</Text>
+
+                                    <Switch
+                                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                                        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={toggleSwitch}
+                                        value={isEnabled}
+                                    />
+
+                                </View>
+                            </View> : null}
                         </View>
 
-                        <TouchableOpacity onPress={() => changePassword()}><Text style={styles.button}>Save</Text></TouchableOpacity>
+                        <TouchableOpacity onPress={() => changePassword()}><Text style={styles.button}>{t('Save')}</Text></TouchableOpacity>
                     </View>
 
 
-                {/* </ScrollView> */}
-            </View>
-        </SafeAreaView>
+                    {/* </ScrollView> */}
+                </View>
+            </SafeAreaView>
         </>
     )
 

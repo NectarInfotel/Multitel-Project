@@ -7,6 +7,8 @@ import NetInfo from '@react-native-community/netinfo'
 import { useDrawerStatus,useDrawerProgress,createDrawerNavigator  } from '@react-navigation/drawer';
 import { useIsFocused,useFocusEffect } from '@react-navigation/native';
 import AsyncStorage  from '@react-native-async-storage/async-storage';
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 import { AuthContext } from './component/context';
 
 const CustomDrawer = (props) => {
@@ -18,16 +20,25 @@ const CustomDrawer = (props) => {
     const [image,setImage]=useState("")
     const [imageUrl, setImageUrl] = useState('')
     const [imageType, setImageType] = useState('')
-
+    const [currentLanguage, setLanguage] = useState('en');
+    const { t, i18n } = useTranslation();
     const isDrawerVisible =  useDrawerStatus();
+
+
    
     useEffect(() => {
-      
+        console.log(currentLanguage)
+            changeLanguage(currentLanguage)
             getUserDetail()
      
       }, [isDrawerVisible]);
      
-
+      const changeLanguage = value => {
+        i18n
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
 
     const clearAppData = async function() {
         try {
@@ -288,7 +299,7 @@ const CustomDrawer = (props) => {
                         <Image style={styles.image}
                             source={require('../assest/home.png')}
                         />
-                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>Multitel Home</Text>
+                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Multitel Home')}</Text>
                     </View></TouchableOpacity>
 
 
@@ -296,42 +307,42 @@ const CustomDrawer = (props) => {
                         <Image style={styles.image}
                             source={require('../assest/category.png')}
                         />
-                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>Category</Text>
+                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Category')}</Text>
                     </View></TouchableOpacity>
 
                     <TouchableOpacity onPress={() => { navigation.navigate("Home",{screen:"InternetService"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/internet.png')}
                         />
-                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>Internet Services</Text>
+                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Internet Services')}</Text>
                     </View></TouchableOpacity>
 
                     <TouchableOpacity onPress={() => { navigation.navigate("Home",{screen:"NetworkEquipment"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/network.png')}
                         />
-                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>Network Equipment</Text>
+                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Network Equipment')}</Text>
                     </View></TouchableOpacity>
 
                     <TouchableOpacity onPress={() => { navigation.navigate("Home",{screen:"CPE"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/cpe.png')}
                         />
-                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>CPE's</Text>
+                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('CPE')}</Text>
                     </View></TouchableOpacity>
 
                     <TouchableOpacity onPress={() => { navigation.navigate("CategoryStack",{screen:"Category"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/order.png')}
                         />
-                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>Order</Text>
+                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Order')}</Text>
                     </View></TouchableOpacity>
 
                     <TouchableOpacity onPress={() => { navigation.navigate("NotificationScreen") }}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/notification.png')}
                         />
-                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>Notification</Text>
+                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Notification')}</Text>
                     </View></TouchableOpacity>
 
                 </View>
@@ -345,7 +356,7 @@ const CustomDrawer = (props) => {
                     <Image style={styles.image}
                         source={require('../assest/logout.png')}
                     />
-                    <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>Logout</Text>
+                    <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Logout')}</Text>
                 </View></TouchableOpacity>
 
             </View>

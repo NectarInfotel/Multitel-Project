@@ -14,6 +14,8 @@ import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 import Paginator from './Paginator';
 
@@ -38,6 +40,8 @@ const HomeScreen = ({ navigation }) => {
     const [listCms, setListCms] = useState([])
     const [listProduct, setListProduct] = useState([])
     const [listEquipment, setListEquipment] = useState([])
+    const [currentLanguage, setLanguage] = useState('po');
+    const { t, i18n } = useTranslation();
     let viewableItemChanged = 0;
 
     const slidesRef = useRef(null)
@@ -64,7 +68,13 @@ const HomeScreen = ({ navigation }) => {
         }, [])
     );
 
-
+    useFocusEffect(
+        React.useCallback(() => {
+            changeLanguage(currentLanguage)
+            return () => {
+            };
+        }, [])
+    );
 
 
     useFocusEffect(
@@ -82,6 +92,14 @@ const HomeScreen = ({ navigation }) => {
             };
         }, [])
     );
+
+
+    const changeLanguage = value => {
+        i18n
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
 
     const getProductService = async () => {
         const token = await AsyncStorage.getItem("access_token")
@@ -477,7 +495,7 @@ const HomeScreen = ({ navigation }) => {
 
                     <View style={[styles.rectangleShapeView,{marginTop:10,paddingHorizontal:3}]}>
 
-                        <Text style={{ color: "black", fontWeight: "normal", fontSize: 8 }}>Know More</Text>
+                        <Text style={{ color: "black", fontWeight: "normal", fontSize: 8 }}>{t('Know More')}</Text>
 
                     </View>
                 </View>
@@ -566,8 +584,8 @@ const HomeScreen = ({ navigation }) => {
                     <View style={{ paddingHorizontal: 15 }}>
 
                         <View style={{ flexDirection: "row", width: "100%", marginTop: 15, justifyContent: "space-between" }}>
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>Browse by Category</Text>
-                            <Pressable onPress={() => { navigation.navigate("CategoryStack", { screen: "Category" }) }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>See More</Text></Pressable>
+                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('Browse by Category')}</Text>
+                            <Pressable onPress={() => { navigation.navigate("CategoryStack", { screen: "Category" }) }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
                         </View>
 
                         {/*
@@ -657,9 +675,9 @@ const HomeScreen = ({ navigation }) => {
                             </ScrollView>
                         </View>
 
-                        <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>Internet Services</Text>
-                            <Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>See More</Text>
+                        <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}> 
+                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('Internet Services')}</Text>
+                            <Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text>
                         </View>
 
                         <View>
@@ -681,8 +699,8 @@ const HomeScreen = ({ navigation }) => {
                         </View>
 
                         <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>Network Equipment</Text>
-                            <Pressable onPress={() => { navigation.navigate("NetworkEquipment") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>See More</Text></Pressable>
+                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('Network Equipment')}</Text>
+                            <Pressable onPress={() => { navigation.navigate("NetworkEquipment") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
                         </View>
 
 
@@ -706,8 +724,8 @@ const HomeScreen = ({ navigation }) => {
 
 
                         <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>CPE's</Text>
-                            <Pressable onPress={() => { navigation.navigate("CPE") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>See More</Text></Pressable>
+                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('CPE')}</Text>
+                            <Pressable onPress={() => { navigation.navigate("CPE") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
                         </View>
 
                         <View>
@@ -729,8 +747,8 @@ const HomeScreen = ({ navigation }) => {
                         </View>
 
                         <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>Other Products/Services</Text>
-                            <Pressable onPress={() => { navigation.navigate("ProductService") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>See More</Text></Pressable>
+                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('other product')}</Text>
+                            <Pressable onPress={() => { navigation.navigate("ProductService") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
                         </View>
 
 
@@ -744,7 +762,7 @@ const HomeScreen = ({ navigation }) => {
                             >
                                 {
                                     listProduct.map((e, index) =>
-                                        <HomeServicesCart item={e} />
+                                        <HomeServicesCart item={e} t={t} />
                                     )
                                 }
 

@@ -6,6 +6,8 @@ import CategoryCart from './CategoryCart'
 import {
     KeyboardAvoidingView,SafeAreaView, Button, View, Image, StatusBar,Alert, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage  from '@react-native-async-storage/async-storage';
@@ -19,6 +21,8 @@ const SmartPhone = ({ navigation }) =>{
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
     const [listCPE, setListCPE] = useState([])
+    const [currentLanguage, setLanguage] = useState('po');
+    const { t, i18n } = useTranslation();
 
 
     useFocusEffect(
@@ -39,6 +43,17 @@ const SmartPhone = ({ navigation }) =>{
           };
         }, [])
       );
+
+      useFocusEffect(
+        React.useCallback(() => {
+            changeLanguage(currentLanguage)
+         
+          return () => {
+          };
+        }, [])
+      );
+
+    
     
       useFocusEffect(
         React.useCallback(() => {
@@ -50,7 +65,12 @@ const SmartPhone = ({ navigation }) =>{
         }, [])
       );
     
-
+      const changeLanguage = value => {
+        i18n
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
 
     if (isLoading) {
         return (
@@ -222,7 +242,7 @@ const SmartPhone = ({ navigation }) =>{
                         /></TouchableOpacity>
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:10,alignItems:"center"}}>
-                    <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20}}>Smart Phone</Text>
+                    <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20}}>{t('promotions')}</Text>
                     <Image
                             source={require('../assest/filter.png')}
                             style={{ height: 15, width: 15,marginEnd:20 }}
@@ -231,7 +251,7 @@ const SmartPhone = ({ navigation }) =>{
                     <FlatList style={{marginTop:10}}
                     data={formatData(listCPE,numColumns)}
                     numColumns={2}
-                    renderItem={({ item }) =>CategoryCart(navigation,item,addFavorite)}
+                    renderItem={({ item }) =>CategoryCart(navigation,item,addFavorite,t)}
                     keyExtractor={(item) => item.uid}
                 />
 

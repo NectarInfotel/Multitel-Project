@@ -9,6 +9,8 @@ import ImagePicker from 'react-native-image-crop-picker';
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage  from '@react-native-async-storage/async-storage';
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 
 const EditProfile = ({ navigation }) => {
@@ -25,6 +27,7 @@ const EditProfile = ({ navigation }) => {
     const [name, setName] = useState('')
     const [emails, setEmail] = useState('')
     const [updateRes, setUpdateRes] = useState(false)
+    
 
     const [isFirstName, setIsFirstName] = useState(false)
     const [isEmailEmty, setIsEmailEmty] = useState(false)
@@ -32,8 +35,18 @@ const EditProfile = ({ navigation }) => {
     const [isDob, setIsDob] = useState(false)
     const [isGender, setIsGender] = useState(false)
     const [isProfileImg, setIsProfileImg] = useState(false)
+    const [currentLanguage,setLanguage] =useState('po');
+    const {t, i18n} = useTranslation();
+  
+  
 
 
+      const changeLanguage = value => {
+        i18n
+          .changeLanguage(value)
+          .then(() => setLanguage(value))
+          .catch(err => console.log(err));
+      };
     
     const [error, setError] = useState({
         errorFirstName: 'Please enter full name',
@@ -58,6 +71,7 @@ const EditProfile = ({ navigation }) => {
      
         setDob(fDate)
     };
+
 
     const [radioButtonsData, setRadioButtonsData] = useState([{
         id: '1', // acts as primary key, should be unique and non-empty string
@@ -194,6 +208,15 @@ const EditProfile = ({ navigation }) => {
         try {
             const email = await AsyncStorage.getItem("email");
             const access_token = await AsyncStorage.getItem("access_token");
+            const langauge = await AsyncStorage.getItem("langauge");
+          
+            if(langauge!=null)
+            {
+                changeLanguage(langauge)
+            }else{
+                changeLanguage("en") 
+            }
+            
             setEmail(email)
             NetInfo.fetch().then((state) => {
 
@@ -277,7 +300,10 @@ const failure = (msg) => {
 
     useFocusEffect(
         React.useCallback(() => {
-
+           
+            getSelectedLangauge()
+            setGender('')
+            setImageUrl('')
             setRadioButtonsData([{
                 id: '1', // acts as primary key, should be unique and non-empty string
                 label: 'Male',
@@ -309,6 +335,7 @@ const failure = (msg) => {
         }, [])
       );
 
+         
 
     const handleValidUser = (val) => {
 
@@ -512,7 +539,7 @@ const failure = (msg) => {
                     color: '#1D3557',
                     marginStart: 10,
                     flex: 1
-                }} >Edit Profile</Text>
+                }} >{t('Edit Profile')}</Text>
                 <TouchableOpacity onPress={() => { navigation.navigate("Settings") }}><Image
                     source={require('../assest/setting_icon.png')}
                     style={{ height: 15, width: 15, marginStart: 20, marginEnd: 25 }}
@@ -541,16 +568,14 @@ const failure = (msg) => {
                                 />
                                 </TouchableOpacity>
                             </View>
-                            {isProfileImg && <Text style={styles.errorText}>{error.errorProfileImage}</Text>}
+                            
+                            {isProfileImg && <Text style={styles.errorText}>{t('Please select profile image')}</Text>}
 
-
-
-
-                            <Text style={styles.subHeaderText}>Name</Text>
+                            <Text style={styles.subHeaderText}>{t('Name')}</Text>
 
 
                             <View style={styles.textBackground}>
-                                <TextInput style={styles.text} placeholder="Please enter full name"
+                                <TextInput style={styles.text} placeholder={t('Please enter full name')}
                                 value={name}  onChangeText={text => setName(text)}></TextInput>
 
                                 <Image style={styles.image}
@@ -558,13 +583,13 @@ const failure = (msg) => {
                                 />
 
                             </View>
-                            {isFirstName && <Text style={styles.errorText}>{error.errorFirstName}</Text>}
+                            {isFirstName && <Text style={styles.errorText}>{t('Please enter full name')}</Text>}
 
-                            <Text style={styles.subHeaderText}>Email Address</Text>
+                            <Text style={styles.subHeaderText}>{t('Email Address')}</Text>
 
-
+                            
                             <View style={styles.textBackground}>
-                                <TextInput style={styles.text} placeholder="Please enter email"
+                                <TextInput style={styles.text} placeholder={t('Please enter email')}
                                 value={emails}
                                 editable={false}
                                 selectTextOnFocus={false}
@@ -576,10 +601,10 @@ const failure = (msg) => {
                                 />
 
                             </View>
-                            {isEmailEmty && <Text style={styles.errorText}>{error.errorEmail}</Text>}
-                            {isEmailCorrect && <Text style={styles.errorText}>{error.errorCorrectEmail}</Text>}
+                            {isEmailEmty && <Text style={styles.errorText}>{t('Please enter email')}</Text>}
+                            {isEmailCorrect && <Text style={styles.errorText}>{t('Please enter correct email')}</Text>}
 
-                            <Text style={styles.subHeaderText}>Birthday</Text>
+                            <Text style={styles.subHeaderText}>{t('Birthday')}</Text>
 
 
                             <View style={styles.textBackground}>
@@ -587,7 +612,7 @@ const failure = (msg) => {
                                  editable={false}
                                  selectTextOnFocus={false}
                                 onChangeText={text => setDob(text)}
-                                    placeholder="Please select date of birth"
+                                    placeholder={t('Please select date of birth')}
                                 ></TextInput>
 
                                 <TouchableOpacity onPress={()=>showPicker()}><Image style={styles.image}
@@ -595,7 +620,7 @@ const failure = (msg) => {
                                 /></TouchableOpacity>
 
                             </View>
-                            {isDob && <Text style={styles.errorText}>{error.errorDob}</Text>}
+                            {isDob && <Text style={styles.errorText}>{t('Please enter DOB')}</Text>}
 
                             {isPickerShow && (
                                 <DateTimePicker
@@ -607,7 +632,7 @@ const failure = (msg) => {
                                 />
                             )}
 
-                            <Text style={styles.subHeaderText}>Gender</Text>
+                            <Text style={styles.subHeaderText}>{t('Gender')}</Text>
                         </View>
 
                         <View style={{ marginTop: 10, marginStart: 8 }}>
@@ -617,12 +642,13 @@ const failure = (msg) => {
                                 layout='row'
                             />
                         </View>
-                        {isGender && <Text style={[styles.errorText,{marginStart:20}]}>{error.errorGender}</Text>}
+                        
+                        {isGender && <Text style={[styles.errorText,{marginStart:20}]}>{t('Please select gender')}</Text>}
                         <View></View>
                         <View style={{marginBottom:250,paddingStart:20,paddingEnd:30,backgroundColor: "#FFFFFF"} }>
                             <View style={{ flexDirection: "row", marginTop: 20 }}>
-                                <TouchableOpacity style={{ flex: 1 }} ><Text style={styles.cancelButton}>Cancel</Text></TouchableOpacity>
-                                <TouchableOpacity style={{ flex: 1 }} onPress={() => submit()}><Text style={styles.button}>Next</Text></TouchableOpacity>
+                                <TouchableOpacity style={{ flex: 1 }} ><Text style={styles.cancelButton}>{t('Cancel')}</Text></TouchableOpacity>
+                                <TouchableOpacity style={{ flex: 1 }} onPress={() => submit()}><Text style={styles.button}>{t('Next')}</Text></TouchableOpacity>
                             </View>
                         </View>
                     </View>

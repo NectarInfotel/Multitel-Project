@@ -10,6 +10,8 @@ import {
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage  from '@react-native-async-storage/async-storage';
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 
 
@@ -37,6 +39,8 @@ const MyWhiteList = ({ navigation }) =>{
     const [isLoading, setIsLoading] = useState(false)
     const [listFav, setListFav] = useState([])
     const [emptyList, setEmptyList] = useState(false)
+    const [currentLanguage, setLanguage] = useState('po');
+    const { t, i18n } = useTranslation();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -59,6 +63,15 @@ const MyWhiteList = ({ navigation }) =>{
 
   useFocusEffect(
     React.useCallback(() => {
+        changeLanguage(currentLanguage)
+     
+      return () => {
+      };
+    }, [])
+  );
+
+  useFocusEffect(
+    React.useCallback(() => {
         setListFav([])
         getFavList()
      
@@ -69,7 +82,12 @@ const MyWhiteList = ({ navigation }) =>{
 
 
    
-
+  const changeLanguage = value => {
+    i18n
+        .changeLanguage(value)
+        .then(() => setLanguage(value))
+        .catch(err => console.log(err));
+};
 
     if (isLoading) {
         return (
@@ -152,7 +170,7 @@ const MyWhiteList = ({ navigation }) =>{
         return (
           <View style={{flex:1,justifyContent:'center',alignContent:"center"}}>
      
-            <Text style={{textAlign: 'center',color:"black"}}> Sorry, No Data Present</Text>
+            <Text style={{textAlign: 'center',color:"black"}}>{t('Sorry, No Data Present')}</Text>
      
           </View>
      
@@ -249,10 +267,10 @@ const MyWhiteList = ({ navigation }) =>{
                     </View>
                     {emptyList?
                         <>
-                          <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20,marginTop:10}}>My Wishlist</Text>
+                          <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20,marginTop:10}}>{t('My Wishlist')}</Text>
                    <FlatList style={{marginTop:10}}
                     data={listFav}
-                    renderItem={({ item }) =>MyWhiteCart(item,deleteCart)}
+                    renderItem={({ item }) =>MyWhiteCart(item,deleteCart,t)}
                     keyExtractor={(item) => item.uid}
                 />
                         

@@ -5,7 +5,7 @@ import AsyncStorage  from '@react-native-async-storage/async-storage';
 
 import { Card } from 'react-native-paper';
 
-const MyNetworkCart = (item,navigation,addFavorite) => {
+const MyNetworkCart = (item,navigation,addFavorite,t) => {
 
  
   if(item.empty)
@@ -53,7 +53,7 @@ const MyNetworkCart = (item,navigation,addFavorite) => {
             <View style={{alignItems:"center",justifyContent:"space-between",flexDirection:"row",marginTop:10}}>
             <View style={styles.rectangleShapeView}>
 
-              <Text style={{ color: "#fff", fontWeight: "normal", fontSize: 8 }}>Know More</Text>
+              <Text style={{ color: "#fff", fontWeight: "normal", fontSize: 8 }}>{t('Know More')}</Text>
 
             </View>
 

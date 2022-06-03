@@ -11,7 +11,7 @@ import { Card } from 'react-native-paper';
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
-const HomeServicesCart = ({item}) => {
+const HomeServicesCart = ({item,t}) => {
   return (
     <View style={{ flex: 1 }}>
     <Card onPress={() => { }} style={styles.wrap}>
@@ -46,7 +46,7 @@ const HomeServicesCart = ({item}) => {
 
                 <View style={{ flexDirection: "row", width: "100%", alignItems: "center", marginTop: 5, justifyContent: "space-between" }}>
 
-                    <View style={{ flexDirection: "row" }}><Text style={{ color: "#098DD4", fontWeight: "normal", fontSize: 12 }}>View More</Text></View>
+                    <View style={{ flexDirection: "row" }}><Text style={{ color: "#098DD4", fontWeight: "normal", fontSize: 12 }}>{t('View More')}</Text></View>
 
 
                 </View>

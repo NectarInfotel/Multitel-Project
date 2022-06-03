@@ -5,7 +5,8 @@ import {
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage  from '@react-native-async-storage/async-storage';
-
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 import MyNetworkCart from './MyNetworkCart';
 
 // import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -43,6 +44,8 @@ const NetworkEquipment = ({ navigation }) =>{
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
     const [listEquipment, setListEquipment] = useState([])
+    const [currentLanguage, setLanguage] = useState('po');
+    const { t, i18n } = useTranslation();
 
 
     useEffect(() => {
@@ -62,9 +65,22 @@ const NetworkEquipment = ({ navigation }) =>{
     }, []);
 
     useEffect(() => {
+        changeLanguage(currentLanguage)
+    }, []);
+
+
+    useEffect(() => {
         setListEquipment([])
         getNetworkEquipment()
     }, []);
+
+
+    const changeLanguage = value => {
+        i18n
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
 
   const formatData=(dataList,numColumns)=>{
         const totalRows=Math.floor(dataList.length/numColumns)
@@ -236,7 +252,7 @@ const NetworkEquipment = ({ navigation }) =>{
                         /></TouchableOpacity>
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:10,alignItems:"center"}}>
-                    <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20}}>Network Equipment</Text>
+                    <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20}}>{t('Network Equipment')}</Text>
                     <Image
                             source={require('../assest/filter.png')}
                             style={{ height: 15, width: 15,marginEnd:20 }}
@@ -245,7 +261,7 @@ const NetworkEquipment = ({ navigation }) =>{
                     <FlatList style={{marginTop:10}}
                     data={formatData(listEquipment,numColumns)}
                     numColumns={2}
-                    renderItem={({ item }) =>MyNetworkCart(item,navigation,addFavorite)}
+                    renderItem={({ item }) =>MyNetworkCart(item,navigation,addFavorite,t)}
                     keyExtractor={(item) => item.uid}
                 />
 

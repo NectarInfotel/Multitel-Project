@@ -2,7 +2,8 @@ import React, { useState,useEffect } from 'react';
 import {
     KeyboardAvoidingView,SafeAreaView, Button, Alert,View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
-
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 import CPECart from './CPECart';
 
 import ActivityLoader from './ActivityLoader'
@@ -15,6 +16,8 @@ const CPE = ({ navigation }) =>{
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
     const [listCPE, setListCPE] = useState([])
+    const [currentLanguage, setLanguage] = useState('po');
+    const { t, i18n } = useTranslation();
 
     const  formatData=(dataList,numColumns)=>{
         const totalRows=Math.floor(dataList.length/numColumns)
@@ -51,10 +54,21 @@ const CPE = ({ navigation }) =>{
     }, []);
 
     useEffect(() => {
+        changeLanguage(currentLanguage)
+    }, []);
+
+    useEffect(() => {
         setListCPE([])
         getCpe()
     }, []);
 
+
+    const changeLanguage = value => {
+        i18n
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
 
     if (isLoading) {
         return (
@@ -63,6 +77,8 @@ const CPE = ({ navigation }) =>{
 
 
     }
+
+  
 
     const checkInternet = () => {
         Alert.alert("Alert", "Please check internet", [
@@ -210,7 +226,7 @@ const CPE = ({ navigation }) =>{
                         /></TouchableOpacity>
                     </View>
                     <View style={{flexDirection:"row",justifyContent:"space-between",marginTop:10,alignItems:"center"}}>
-                    <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20}}>CPE's</Text>
+                    <Text style={{fontWeight:"bold" ,color:"#1D3557",fontSize:15,marginStart:20}}>{t('CPE')}</Text>
                     <Image
                             source={require('../assest/filter.png')}
                             style={{ height: 15, width: 15,marginEnd:20 }}
@@ -219,7 +235,7 @@ const CPE = ({ navigation }) =>{
                     <FlatList style={{marginTop:10}}
                     data={formatData(listCPE,numColumns)}
                     numColumns={2}
-                    renderItem={({ item }) =>CPECart(item,navigation,addFavorite)}
+                    renderItem={({ item }) =>CPECart(item,navigation,addFavorite,t)}
                     keyExtractor={(item) => item.uid}
                 />
 

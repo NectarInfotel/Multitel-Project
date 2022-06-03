@@ -5,6 +5,8 @@ import {
 import ActivityLoader from './ActivityLoader'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo'
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 
 
@@ -21,6 +23,8 @@ const ProductDetail = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false)
     const [token, setToken] = useState('')
     const [userId, setUserId] = useState('')
+    const [currentLanguage, setLanguage] = useState('en');
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         // Subscribe to network state updates
@@ -38,6 +42,9 @@ const ProductDetail = ({ navigation }) => {
         };
     }, []);
 
+    useEffect(() => {
+        changeLanguage(currentLanguage)
+    }, [])
 
     useEffect(() => {
         getItem()
@@ -62,6 +69,13 @@ const ProductDetail = ({ navigation }) => {
         ])
 
     }
+
+    const changeLanguage = value => {
+        i18n
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
 
     if (isLoading) {
         return (
@@ -181,7 +195,7 @@ const ProductDetail = ({ navigation }) => {
                         color: '#1D3557',
                         marginStart: 10,
                         flex: 1
-                    }} >Product Details</Text>
+                    }} >{t('Product Details')}</Text>
 
                 </View>
                 <View>
@@ -223,7 +237,7 @@ const ProductDetail = ({ navigation }) => {
                     <View style={{ paddingHorizontal: 15 }}>
                         <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 25, marginTop: 10 }}>{productItem.name}</Text>
                         <Text style={{ lineHeight: 25, width: "100%", color: "#707070", fontWeight: "normal", fontSize: 14, marginTop: 10 }}>{productItem.description}</Text>
-                        <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 15, marginTop: 25 }}>Quantity</Text>
+                        <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 15, marginTop: 25 }}>{t('Quantity')}</Text>
                         <View style={{ flexDirection: "row", width: "100%", alignItems: "center", paddingVertical: 5, marginTop: 10, justifyContent: "space-between" }}>
                             <View style={styles.rectangleShapeView}>
                                 <Pressable onPress={() => sub()}><Image style={{ height: 24, width: 24 }}
@@ -242,7 +256,7 @@ const ProductDetail = ({ navigation }) => {
                                     source={require('../assest/share.png')}
                                 />
 
-                                <Text style={{ color: "#1D3557", fontWeight: "bold", fontSize: 14, marginStart: 3 }}>share</Text>
+                                <Text style={{ color: "#1D3557", fontWeight: "bold", fontSize: 14, marginStart: 3 }}>{t('Share')}</Text>
 
                             </View>
                             <Text style={{ color: "#1D3557", fontWeight: "bold", fontSize: 14, marginStart: 30 }}>${productItem.price}</Text>
@@ -255,7 +269,7 @@ const ProductDetail = ({ navigation }) => {
                                 style={{ height: 15, width: 15, marginEnd: 10 }}
                             />
 
-                            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>Add to Cart</Text>
+                            <Text style={{ color: "#fff", fontWeight: "bold", fontSize: 12 }}>{t('Add to Cart')}</Text>
 
                         </View></TouchableOpacity>
                     </View>

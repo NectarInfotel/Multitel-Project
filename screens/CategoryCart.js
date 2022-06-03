@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Text, Pressable,Dimensions } from 'react-nativ
 import { Card } from 'react-native-paper';
 import AsyncStorage  from '@react-native-async-storage/async-storage';
 
-const CategoryCart = (navigation, item,addFavorite) => {
+const CategoryCart = (navigation, item,addFavorite,t) => {
 
  
   if(item.empty)
@@ -52,7 +52,7 @@ const CategoryCart = (navigation, item,addFavorite) => {
             <View style={{alignItems:"center",justifyContent:"space-between",flexDirection:"row",marginTop:10}}>
             <View style={styles.rectangleShapeView}>
 
-              <Text style={{ color: "#fff", fontWeight: "normal", fontSize: 8 }}>Know More</Text>
+              <Text style={{ color: "#fff", fontWeight: "normal", fontSize: 8 }}>{t('Know More')}</Text>
 
             </View>
 
