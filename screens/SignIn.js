@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import {
-    KeyboardAvoidingView, Button, View, Image, StatusBar, Alert, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
+    KeyboardAvoidingView, Button, View, Image, StatusBar, Alert, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput,ActivityIndicator
 } from "react-native";
 
 // import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -14,11 +14,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
 import './langauge/i18n';
-
+import {
+    GoogleSignin,
+    GoogleSigninButton,
+    statusCodes,
+  } from 'react-native-google-signin';
 
 
 const SignIn = ({ navigation }) => {
-
+    const [userInfo, setUserInfo] = useState(null);
+    const [gettingLoginStatus, setGettingLoginStatus] = useState(true);
+  
     const { signIn } = React.useContext(AuthContext);
     const [netInfo, setNetInfo] = useState('');
     const [error, setError] = useState({
@@ -49,6 +55,14 @@ const SignIn = ({ navigation }) => {
       );
 
     useEffect(() => {
+        GoogleSignin.configure({
+            // Mandatory method to call before calling signIn()
+            scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+            // Repleace with your webClientId generated from Firebase console
+            webClientId: '1083533213607-j7hhjqiscm5r8lco6rme3rl7p16tq4p9.apps.googleusercontent.com',
+          });
+          // Check if user is already signed in
+          _isSignedIn();
         // Subscribe to network state updates
         const unsubscribe = NetInfo.addEventListener((state) => {
             setNetInfo(
@@ -64,7 +78,72 @@ const SignIn = ({ navigation }) => {
         };
     }, []);
 
+    const _isSignedIn = async () => { console.log("hi")
+       const isSignedIn = await GoogleSignin.isSignedIn();
+        if (isSignedIn) {
+          alert('User is already signed in');
+          // Set User Info if user is already signed in
+          _getCurrentUserInfo();
+        } else {
+          console.log('Please Login');
+        }
+        setGettingLoginStatus(false);
 
+      };
+    
+      const _getCurrentUserInfo = async () => {
+        try {
+          let info = await GoogleSignin.signInSilently();
+          console.log('User Info --> ', info);
+          setUserInfo(info);
+        } catch (error) {
+          if (error.code === statusCodes.SIGN_IN_REQUIRED) {
+            alert('User has not signed in yet');
+            console.log('User has not signed in yet');
+          } else {
+            alert("Something went wrong. Unable to get user's info");
+            console.log("Something went wrong. Unable to get user's info");
+          }
+        }
+      };
+      const _signIn = async () => {
+        // It will prompt google Signin Widget
+        try {
+          await GoogleSignin.hasPlayServices({
+            // Check if device has Google Play Services installed
+            // Always resolves to true on iOS
+            showPlayServicesUpdateDialog: true,
+          });
+          const userInfo = await GoogleSignin.signIn();
+          console.log('User Info --> ', userInfo);
+          setUserInfo(userInfo);
+        } catch (error) {
+          console.log('Message', JSON.stringify(error));
+          if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+            alert('User Cancelled the Login Flow');
+          } else if (error.code === statusCodes.IN_PROGRESS) {
+            alert('Signing In');
+          } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+            alert('Play Services Not Available or Outdated');
+          } else {
+            alert(error.message);
+          }
+        }
+      };
+
+  const _signOut = async () => {
+    setGettingLoginStatus(true);
+    // Remove user session from the device.
+    try {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      // Removing user Info
+      setUserInfo(null);
+    } catch (error) {
+      console.error(error);
+    }
+    setGettingLoginStatus(false);
+  };
 
 
     const changeLanguage = value => {
@@ -273,11 +352,12 @@ const SignIn = ({ navigation }) => {
                                 <Image style={styles.socialImage}
                                     source={require('../assest/twitter.png')}
                                 />
-
+                                 
+                                 <TouchableOpacity onPress={()=>_signIn()}>
                                 <Image style={{ height: 60, width: 60, marginStart: 20 }}
                                     source={require('../assest/google.png')}
                                 />
-
+                                </TouchableOpacity>
                             </View>
 
                             <TouchableOpacity onPress={() => navigation.navigate('SignUpScreen')}><Text style={styles.paragraph}>
