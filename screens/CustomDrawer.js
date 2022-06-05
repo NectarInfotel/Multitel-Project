@@ -28,10 +28,25 @@ const CustomDrawer = (props) => {
    
     useEffect(() => {
         console.log(currentLanguage)
-            changeLanguage(currentLanguage)
+        selectedLangauge()
             getUserDetail()
      
       }, [isDrawerVisible]);
+
+
+      const selectedLangauge=async()=>{
+
+        const token=  await AsyncStorage.getItem("access_token")
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
+    }
      
       const changeLanguage = value => {
         i18n
@@ -42,8 +57,26 @@ const CustomDrawer = (props) => {
 
     const clearAppData = async function() {
         try {
-            const keys = await AsyncStorage.getAllKeys();
-            await AsyncStorage.multiRemove(keys);
+
+            // AsyncStorage.setItem("first_name", res.data.first_name)
+            // AsyncStorage.setItem("profile_img", res.data.profile_img)
+            // AsyncStorage.setItem("access_token", res.data.jwtToken)
+            // AsyncStorage.setItem("email", res.data.email)
+            // AsyncStorage.setItem("userId", res.data.userId + "")
+            // AsyncStorage.setItem("password", pass)
+
+            await AsyncStorage.removeItem("first_name");
+            await AsyncStorage.removeItem("profile_img");
+            await AsyncStorage.removeItem("access_token");
+            await AsyncStorage.removeItem("email");
+            await AsyncStorage.removeItem("userId");
+            await AsyncStorage.removeItem("password");
+            await AsyncStorage.removeItem("product");
+
+            // const keys = await AsyncStorage.getAllKeys();
+            // await AsyncStorage.multiRemove(keys);
+
+
             navigation.closeDrawer()
             signOut()
         } catch (error) {

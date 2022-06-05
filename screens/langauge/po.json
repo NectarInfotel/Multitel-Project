@@ -29,7 +29,7 @@
       "RESEND":"RESENCAÊ-LO",
       "Confirm":"Confirmar",
       "Create New Password":"Criar nova senha",
-      "Your New Password":"Your New Password Must be Different from Previously Used Password.",
+      "Your New Password":"A sua nova palavra-passe deve ser diferente da palavra-passe anteriormente utilizada.",
       "New Password":"Nova senha",
       "Confirm Password":"Confirmar senha",
       "Please enter Confirm Password":"Introduza confirmar senha",
@@ -100,6 +100,8 @@
       "Delete Account":"Eliminar Conta",
       "Save":"Salvar",
       "English":"Inglês",
-      "Portuguese":"Português"
+      "Portuguese":"Português",
+      "Notifications":"Notificações",
+      "Please enter confirm password":"Introduza a senha de confirmação"
     }
   }

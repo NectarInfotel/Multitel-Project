@@ -46,17 +46,6 @@ const SmartPhone = ({ navigation }) =>{
 
       useFocusEffect(
         React.useCallback(() => {
-            changeLanguage(currentLanguage)
-         
-          return () => {
-          };
-        }, [])
-      );
-
-    
-    
-      useFocusEffect(
-        React.useCallback(() => {
             setListCPE([])
             getPromotion()
          
@@ -165,12 +154,24 @@ const SmartPhone = ({ navigation }) =>{
     }
 
 
-    const getPromotion =() => {
+    const getPromotion =async() => {
+
+
+        const token=   AsyncStorage.getItem("access_token")
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
         NetInfo.fetch().then((state) => {
 
             if (state.isConnected) {
            
-                const token=   AsyncStorage.getItem("access_token")
+                
                 console.log("token==="+token)
                 setIsLoading(true)
                 let data={slug:"promotions"}

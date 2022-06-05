@@ -5,6 +5,7 @@ import {
 import { useFocusEffect } from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo'
 import ActivityLoader from './ActivityLoader'
+import AsyncStorage  from '@react-native-async-storage/async-storage';
 import {useTranslation} from 'react-i18next';
 import './langauge/i18n';
 
@@ -27,7 +28,7 @@ const ResetPasswordTwo = ({ navigation, route }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-        changeLanguage(currentLanguage)
+            getSelectedLangauge()
     
           return () => {
           };
@@ -51,12 +52,30 @@ const ResetPasswordTwo = ({ navigation, route }) => {
     }, []);
 
 
+
+    const getSelectedLangauge=async()=>{
+
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
+    }
+
+
     const changeLanguage = value => {
         i18n
           .changeLanguage(value)
           .then(() => setLanguage(value))
           .catch(err => console.log(err));
       };
+
+
+
 
     if (isLoading) {
         return (
@@ -138,7 +157,7 @@ const ResetPasswordTwo = ({ navigation, route }) => {
                         setIsLoading(false)
                         if (res.code == 200) {
 
-                            success(res.message)
+                            setModalVisible(true)
                         } else {
 
                             failure(res.message)
@@ -290,28 +309,29 @@ return (
                                     <View style={[styles.header]}>
                                         <View style={{ paddingVertical: 20, backgroundColor: "#0076B5", alignItems: "center" }} >
 
-                                            <Pressable onPress={() => { setModalVisible(false)}}><Image
+                                            <TouchableOpacity onPress={() => { setModalVisible(false)}}><Image
                                                 source={require('../assest/cross.png')}
                                                 style={styles.iconCross}
-                                            /></Pressable>
+                                            /></TouchableOpacity>
                                             <Text style={[styles.modalText, { color: '#FFFFFF' }]}>
-                                                Resend Verification code code
+                                            {t('Resend Verification Code')}
                                             </Text>
                                         </View>
 
                                         <View style={{ padding: 25 }}>
                                             <Text style={[styles.modalText, { lineHeight: 20, color: "#707070" }]}>
-                                                We are sending verification code to this email address. please recheck it before continue{' '}
+                                            {t('We are sending verification')}{' '}
                                             </Text>
                                             <Pressable
                                                 style={[styles.button, styles.buttonClose, { marginTop: 25, backgroundColor: '#0076B5' }]}
                                                 onPress={() => {
+                                                    // goToForword()
                                                     setModalVisible(!modalVisible)
-                                                    console.log("++++++"+value)
-                                                    navigation.navigate('CreatePassword',{email:email,otp:value})
+                                                   
+                                                    
                                                 }
                                                 }>
-                                                <Text style={styles.textStyle}>Continue</Text>
+                                                <Text style={styles.textStyle}>{t('Continue')}</Text>
                                             </Pressable>
                                         </View>
                                     </View>

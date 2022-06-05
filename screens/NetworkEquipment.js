@@ -64,9 +64,9 @@ const NetworkEquipment = ({ navigation }) =>{
         };
     }, []);
 
-    useEffect(() => {
-        changeLanguage(currentLanguage)
-    }, []);
+    // useEffect(() => {
+    //     changeLanguage(currentLanguage)
+    // }, []);
 
 
     useEffect(() => {
@@ -128,12 +128,21 @@ const NetworkEquipment = ({ navigation }) =>{
 
     }
 
-    const getNetworkEquipment =() => {
+    const getNetworkEquipment =async() => {
+        const token=  await AsyncStorage.getItem("access_token")
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
         NetInfo.fetch().then((state) => {
 
             if (state.isConnected) {
            
-                const token=   AsyncStorage.getItem("access_token")
+              
                 setIsLoading(true)
                 let data={slug:"network-equipments"}
                 fetch("http://50.28.104.48:3003/api/product/getProductsByCategory", {

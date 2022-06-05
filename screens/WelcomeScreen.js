@@ -3,6 +3,7 @@ import {
     KeyboardAvoidingView, Button, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
 import {useTranslation} from 'react-i18next';
+import AsyncStorage  from '@react-native-async-storage/async-storage';
 import './langauge/i18n';
 
 const WelcomeScreen = ({ navigation }) =>{  
@@ -12,8 +13,21 @@ const WelcomeScreen = ({ navigation }) =>{
     const [currentLanguage,setLanguage] =useState('en');
     
     useEffect(()=>{
-        changeLanguage(currentLanguage)
+        getSelectedLangauge()
     },[])
+
+    const getSelectedLangauge=async()=>{
+
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
+    }
 
     const changeLanguage = value => {
         i18n

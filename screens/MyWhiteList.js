@@ -61,14 +61,14 @@ const MyWhiteList = ({ navigation }) =>{
     }, [])
   );
 
-  useFocusEffect(
-    React.useCallback(() => {
-        changeLanguage(currentLanguage)
+//   useFocusEffect(
+//     React.useCallback(() => {
+//         changeLanguage(currentLanguage)
      
-      return () => {
-      };
-    }, [])
-  );
+//       return () => {
+//       };
+//     }, [])
+//   );
 
   useFocusEffect(
     React.useCallback(() => {
@@ -182,6 +182,14 @@ const MyWhiteList = ({ navigation }) =>{
     const getFavList =async() => {
 
         const accessToken = await AsyncStorage.getItem("access_token");
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
         const id = await AsyncStorage.getItem("userId")
          
           

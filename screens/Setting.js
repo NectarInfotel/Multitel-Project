@@ -21,7 +21,8 @@ const Setting = ({ navigation }) => {
     const [confirmPass, setConfirmPass] = useState('');
 
     const [isPassword, setIsPassword] = useState(false)
-
+    const [english, setEnglish] = useState(false)
+    const [portuguese, setPortuguese] = useState(false)
     const [isConfirmPassword, setIsConfirmPassword] = useState(false)
     const [isConfirmPassCorrect, setIsConfirmPassCorrect] = useState(false)
     const [currentLanguage, setLanguage] = useState('po');
@@ -58,7 +59,7 @@ const Setting = ({ navigation }) => {
     }, []);
 
     useEffect(() => {
-        changeLanguage(currentLanguage)
+        selectedLangauge()
     }, []);
 
     const changeLanguage = value => {
@@ -67,6 +68,31 @@ const Setting = ({ navigation }) => {
             .then(() => setLanguage(value))
             .catch(err => console.log(err));
     };
+
+    const selectedLangauge=async()=>{
+
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            
+            changeLanguage(langauge)
+            if(langauge=='en')
+            {
+                setEnglish(true)
+                setPortuguese(false)
+            }else{
+                setPortuguese(true)
+                setEnglish(false)
+            }
+
+        }else{
+            changeLanguage("en") 
+            setEnglish(true)
+            setPortuguese(false)
+        }
+
+    }
 
 
     const handleValidPassword = (val) => {
@@ -315,20 +341,24 @@ const Setting = ({ navigation }) => {
                                 </View>
                             </TouchableOpacity>
                             {isThirdView ? <View>
-                                <TouchableOpacity onPress={()=>{setEnglishLangauge()}}><View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+                                <TouchableOpacity onPress={()=>{setEnglishLangauge()}}><View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 ,paddingVertical:5}}>
 
                                     <Image style={styles.image}
                                         source={require('../assest/english_flag.png')}
-                                    /><Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('English')}</Text>
+                                    /><Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('English')}</Text>{english&&<Image style={styles.image}
+                                    source={require('../assest/select_langauge.png')}
+                                />}
 
 
 
                                 </View></TouchableOpacity>
-                                <TouchableOpacity onPress={()=>{setPortugueseLangauge()}}><View style={{ flexDirection: "row", alignItems: "center", marginTop: 20 }}>
+                                <TouchableOpacity onPress={()=>{setPortugueseLangauge()}}><View style={{ flexDirection: "row", alignItems: "center", marginTop: 20,paddingVertical:5 }}>
 
                                     <Image style={styles.image}
                                         source={require('../assest/portuguese_flag.png')}
-                                    /><Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('Portuguese')}</Text>
+                                    /><Text style={{ color: "#707070", fontSize: 12, fontWeight: "normal", flex: 1 }}>{t('Portuguese')}</Text>{portuguese&&<Image style={styles.image}
+                                    source={require('../assest/select_langauge.png')}
+                                />}
 
 
 

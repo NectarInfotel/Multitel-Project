@@ -1,9 +1,12 @@
-import React, { Component } from 'react';
+import React, {useState, useEffect } from 'react';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ActionBar from './ActionBar';
 import {
     KeyboardAvoidingView, SafeAreaView, Button, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
+import AsyncStorage  from '@react-native-async-storage/async-storage';
+import {useTranslation} from 'react-i18next';
+import './langauge/i18n';
 
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -46,147 +49,36 @@ const DATA = [
 
 
 
-export default class NotificationScreen extends Component {
 
+const NotificationScreen = ({ navigation }) =>{
 
-    constructor(props) {
-        super(props);
-        // helper = new Helper()
+    const { t, i18n } = useTranslation();
 
-        //  backgroundStyle = {
-        //   backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-        // };
+    useEffect(() => {
+        getSelectedLangauge()
+    }, []);
 
-        this.state = ({
-            radioButtonsData: [{
-                id: '1', // acts as primary key, should be unique and non-empty string
-                label: 'Male',
-                value: 'Male',
-                labelStyle: styles.radioLabel
-            }, {
-                id: '2',
-                label: 'Female',
-                value: 'Female',
-                labelStyle: styles.radioLabel
-            },
-            {
-                id: '3',
-                label: 'Other',
-                value: 'Other',
-                labelStyle: styles.radioLabel
-            }
-            ]
-        })
-    }
+    const getSelectedLangauge=async()=>{
 
-    componentDidMount = async () => {
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
     }
 
 
+    const changeLanguage = value => {
+        i18n
+          .changeLanguage(value)
+          .then(() => setLanguage(value))
+          .catch(err => console.log(err));
+      };
 
-    // initLogin = async () => {
-    //     if (!this.state.full_name) {
-    //         // helper.warningToast('Please enter the full name')
-    //         return;
-    //     }
-    //     if (!this.state.phone) {
-    //         helper.warningToast('Please enter the mobile number')
-    //         return;
-    //     }
-    //     if (!this.state.email) {
-    //         helper.warningToast('Please enter the email')
-    //         return;
-    //     }
-    //     var mailFormat = config.emailPattern;
-    //     if (!mailFormat.test(this.state.email)) {
-    //         helper.warningToast('Please enter the valid email')
-    //         return;
-    //     }
-    //     if (!this.state.password) {
-    //         helper.warningToast('Please enter the valid password')
-    //         return;
-    //     }
-    //     if (this.state.password != this.state.confirm_password) {
-    //         helper.warningToast('Please make sure both passwords are same')
-    //         return;
-    //     }
-    //     // if (!this.state.isIAgree) {
-    //     //     helper.warningToast('Please agree the condition.')
-    //     //     return;
-    //     // }
-    //             console.log('signup_ body ', {
-    //             "email": this.state.email,
-    //             "password": this.state.password,
-    //             "full_name": this.state.full_name,
-    //             "phone": this.state.country_code + this.state.phone
-    //         });
-
-    //     await axios({
-    //         method: 'post',
-    //         url: config.Base_Url + config.signup_url,
-    //         data: {
-    //             "email": this.state.email,
-    //             "password": this.state.password,
-    //             "full_name": this.state.full_name,
-    //             "phone": this.state.country_code + this.state.phone
-    //         }
-    //     })
-    //         .then(async (response) => {
-    //             // handle success
-    //             console.log('signup_url ', response.data);
-    //             var status = response.data.statuscode;
-    //             if (status == 1) {
-    //                 // closeOverlay()
-    //                 var token = response.data.token;
-    //                 var user = response.data.data;
-    //                 await helper.storeData('token', token)
-    //                 await helper.storeData('user', JSON.stringify(user))
-    //                 helper.successToast(response.data.message)
-    //                 this.props.navigation.navigate('Home')
-    //             } else {
-    //             console.log('catch else ',response);
-    //                 helper.errorToast(response.data.message)
-    //             }
-    //             // if (status == 1) {
-    //             //     // closeOverlay()
-    //             //     helper.successToast(response.data.message)
-    //             //     this.props.navigation.navigate('OTP')
-    //             // } else {
-    //             //     helper.errorToast(response.data.message)
-    //             // }
-    //         })
-    //         .catch((error) => {
-    //             // handle error
-    //             console.log('catch error ',error);
-    //             helper.errorToast(config.catcherror)
-    //         })
-    // }
-
-    _onIAgree = () => {
-        this.setState({
-            isIAgree: !this.state.isIAgree,
-        });
-    };
-
-
-
-    _selectLanguage = async (item) => {
-        this.RBSheet.close();
-    }
-
-
-    render() {
-
-        const { navigation } = this.props;
-
-       
-
-        // navigation.setOptions({tabBarStyle: {display: 'none'}});
-        // React.useLayoutEffect(() => {
-            //  alert(index)
-                
-              
-        //   }, [navigation,route]);
 
         const CardItem = ({ item }) => {
 
@@ -245,7 +137,7 @@ export default class NotificationScreen extends Component {
                         color: '#1D3557',
                         marginStart:10,
                         flex:1
-                    }} >Notifications</Text>
+                    }} >{t('Notifications')}</Text>
                   
                 </View>
                 <FlatList style={{marginTop:10,backgroundColor:"#FFFFFF"}}
@@ -260,7 +152,7 @@ export default class NotificationScreen extends Component {
     }
 
 
-}
+export default NotificationScreen
 
 const styles = StyleSheet.create({
     container: {

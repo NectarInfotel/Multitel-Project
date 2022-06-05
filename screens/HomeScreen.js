@@ -70,11 +70,25 @@ const HomeScreen = ({ navigation }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-            changeLanguage(currentLanguage)
+            selectedLangauge()
             return () => {
             };
         }, [])
     );
+
+    const selectedLangauge=async()=>{
+
+        const token=  await AsyncStorage.getItem("access_token")
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
+    }
 
 
     useFocusEffect(

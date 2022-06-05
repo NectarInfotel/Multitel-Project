@@ -6,6 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 // import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import NetInfo from '@react-native-community/netinfo'
+import AsyncStorage  from '@react-native-async-storage/async-storage';
 import ActivityLoader from './ActivityLoader'
 import {useTranslation} from 'react-i18next';
 import './langauge/i18n';
@@ -41,7 +42,7 @@ const CreatePassword = ({ navigation, route }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-        changeLanguage(currentLanguage)
+            getSelectedLangauge()
     
           return () => {
           };
@@ -63,6 +64,21 @@ const CreatePassword = ({ navigation, route }) => {
             unsubscribe();
         };
     }, []);
+
+
+
+    const getSelectedLangauge=async()=>{
+
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
+    }
 
 
     const changeLanguage = value => {
@@ -229,10 +245,10 @@ const CreatePassword = ({ navigation, route }) => {
 
                     <Text style={styles.subHeaderText}>{t('New Password')}</Text>
 
-
+                    
                     <View style={styles.textBackground}>
                         <TextInput secureTextEntry={!passwordVisibility} style={styles.text}
-                            placeholder="Please enter password"
+                            placeholder={t('Please enter Password')}
                             value={password}
                             onChangeText={(text) => { setPassword(text) }}
                         ></TextInput>
@@ -254,10 +270,10 @@ const CreatePassword = ({ navigation, route }) => {
 
                     <Text style={styles.subHeaderText}>{t('Confirm Password')}</Text>
 
-
+                    
                     <View style={styles.textBackground}>
                         <TextInput secureTextEntry={true} style={styles.text}
-                            placeholder="Please enter confirm password"
+                            placeholder={t('Please enter confirm password')}
                             value={confirmPass}
                             onChangeText={(text) => { setConfirmPass(text) }}
                         ></TextInput>

@@ -53,9 +53,9 @@ const CPE = ({ navigation }) =>{
         };
     }, []);
 
-    useEffect(() => {
-        changeLanguage(currentLanguage)
-    }, []);
+    // useEffect(() => {
+    //     changeLanguage(currentLanguage)
+    // }, []);
 
     useEffect(() => {
         setListCPE([])
@@ -148,12 +148,23 @@ const CPE = ({ navigation }) =>{
 
     }
 
-    const getCpe =() => {
+    const getCpe =async() => {
+
+        const token=  await AsyncStorage.getItem("access_token")
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
         NetInfo.fetch().then((state) => {
 
             if (state.isConnected) {
            
-                const token=   AsyncStorage.getItem("access_token")
+               
                 console.log("token==="+token)
                 setIsLoading(true)
                 // let data={userName:'kindal@getnada.com',password:'Shubh@1992'}

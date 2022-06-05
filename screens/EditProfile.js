@@ -301,7 +301,6 @@ const failure = (msg) => {
     useFocusEffect(
         React.useCallback(() => {
            
-            getSelectedLangauge()
             setGender('')
             setImageUrl('')
             setRadioButtonsData([{

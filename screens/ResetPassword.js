@@ -5,6 +5,7 @@ import {
 import NetInfo from '@react-native-community/netinfo'
 import ActivityLoader from './ActivityLoader'
 import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage  from '@react-native-async-storage/async-storage';
 import {useTranslation} from 'react-i18next';
 import './langauge/i18n';
 
@@ -30,7 +31,7 @@ const ResetPassword = ({ navigation }) =>  {
     
     useFocusEffect(
         React.useCallback(() => {
-        changeLanguage(currentLanguage)
+            getSelectedLangauge()
     
           return () => {
           };
@@ -53,6 +54,21 @@ const ResetPassword = ({ navigation }) =>  {
             unsubscribe();
         };
     }, []);
+
+
+
+    const getSelectedLangauge=async()=>{
+
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
+    }
 
     const changeLanguage = value => {
         i18n
@@ -154,10 +170,10 @@ const ResetPassword = ({ navigation }) =>  {
 
     const success = (msg) => {
 
-        setModalVisible(true)
-        // Alert.alert("Success", msg, [
-        //     { text: 'Okay', onPress: () => {navigation.navigate('ResetPasswordTwo',{email:cloneEmail})} }
-        // ])
+        // setModalVisible(true)
+        Alert.alert("Success", msg, [
+            { text: 'Okay', onPress: () => {navigation.navigate('ResetPasswordTwo',{email:emails})} }
+        ])
     }
 
     const goToForword=()=>{
@@ -203,10 +219,10 @@ const ResetPassword = ({ navigation }) =>  {
                         </Text>
 
 
-
+                        
                         <View style={styles.textBackground}>
                             <TextInput style={styles.text}
-                             placeholder="Please enter email"
+                             placeholder={t('Please enter email')}
                              value={emails}
                              autoCapitalize='none'
                              onChangeText={text => setEmail(text)}

@@ -4,6 +4,7 @@ import {
     KeyboardAvoidingView, SafeAreaView,Platform, Button, View, Image, StatusBar, StyleSheet, Alert, Text, ActivityIndicator, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
 import CheckBox from '@react-native-community/checkbox';
+import AsyncStorage  from '@react-native-async-storage/async-storage';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
@@ -57,7 +58,7 @@ const SignUpScreen = ({ navigation }) => {
     
     useFocusEffect(
         React.useCallback(() => {
-        changeLanguage(currentLanguage)
+            getSelectedLangauge()
     
           return () => {
           };
@@ -79,6 +80,20 @@ const SignUpScreen = ({ navigation }) => {
             unsubscribe();
         };
     }, []);
+
+
+    const getSelectedLangauge=async()=>{
+
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
+    }
 
     const changeLanguage = value => {
         i18n
@@ -253,7 +268,7 @@ const SignUpScreen = ({ navigation }) => {
 
                             <View style={styles.textBackground}>
                                 <TextInput style={styles.text}
-                                    placeholder="Please enter full name"
+                                    placeholder={t('Please enter full name')}
                                     value={name}
                                     onChangeText={text => setName(text)}
                                 ></TextInput>
@@ -270,7 +285,7 @@ const SignUpScreen = ({ navigation }) => {
 
 
                             <View style={styles.textBackground}>
-                                <TextInput style={styles.text} placeholder="Please enter email"
+                                <TextInput style={styles.text} placeholder={t('Please enter email')}
                                     value={emails}
                                     autoCapitalize='none'
                                     onChangeText={text => setEmail(text)}></TextInput>
@@ -287,7 +302,7 @@ const SignUpScreen = ({ navigation }) => {
 
 
                             <View style={styles.textBackground}>
-                                <TextInput secureTextEntry={true} style={styles.text} placeholder="Please enter password"
+                                <TextInput secureTextEntry={true} style={styles.text} placeholder={t('Please enter Password')}
                                     value={pass}
                                     onChangeText={text => setPass(text)}></TextInput>
 
@@ -303,7 +318,7 @@ const SignUpScreen = ({ navigation }) => {
 
 
                             <View style={styles.textBackground}>
-                                <TextInput secureTextEntry={true} style={styles.text} placeholder="Please enter confirm password"
+                                <TextInput secureTextEntry={true} style={styles.text} placeholder={t('Please enter Confirm Password')}
                                     value={passCon}
                                     onChangeText={text => setPassCon(text)}></TextInput>
 

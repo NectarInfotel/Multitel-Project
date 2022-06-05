@@ -4,6 +4,7 @@ import ActionBar from './ActionBar';
 import {
     KeyboardAvoidingView, Platform, SafeAreaView, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
 import CheckBox from '@react-native-community/checkbox';
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
@@ -60,20 +61,23 @@ const EditProfileTwo = ({ navigation, route }) => {
         };
     }, []);
 
+    useFocusEffect(
+        React.useCallback(() => {
+            setIsLoading(true)
+            getResponseUser()
+         
+          return () => {
+          };
+        }, [])
+      );
+    
+
     // useEffect(() => {
-    //     changeLanguage(currentLanguage)
+      
     //     return () => {
 
     //     };
     // }, []);
-
-    useEffect(() => {
-        setIsLoading(true)
-        getResponseUser()
-        return () => {
-
-        };
-    }, []);
 
 
 
@@ -364,10 +368,10 @@ const EditProfileTwo = ({ navigation, route }) => {
                                 marginStart: 10,
                                 flex: 1
                             }} >{t('Edit Profile')}</Text>
-                            <Image
+                            <TouchableOpacity onPress={() => { navigation.navigate("Settings") }}><Image
                                 source={require('../assest/setting_icon.png')}
                                 style={{ height: 15, width: 15, marginStart: 20, marginEnd: 25 }}
-                            />
+                            /></TouchableOpacity>
                         </View>
                         <View style={styles.parentView}>
                             <ScrollView>

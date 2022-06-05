@@ -59,9 +59,9 @@ const ProductService = ({ navigation }) =>{
         };
     }, []);
 
-    useEffect(() => {
-        changeLanguage(currentLanguage)
-    }, []);
+    // useEffect(() => {
+    //     changeLanguage(currentLanguage)
+    // }, []);
 
     useEffect(() => {
         getProductService()
@@ -136,12 +136,24 @@ const ProductService = ({ navigation }) =>{
 
     }
 
-    const getProductService =() => {
+    const getProductService =async() => {
+
+        const token= await  AsyncStorage.getItem("access_token")
+            const langauge = await AsyncStorage.getItem("langauge");
+              
+            if(langauge!=null)
+            {
+                changeLanguage(langauge)
+            }else{
+                changeLanguage("en") 
+            }
         NetInfo.fetch().then((state) => {
+
+            
 
             if (state.isConnected) {
            
-                const token=   AsyncStorage.getItem("access_token")
+              
                 setIsLoading(true)
                 // let data={userName:'kindal@getnada.com',password:'Shubh@1992'}
                 let data={slug:"other-productsservices-1"}
