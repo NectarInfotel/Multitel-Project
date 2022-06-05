@@ -78,9 +78,9 @@ const MyCartScreen = ({ navigation }) => {
         };
     }, []);
 
-    useEffect(() => {
-        changeLanguage(currentLanguage)
-    }, [])
+    // useEffect(() => {
+    //     changeLanguage(currentLanguage)
+    // }, [])
 
     useEffect(() => {
         setListCart([])
@@ -197,6 +197,15 @@ const MyCartScreen = ({ navigation }) => {
 
         const accessToken = await AsyncStorage.getItem("access_token");
         const id = await AsyncStorage.getItem("userId")
+
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
 
         console.log("token===" + accessToken)
         NetInfo.fetch().then((state) => {

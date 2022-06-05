@@ -47,7 +47,7 @@ const SignIn = ({ navigation }) => {
     
     useFocusEffect(
         React.useCallback(() => {
-        changeLanguage(currentLanguage)
+            getSelectedLangauge()
     
           return () => {
           };
@@ -77,6 +77,21 @@ const SignIn = ({ navigation }) => {
             unsubscribe();
         };
     }, []);
+
+
+    const getSelectedLangauge=async()=>{
+
+        const langauge = await AsyncStorage.getItem("langauge");
+          
+        if(langauge!=null)
+        {
+            changeLanguage(langauge)
+        }else{
+            changeLanguage("en") 
+        }
+
+    }
+
 
     const _isSignedIn = async () => { console.log("hi")
        const isSignedIn = await GoogleSignin.isSignedIn();
@@ -300,7 +315,7 @@ const SignIn = ({ navigation }) => {
 
                             <View style={styles.textBackground}>
                                 <TextInput style={styles.text}
-                                    placeholder="Please enter email"
+                                    placeholder={t('Please enter email')}
                                     value={emails}
                                     autoCapitalize='none'
                                     onChangeText={text => setEmail(text)}
@@ -316,7 +331,7 @@ const SignIn = ({ navigation }) => {
 
 
                             <View style={styles.textBackground}>
-                                <TextInput secureTextEntry={true} style={styles.text} placeholder="Please enter password"
+                                <TextInput secureTextEntry={true} style={styles.text} placeholder={t('Please enter Password')}
                                     value={pass}
                                     onChangeText={text => setPass(text)}></TextInput>
 
