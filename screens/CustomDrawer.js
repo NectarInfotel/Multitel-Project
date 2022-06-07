@@ -11,6 +11,7 @@ import {useTranslation} from 'react-i18next';
 import './langauge/i18n';
 import { AuthContext } from './component/context';
 
+
 const CustomDrawer = (props) => {
     const { navigation } = props
     const { signOut } = React.useContext(AuthContext);
@@ -20,6 +21,7 @@ const CustomDrawer = (props) => {
     const [image,setImage]=useState("")
     const [imageUrl, setImageUrl] = useState('')
     const [imageType, setImageType] = useState('')
+    const [isWhoWe,setIsWhoWe]=useState(false)
     const [currentLanguage, setLanguage] = useState('en');
     const { t, i18n } = useTranslation();
     const isDrawerVisible =  useDrawerStatus();
@@ -57,13 +59,6 @@ const CustomDrawer = (props) => {
 
     const clearAppData = async function() {
         try {
-
-            // AsyncStorage.setItem("first_name", res.data.first_name)
-            // AsyncStorage.setItem("profile_img", res.data.profile_img)
-            // AsyncStorage.setItem("access_token", res.data.jwtToken)
-            // AsyncStorage.setItem("email", res.data.email)
-            // AsyncStorage.setItem("userId", res.data.userId + "")
-            // AsyncStorage.setItem("password", pass)
 
             await AsyncStorage.removeItem("first_name");
             await AsyncStorage.removeItem("profile_img");
@@ -288,10 +283,7 @@ const CustomDrawer = (props) => {
 
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <Image
-                             source={{
-                                uri: 
-                                `http://50.28.104.48:3003/images/${image}`,
-                              }}
+                         source={ image == null ?require('../assest/drawer_user.png') :{ uri: `http://50.28.104.48:3003/images/${image}` }}
                             //borderRadius will help to make Round Shape
                             style={{
                                 width: 80,
@@ -377,6 +369,32 @@ const CustomDrawer = (props) => {
                         />
                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Notification')}</Text>
                     </View></TouchableOpacity>
+
+                    <View style={{height:1,backgroundColor:"#EEF3F7",marginTop:5}}></View>
+                    <View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
+                    {isWhoWe ? <Image style={styles.image}
+                                            source={require('../assest/question.png')}
+                                        /> : <Image style={styles.image}
+                                            source={require('../assest/digitotal.png')} />}
+                        <TouchableOpacity onPress={() => { navigation.navigate("Like",{screen:"ManagementMessage"})}}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20}}>{t('Who We Are')}</Text></TouchableOpacity><TouchableOpacity onPress={() => { setIsWhoWe(!isWhoWe) }}><View style={{marginStart:10}}>
+                        {isWhoWe ? <Image style={{ width: 10, height: 10 }}
+                                            source={require('../assest/arrow-up.png')}
+                                        /> : <Image style={{ width: 10, height: 10 }}
+                                            source={require('../assest/arrow-down.png')} />}
+                        </View></TouchableOpacity>
+                    </View>
+                    {
+                     isWhoWe&&(<View style={{marginStart:50}}>
+                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Management Message')}</Text>
+                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Mission and Values')}</Text>
+                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('News')}</Text>
+                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Recruitment')}</Text>
+                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Sustainability')}</Text>
+                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Multitel Pride')}</Text>
+                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Companys Social Bodies')}</Text>
+                         
+                         </View>)
+                    }
 
                 </View>
 

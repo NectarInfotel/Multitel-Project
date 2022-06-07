@@ -3,7 +3,7 @@ import 'react-native-gesture-handler';
 import React, { useState, getFocusedRouteNameFromRoute } from 'react';
 
 import {
-  StyleSheet, View, Image,StatusBar
+  StyleSheet, View, Image, StatusBar
 } from "react-native";
 
 import
@@ -40,6 +40,7 @@ import NotificationScreen from './screens/NotificationScreen'
 import MyCartScreen from './screens/MyCartScreen'
 import Setting from './screens/Setting'
 import MyWhiteList from './screens/MyWhiteList'
+import ManagementMessage from './screens/ManagementMessage'
 import ActionBar from './screens/ActionBar'
 import Home from './screens/Home'
 import Category from './screens/Category'
@@ -316,16 +317,16 @@ function TabBottomNavigation() {
 //   );
 // }
 
-function LoginStack({state}) {
+function LoginStack({ state }) {
   return (
     <Stack.Navigator
     >
 
-       {state.isLoading &&(<Stack.Screen
+      {state.isLoading && (<Stack.Screen
         name="Splash"
         component={Splash}
         options={{ headerShown: false }} />)}
-    
+
       <Stack.Screen
         name="SignIn"
         component={SignIn}
@@ -437,6 +438,11 @@ function LikeStack() {
       <Stack.Screen
         name="MyWhiteList"
         component={MyWhiteList}
+      />
+
+      <Stack.Screen
+        name="ManagementMessage"
+        component={ManagementMessage}
       />
 
 
@@ -552,7 +558,7 @@ const theme = {
     ...DefaultTheme.colors,
     primary: '#0076B5',
     backgroundColor: '#fff',
- 
+
   },
 };
 
@@ -579,14 +585,14 @@ function App() {
             ...prevState,
             isSignout: false,
             userToken: action.token,
-            isLoading:true,
+            isLoading: true,
           };
         case 'SIGN_OUT':
           return {
             ...prevState,
             isSignout: true,
             userToken: null,
-            isLoading:false,
+            isLoading: false,
           };
       }
     },
@@ -626,17 +632,17 @@ function App() {
   // });
   return (
     <>
-    <AuthContext.Provider value={authContext}>
-    
-      <NavigationContainer>
-        {state.userToken ?
-          <NavigationDrawer />
+      <AuthContext.Provider value={authContext}>
 
-          : <LoginStack state={state}/>
-        }
-      </NavigationContainer>
-    </AuthContext.Provider>
-    
+        <NavigationContainer>
+          {state.userToken ?
+            <NavigationDrawer />
+
+            : <LoginStack state={state} />
+          }
+        </NavigationContainer>
+      </AuthContext.Provider>
+
     </>
   );
 

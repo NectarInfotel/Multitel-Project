@@ -94,6 +94,7 @@ const EditProfile = ({ navigation }) => {
 
     const updateForm=(res)=>{
 
+    
     const data=res.data
     setName(data.first_name)
     const dateOfBirth=data.dob_date
@@ -550,7 +551,7 @@ const failure = (msg) => {
                         <View style={styles.childView}>
                             <View style={{ alignItems: "center", justifyContent: "center", marginTop: 30 }}>
                                 <Image
-                                    source={{ uri: imageUrl }}
+                                    source={ imageUrl==''?require('../assest/drawer_user.png') :{ uri: imageUrl }}
                                     //borderRadius will help to make Round Shape
                                     style={{
                                         width: 100,
