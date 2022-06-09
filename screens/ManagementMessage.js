@@ -181,17 +181,17 @@ const ManagementMessage = ({ navigation }) => {
             <SafeAreaView style={styles.container}>
                 <View style={{ backgroundColor: "#fff", flex: 1 }}>
                     <View style={{ flexDirection: "row", width: "100%", backgroundColor: "#FAFAFA", height: 60, alignItems: "center" }}>
-                        <TouchableOpacity onPress={() => { navigation.openDrawer() }}><Image
-                            source={require('../assest/menu.png')}
-                            style={{ height: 15, width: 15, marginStart: 20 }}
-                        /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => {navigation.goBack() }}><Image
+                        source={require('../assest/left_arrow.png')}
+                        style={{ height: 15, width: 15,marginStart:20 }}
+                    /></TouchableOpacity>
 
 
                         <Image
                             source={require('../assest/header_ic.png')}
                             style={{ height: 30, width: 100, marginStart: 20 }}
                         />
-                        <View style={{ flex: 1 }}></View>
+                        {/* <View style={{ flex: 1 }}></View>
                         <Image
                             source={require('../assest/sreach.png')}
                             style={{ height: 35, width: 35, marginEnd: 15 }}
@@ -204,7 +204,7 @@ const ManagementMessage = ({ navigation }) => {
                         <TouchableOpacity onPress={() => { navigation.navigate("MyCartScreen") }}><Image
                             source={require('../assest/buged.png')}
                             style={{ height: 35, width: 35, marginEnd: 15 }}
-                        /></TouchableOpacity>
+                        /></TouchableOpacity> */}
                     </View>
                     {emptyList ?
                         <>

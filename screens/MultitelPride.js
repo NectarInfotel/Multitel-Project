@@ -4,7 +4,7 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import ActionBar from './ActionBar';
 import MyWhiteCart from './MyWhiteCart';
 import {
-    KeyboardAvoidingView, SafeAreaView, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
+    KeyboardAvoidingView, SafeAreaView, LayoutAnimation, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
 
 import ActivityLoader from './ActivityLoader'
@@ -13,10 +13,75 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import './langauge/i18n';
 
+
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
-const MissionValues = ({ navigation }) => {
+
+const ExpandableComponent = ({ item, onClickFunction }) => {
+    const numColumns=2
+    const [layoutHeight, setLayoutHeight] = useState(0)
+    const [listImage, setListImage] = useState([])
+
+    useEffect(() => {
+
+        if (item.isExpanded) {
+            setLayoutHeight(null)
+        } else {
+            setLayoutHeight(0)
+        }
+
+    }, [item.isExpanded])
+
+    const formatData = (dataList, numColumns) => {
+        const totalRows = Math.floor(dataList.length / numColumns)
+        let totalLastRow = dataList.length - (totalRows * numColumns)
+
+        while (totalLastRow !== 0 && totalLastRow !== numColumns) {
+            dataList.push({
+                id: "blank",
+                name: "Zahan",
+                empty: true,
+                image: 'https://www.apple.com/newsroom/images/product/os/ios/standard/Apple_ios14-app-library-screen_06222020_inline.jpg.large.jpg'
+            })
+            totalLastRow++
+        }
+        return dataList
+    }
+
+    return (
+        <View>
+            <TouchableOpacity style={styles.item}
+                onPress={onClickFunction}>
+                <View style={{
+                    paddingStart: 15, paddingEnd: 10,
+                    paddingVertical: 10, flexDirection: "row", alignItems: "center"
+                }}>
+                    <Text style={styles.itemText}>
+                        {item.title}
+                    </Text>
+                    <Image style={styles.image}
+                        source={require('../assest/plus.png')}
+                    />
+                </View>
+            </TouchableOpacity>
+            <View style={{ height: layoutHeight, overflow: "hidden" }}>
+
+                <View style={{ paddingHorizontal: 30, backgroundColor: "#fff" }} >
+                    <FlatList style={{ marginTop: 10 }}
+                        data={formatData(listImage, numColumns)}
+                        numColumns={2}
+                        renderItem={({ item }) => CPECart(item)}
+                        keyExtractor={(item) => item.uid}
+                    />
+                </View>
+            </View>
+
+        </View>
+    )
+}
+
+const MultitelPride = ({ navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
@@ -31,6 +96,10 @@ const MissionValues = ({ navigation }) => {
     const [descriptionTwo, setDescriptionTwo] = useState('');
     const [descriptionThree, setDescriptionThree] = useState('');
     const [messageTag, setMessageTag] = useState("");
+    const [isCultural, setIsCultural] = useState(false);
+    const [isIndicator, setIsIndicator] = useState(false);
+    const [listSource, setListSource] = useState([]);
+    const [multiSelect, setMultiselect] = useState(false);
 
     const { t, i18n } = useTranslation();
 
@@ -139,8 +208,8 @@ const MissionValues = ({ navigation }) => {
             if (state.isConnected) {
 
                 setIsLoading(true)
-                let data = { slug: "sustainability" }
-                fetch("http://50.28.104.48:3003/api/msgMissionSus/getMsgMissionSusBySlug", {
+                let data = { slug: "social-and-cultural-investment" }
+                fetch("http://50.28.104.48:3003/api/sustainability/getSustainabilityByCategory", {
                     method: 'post',
                     headers: {
                         'Accept': 'application/json',
@@ -153,23 +222,13 @@ const MissionValues = ({ navigation }) => {
                     result.json().then((res) => {
                         setIsLoading(false)
                         if (res.code == 200) {
-
-                            console.log(JSON.stringify(res.data))
-
-                            const url = `http://50.28.104.48:3003/images/${res.data.image}`
-
-                            setImageUrl(url)
-                            setName(res.data.name)
-                            setDescription(res.data.description)
-                            setSubHeading(res.data.sub_heading)
-                            setSubHeadingTwo(res.data.sub_heading_2)
-                            setSubHeadingThree(res.data.sub_heading_3)
-                            setDescriptionTwo(res.data.description_2)
-                            setDescriptionThree(res.data.description_3)
-                            setMessageTag(res.data.message_tags)
-
                             setEmptyList(true)
+                            const arr = res.data.sustainabilities
+                            const newArr = arr.map(item => {
+                                return { ...item, isExpanded: false }
+                            })
 
+                            setListSource(newArr)
                         } else {
                             setEmptyList(false)
                             failure(res.massage)
@@ -189,6 +248,24 @@ const MissionValues = ({ navigation }) => {
 
     }
 
+    const updateLayout = (index) => {
+
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        const array = [...listSource]
+
+        if (multiSelect) {
+            array[index]['isExpanded'] = !array[index]['isExpanded']
+        } else {
+            array.map((value, placeindex) =>
+                placeindex === index
+                    ? (array[placeindex]['isExpanded']) = !array[placeindex]['isExpanded']
+                    : (array[placeindex]['isExpanded']) = false
+            );
+        }
+
+        setListSource(array)
+    }
+
 
     return (
         <>
@@ -196,10 +273,10 @@ const MissionValues = ({ navigation }) => {
             <SafeAreaView style={styles.container}>
                 <View style={{ backgroundColor: "#fff", flex: 1 }}>
                     <View style={{ flexDirection: "row", width: "100%", backgroundColor: "#FAFAFA", height: 60, alignItems: "center" }}>
-                    <TouchableOpacity onPress={() => {navigation.goBack() }}><Image
-                        source={require('../assest/left_arrow.png')}
-                        style={{ height: 15, width: 15,marginStart:20 }}
-                    /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => { navigation.goBack() }}><Image
+                            source={require('../assest/left_arrow.png')}
+                            style={{ height: 15, width: 15, marginStart: 20 }}
+                        /></TouchableOpacity>
 
 
                         <Image
@@ -223,45 +300,20 @@ const MissionValues = ({ navigation }) => {
                     </View>
                     {emptyList ?
                         <>
-                            <ScrollView>
-                                <View style={{ paddingHorizontal: 20,marginBottom:30 }}>
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{t('Mission and Values')}</Text>
-                                    <Image
+                            <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 30, marginHorizontal: 20 }}>{t('Multitel Pride')}</Text>
+                            <ScrollView style={{ backgroundColor: "#fff", marginTop: 15 }}>
 
-                                        resizeMode='stretch'
-                                        style={[styles.wrap, { marginTop: 10 }]}
-                                        source={{ uri: imageUrl }}
-                                    />
-
-                                    <Text style={{ color: "#707070", fontSize: 12, marginTop: 12 }}>{description}</Text>
-
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{subHeading}</Text>
-
-                                    {
-                                        messageTag.map((e, index) =>
-                                            <View style={{ flexDirection: 'row', paddingVertical: 1, marginTop: 10, alignItems: "center" }}>
-
-                                                <View style={{
-                                                    width: 5,
-                                                    height: 5,
-                                                    borderRadius: 10 / 2,
-                                                    backgroundColor: '#098DD4'
-                                                }} />
-                                                <Text style={{ color: "#707070", fontSize: 12, marginStart: 10 }}>{e.name}</Text>
-
-                                            </View>
-                                        )
-                                    }
-
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 12 }}>{subHeadingTwo}</Text>
-
-                                    <Text style={{ color: "#707070", fontSize: 12, marginTop: 12 }}>{descriptionTwo}</Text>
-
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 12 }}>{subHeadingThree}</Text>
-
-                                    <Text style={{ color: "#707070", fontSize: 12, marginTop: 12 }}>{descriptionThree}</Text>
-
-                                </View>
+                                {
+                                    listSource.map((item, key) => (
+                                        <ExpandableComponent
+                                            item={item}
+                                            key={item.category_name}
+                                            onClickFunction={() => {
+                                                updateLayout(key)
+                                            }}
+                                        />
+                                    ))
+                                }
                             </ScrollView>
 
 
@@ -291,7 +343,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        justifyContent: 'center',
         backgroundColor: 'white',
     },
     radioLabel: {
@@ -300,6 +351,42 @@ const styles = StyleSheet.create({
 
 
     },
+    selectedButton: {
+        flex: 1,
+        padding: 5,
+        borderRadius: 5,
+        borderColor: "#098DD4",
+        backgroundColor: '#098DD4',
+        color: "#fff",
+        borderWidth: 1,
+        textAlign: "center",
+        fontSize: 12
+
+
+    },
+    unSelectedButton: {
+        flex: 1,
+        padding: 5,
+        borderRadius: 5,
+        borderColor: "#00000073",
+        backgroundColor: '#fff',
+        color: "#676767",
+        borderWidth: 1,
+        textAlign: "center",
+        fontSize: 12
+    },
+    selectedText: {
+        color: "#fff",
+        fontSize: 12,
+        textAlign: "center"
+    },
+    unSelectedText: {
+        color: "#676767",
+        fontSize: 12,
+        textAlign: "center"
+    },
+
+
     textBackground: {
 
         backgroundColor: '#FFFFFF',
@@ -366,8 +453,6 @@ const styles = StyleSheet.create({
     image: {
         height: 20,
         width: 20,
-        marginEnd: 15,
-        justifyContent: "flex-end"
     },
     socialImage: {
         height: 60,
@@ -425,7 +510,32 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         height: '50%',
         paddingHorizontal: 30
+    },
+    item: {
+        backgroundColor: '#EEF3F7',
+        marginTop: 10,
+        marginHorizontal: 20
+    },
+    itemText: {
+        fontSize: 12,
+        flex: 1,
+        fontWeight: "bold",
+        color: "#1D3557"
+    },
+    content: {
+        paddingRight: 10,
+        paddingEnd: 10,
+        backgroundColor: '#fff'
+    },
+    text: {
+        fontSize: 16,
+        padding: 10
+    },
+    separator: {
+        height: 0.5,
+        backgroundColor: "#c8c8c8",
+        width: "100%"
     }
 });
 
-export default MissionValues
+export default MultitelPride

@@ -12,11 +12,12 @@ import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import './langauge/i18n';
+import { color } from 'react-native-reanimated';
 
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
-const MissionValues = ({ navigation }) => {
+const Sustainability = ({ navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
@@ -31,6 +32,8 @@ const MissionValues = ({ navigation }) => {
     const [descriptionTwo, setDescriptionTwo] = useState('');
     const [descriptionThree, setDescriptionThree] = useState('');
     const [messageTag, setMessageTag] = useState("");
+    const [isCultural, setIsCultural] = useState(false);
+    const [isIndicator, setIsIndicator] = useState(false);
 
     const { t, i18n } = useTranslation();
 
@@ -56,7 +59,8 @@ const MissionValues = ({ navigation }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-
+            setIsCultural(false)
+            setIsIndicator(false)
             getManagementList()
 
             return () => {
@@ -139,7 +143,7 @@ const MissionValues = ({ navigation }) => {
             if (state.isConnected) {
 
                 setIsLoading(true)
-                let data = { slug: "sustainability" }
+                let data = { slug: "sustainability-1" }
                 fetch("http://50.28.104.48:3003/api/msgMissionSus/getMsgMissionSusBySlug", {
                     method: 'post',
                     headers: {
@@ -196,10 +200,10 @@ const MissionValues = ({ navigation }) => {
             <SafeAreaView style={styles.container}>
                 <View style={{ backgroundColor: "#fff", flex: 1 }}>
                     <View style={{ flexDirection: "row", width: "100%", backgroundColor: "#FAFAFA", height: 60, alignItems: "center" }}>
-                    <TouchableOpacity onPress={() => {navigation.goBack() }}><Image
-                        source={require('../assest/left_arrow.png')}
-                        style={{ height: 15, width: 15,marginStart:20 }}
-                    /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => { navigation.goBack() }}><Image
+                            source={require('../assest/left_arrow.png')}
+                            style={{ height: 15, width: 15, marginStart: 20 }}
+                        /></TouchableOpacity>
 
 
                         <Image
@@ -224,8 +228,24 @@ const MissionValues = ({ navigation }) => {
                     {emptyList ?
                         <>
                             <ScrollView>
-                                <View style={{ paddingHorizontal: 20,marginBottom:30 }}>
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{t('Mission and Values')}</Text>
+                                <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
+
+                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 30 }}>
+                                    
+                                        <TouchableOpacity style={[isCultural? styles.selectedButton:styles.unSelectedButton,{ marginEnd: 10}]} onPress={()=>{
+                                            setIsCultural(true)
+                                            setIsIndicator(false)
+                                           navigation.navigate("SocialInvestments") 
+                                        }}><Text style={isCultural?styles.selectedText : styles.unSelectedText}>{t('Social and Cultural Investments')}</Text></TouchableOpacity>
+
+                                        <TouchableOpacity style={[isIndicator? styles.selectedButton:styles.unSelectedButton,{ marginStart: 10 }]} onPress={()=>{
+                                            setIsCultural(false)
+                                            setIsIndicator(true)
+                                        }}><Text style={isIndicator?styles.selectedText : styles.unSelectedText}>{t('Key Indicators')}</Text></TouchableOpacity>
+                                    </View>
+
+
+                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 30 }}>{t('Sustainability')}</Text>
                                     <Image
 
                                         resizeMode='stretch'
@@ -237,29 +257,10 @@ const MissionValues = ({ navigation }) => {
 
                                     <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{subHeading}</Text>
 
-                                    {
-                                        messageTag.map((e, index) =>
-                                            <View style={{ flexDirection: 'row', paddingVertical: 1, marginTop: 10, alignItems: "center" }}>
-
-                                                <View style={{
-                                                    width: 5,
-                                                    height: 5,
-                                                    borderRadius: 10 / 2,
-                                                    backgroundColor: '#098DD4'
-                                                }} />
-                                                <Text style={{ color: "#707070", fontSize: 12, marginStart: 10 }}>{e.name}</Text>
-
-                                            </View>
-                                        )
-                                    }
-
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 12 }}>{subHeadingTwo}</Text>
 
                                     <Text style={{ color: "#707070", fontSize: 12, marginTop: 12 }}>{descriptionTwo}</Text>
 
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 12 }}>{subHeadingThree}</Text>
 
-                                    <Text style={{ color: "#707070", fontSize: 12, marginTop: 12 }}>{descriptionThree}</Text>
 
                                 </View>
                             </ScrollView>
@@ -300,6 +301,42 @@ const styles = StyleSheet.create({
 
 
     },
+    selectedButton: {
+        flex: 1, 
+        padding: 5, 
+        borderRadius: 5, 
+        borderColor: "#098DD4", 
+        backgroundColor:'#098DD4',
+        color:"#fff",
+        borderWidth: 1, 
+        textAlign: "center",
+        fontSize:12
+
+
+    },
+    unSelectedButton: {
+        flex: 1, 
+        padding: 5, 
+        borderRadius: 5, 
+        borderColor: "#00000073", 
+        backgroundColor:'#fff',
+        color:"#676767",
+        borderWidth: 1, 
+        textAlign: "center",
+        fontSize:12
+    },
+    selectedText:{
+        color:"#fff",
+        fontSize:12,
+        textAlign:"center"
+    },
+    unSelectedText:{
+        color:"#676767" ,
+        fontSize:12,
+        textAlign:"center"
+    },
+
+
     textBackground: {
 
         backgroundColor: '#FFFFFF',
@@ -428,4 +465,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MissionValues
+export default Sustainability

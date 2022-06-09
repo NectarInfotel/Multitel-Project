@@ -4,18 +4,18 @@ import {
     KeyboardAvoidingView, SafeAreaView, Platform, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useIsFocused,useFocusEffect } from '@react-navigation/native';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import ImagePicker from 'react-native-image-crop-picker';
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
-import AsyncStorage  from '@react-native-async-storage/async-storage';
-import {useTranslation} from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 import './langauge/i18n';
 
 
 const EditProfile = ({ navigation }) => {
 
-   
+
     const [isPickerShow, setIsPickerShow] = useState(false);
     const [date, setDate] = useState(new Date(Date.now()));
     const [netInfo, setNetInfo] = useState('');
@@ -27,7 +27,7 @@ const EditProfile = ({ navigation }) => {
     const [name, setName] = useState('')
     const [emails, setEmail] = useState('')
     const [updateRes, setUpdateRes] = useState(false)
-    
+
 
     const [isFirstName, setIsFirstName] = useState(false)
     const [isEmailEmty, setIsEmailEmty] = useState(false)
@@ -35,19 +35,19 @@ const EditProfile = ({ navigation }) => {
     const [isDob, setIsDob] = useState(false)
     const [isGender, setIsGender] = useState(false)
     const [isProfileImg, setIsProfileImg] = useState(false)
-    const [currentLanguage,setLanguage] =useState('po');
-    const {t, i18n} = useTranslation();
-  
-  
+    const [currentLanguage, setLanguage] = useState('po');
+    const { t, i18n } = useTranslation();
 
 
-      const changeLanguage = value => {
+
+
+    const changeLanguage = value => {
         i18n
-          .changeLanguage(value)
-          .then(() => setLanguage(value))
-          .catch(err => console.log(err));
-      };
-    
+            .changeLanguage(value)
+            .then(() => setLanguage(value))
+            .catch(err => console.log(err));
+    };
+
     const [error, setError] = useState({
         errorFirstName: 'Please enter full name',
         errorEmail: 'Please enter email',
@@ -66,9 +66,9 @@ const EditProfile = ({ navigation }) => {
     const onChange = (event, value) => {
         setIsPickerShow(false);
         setDate(value);
-        let tempDate=new Date(value)
-        let fDate=tempDate.getDate()+"/"+(tempDate.getMonth()+1)+"/"+tempDate.getFullYear()
-     
+        let tempDate = new Date(value)
+        let fDate = tempDate.getDate() + "/" + (tempDate.getMonth() + 1) + "/" + tempDate.getFullYear()
+
         setDob(fDate)
     };
 
@@ -92,195 +92,202 @@ const EditProfile = ({ navigation }) => {
     }
     ])
 
-    const updateForm=(res)=>{
-
-    
-    const data=res.data
-    setName(data.first_name)
-    const dateOfBirth=data.dob_date
-    const gender=data.gendar
-    let tempDate=new Date(dateOfBirth)
-    let fDate=tempDate.getDate()+"/"+(tempDate.getMonth()+1)+"/"+tempDate.getFullYear()
-    setDob(fDate)
-    
-    if(data.profile_img!=null)
-    {
-        const url= `http://50.28.104.48:3003/images/${data.profile_img}`
-   
-        setImageUrl(url)
-    }
-    
-    console.log("===="+imageUrl)
-    if(gender=="Male")
-    {
-    
-        const arr = [...radioButtonsData]
-
-        arr[0] = { id: '1',
-        label: 'Male',
-        selected:true,
-        value: 'Male',
-        labelStyle: styles.radioLabel}
-
-        arr[1] = {  id: '2',
-        label: 'Female',
-        selected:false,
-        value: 'Female',
-        labelStyle: styles.radioLabel}
+    const updateForm = (res) => {
 
 
-        arr[2] = {
-            id: '3',
-        label: 'Other',
-        selected:false,
-        value: 'Other',
-        labelStyle: styles.radioLabel
-    }
+        const data = res.data
+        setName(data.first_name)
+        const dateOfBirth = data.dob_date
+        const gender = data.gendar
+        let tempDate = new Date(dateOfBirth)
+        let fDate = tempDate.getDate() + "/" + (tempDate.getMonth() + 1) + "/" + tempDate.getFullYear()
+        setDob(fDate)
 
+        if (data.profile_img != null) {
+            const url = `http://50.28.104.48:3003/images/${data.profile_img}`
 
-
-
-    setRadioButtonsData(arr);
-    setGender("Male")
-    console.log("===="+"Male")
-    }else if(gender=="Female"){
-
-        const arr = [...radioButtonsData]
-
-     
-      arr[0] = { id: '1',
-        label: 'Male',
-        selected:false,
-        value: 'Male',
-        labelStyle: styles.radioLabel}
-
-        arr[1] = {  id: '2',
-        label: 'Female',
-        selected:true,
-        value: 'Female',
-        labelStyle: styles.radioLabel}
-
-        
-        arr[2] = {
-            id: '3',
-        label: 'Other',
-        selected:false,
-        value: 'Other',
-        labelStyle: styles.radioLabel
+            setImageUrl(url)
         }
 
-    setRadioButtonsData(arr);
-    setGender("Female")
-    console.log("===="+"Female")
-    }else if(gender=="Other")
-    {
-        const arr = [...radioButtonsData]
+        console.log("====" + imageUrl)
+        if (gender == "Male") {
 
-        arr[0] = { id: '1',
-        label: 'Male',
-        selected:false,
-        value: 'Male',
-        labelStyle: styles.radioLabel}
+            const arr = [...radioButtonsData]
 
-        arr[1] = {  id: '2',
-        label: 'Female',
-        selected:false,
-        value: 'Female',
-        labelStyle: styles.radioLabel}
+            arr[0] = {
+                id: '1',
+                label: 'Male',
+                selected: true,
+                value: 'Male',
+                labelStyle: styles.radioLabel
+            }
 
-        arr[2] = {
-            id: '3',
-        label: 'Other',
-        selected:true,
-        value: 'Other',
-        labelStyle: styles.radioLabel
+            arr[1] = {
+                id: '2',
+                label: 'Female',
+                selected: false,
+                value: 'Female',
+                labelStyle: styles.radioLabel
+            }
+
+
+            arr[2] = {
+                id: '3',
+                label: 'Other',
+                selected: false,
+                value: 'Other',
+                labelStyle: styles.radioLabel
+            }
+
+
+
+
+            setRadioButtonsData(arr);
+            setGender("Male")
+            console.log("====" + "Male")
+        } else if (gender == "Female") {
+
+            const arr = [...radioButtonsData]
+
+
+            arr[0] = {
+                id: '1',
+                label: 'Male',
+                selected: false,
+                value: 'Male',
+                labelStyle: styles.radioLabel
+            }
+
+            arr[1] = {
+                id: '2',
+                label: 'Female',
+                selected: true,
+                value: 'Female',
+                labelStyle: styles.radioLabel
+            }
+
+
+            arr[2] = {
+                id: '3',
+                label: 'Other',
+                selected: false,
+                value: 'Other',
+                labelStyle: styles.radioLabel
+            }
+
+            setRadioButtonsData(arr);
+            setGender("Female")
+            console.log("====" + "Female")
+        } else if (gender == "Other") {
+            const arr = [...radioButtonsData]
+
+            arr[0] = {
+                id: '1',
+                label: 'Male',
+                selected: false,
+                value: 'Male',
+                labelStyle: styles.radioLabel
+            }
+
+            arr[1] = {
+                id: '2',
+                label: 'Female',
+                selected: false,
+                value: 'Female',
+                labelStyle: styles.radioLabel
+            }
+
+            arr[2] = {
+                id: '3',
+                label: 'Other',
+                selected: true,
+                value: 'Other',
+                labelStyle: styles.radioLabel
+            }
+            setRadioButtonsData(arr);
+            setGender("Other")
+            console.log("====" + "Other")
+        }
+
+
+
     }
-    setRadioButtonsData(arr);
-    setGender("Other")
-    console.log("===="+"Other")
-    }
-    
-    
-
-    }
 
 
-    const getUserEmail = async function() {
+    const getUserEmail = async function () {
         try {
             const email = await AsyncStorage.getItem("email");
             const access_token = await AsyncStorage.getItem("access_token");
             const langauge = await AsyncStorage.getItem("langauge");
-          
-            if(langauge!=null)
-            {
+
+            if (langauge != null) {
                 changeLanguage(langauge)
-            }else{
-                changeLanguage("en") 
+            } else {
+                changeLanguage("en")
             }
-            
+
             setEmail(email)
             NetInfo.fetch().then((state) => {
 
                 if (state.isConnected) {
-    
+
                     setIsLoading(true)
                     fetch("http://50.28.104.48:3003/api/user/getUserByToken", {
                         method: 'post',
                         headers: {
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
-                            'Authorization' :access_token
+                            'Authorization': access_token
                         },
                     }).then((result) => {
-    
+
                         result.json().then((res) => {
                             setIsLoading(false)
                             if (res.code == 200) {
                                 setUpdateRes(true)
                                 AsyncStorage.setItem("userDetail", JSON.stringify(res.data))
                                 updateForm(res)
-                           
+
                             } else {
-    
+
                                 failure(res.massage)
                             }
                             console.log(res)
                         })
-    
+
                     })
-    
-    
+
+
                 } else {
                     checkInternet()
                 }
-    
-    
-    
+
+
+
             });
 
 
-        }catch(error)
-        {
+        } catch (error) {
 
         }
 
-            
-    
-}
 
-const success = (res,msg) => {
 
-    Alert.alert("Success", msg, [
-        { text: 'Okay' }
-    ])
-}
+    }
 
-const failure = (msg) => {
-    Alert.alert("Failure", msg, [
-        { text: 'Okay' }
-    ])
+    const success = (res, msg) => {
 
-}
+        Alert.alert("Success", msg, [
+            { text: 'Okay' }
+        ])
+    }
+
+    const failure = (msg) => {
+        Alert.alert("Failure", msg, [
+            { text: 'Okay' }
+        ])
+
+    }
 
     useEffect(() => {
         // Subscribe to network state updates
@@ -301,52 +308,52 @@ const failure = (msg) => {
 
     useFocusEffect(
         React.useCallback(() => {
-           
+
             setGender('')
             setImageUrl('')
             setRadioButtonsData([{
                 id: '1', // acts as primary key, should be unique and non-empty string
                 label: 'Male',
-                selected:false,
+                selected: false,
                 value: 'Male',
                 labelStyle: styles.radioLabel
             }, {
                 id: '2',
                 label: 'Female',
-                selected:false,
+                selected: false,
                 value: 'Female',
                 labelStyle: styles.radioLabel
             },
             {
                 id: '3',
                 label: 'Other',
-                selected:false,
+                selected: false,
                 value: 'Other',
                 labelStyle: styles.radioLabel
             }
             ])
 
 
-         
-            getUserEmail()
-         
-          return () => {
-          };
-        }, [])
-      );
 
-         
+            getUserEmail()
+
+            return () => {
+            };
+        }, [])
+    );
+
+
 
     const handleValidUser = (val) => {
 
         if (val.trim().length > 0) {
-           
+
             setIsFirstName(false)
-          
+
             return false
         } else {
             setIsFirstName(true)
-           
+
             return true
         }
 
@@ -355,13 +362,13 @@ const failure = (msg) => {
     const handleValidDob = (val) => {
 
         if (val.trim().length > 0) {
-           
+
             setIsDob(false)
-          
+
             return false
         } else {
             setIsDob(true)
-       
+
             return true
         }
 
@@ -372,11 +379,11 @@ const failure = (msg) => {
 
         if (val.trim().length > 0) {
             setIsProfileImg(false)
-         
+
             return false
         } else {
             setIsProfileImg(true)
-     
+
             return true
         }
 
@@ -386,13 +393,13 @@ const failure = (msg) => {
     const handleValidGender = (val) => {
 
         if (val.trim().length > 0) {
-            console.log("gender="+val)
+            console.log("gender=" + val)
             setIsGender(false)
-         
+
             return false
         } else {
             setIsGender(true)
-            console.log("gender="+val)
+            console.log("gender=" + val)
             return true
         }
 
@@ -402,7 +409,7 @@ const failure = (msg) => {
         if (val.trim().length > 0) {
             let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
             if (reg.test(val) === true) {
-                console.log("email="+val)
+                console.log("email=" + val)
                 setIsEmailCorrect(false)
                 setIsEmailEmty(false)
                 return false
@@ -421,30 +428,30 @@ const failure = (msg) => {
 
     }
 
-    
 
 
-    const submit =() => {
+
+    const submit = () => {
 
         NetInfo.fetch().then((state) => {
 
             if (state.isConnected) {
 
-        
-              const isName=  handleValidUser(name)
-              const isEmail=handleValidEmail(emails)
-              const isDob=handleValidDob(dob)
-              const isGender=handleValidGender(gender)
-              const isUrl=handleValidProfileImg(imageUrl)
+
+                const isName = handleValidUser(name)
+                const isEmail = handleValidEmail(emails)
+                const isDob = handleValidDob(dob)
+                const isGender = handleValidGender(gender)
+                const isUrl = handleValidProfileImg(imageUrl)
 
                 if (isName || isEmail || isDob || isGender || isUrl) {
-                   
+
                     return
                 }
 
-                navigation.navigate('EditProfileTwo',{name:name,emailss:emails,dob:dob,gender:gender,imageUrl:imageUrl,imageType:imageType,userRes:updateRes})
+                navigation.navigate('EditProfileTwo', { name: name, emailss: emails, dob: dob, gender: gender, imageUrl: imageUrl, imageType: imageType, userRes: updateRes })
 
-              
+
             } else {
                 checkInternet()
             }
@@ -514,155 +521,159 @@ const failure = (msg) => {
         //  console.log(JSON.stringify(radioButtonsArray))
         //  console.log(selected)
         //  alert(selected)
-               let selected = radioButtonsData.find(r => r.selected == true);
-                selected = selected ? selected.value : radioButtonsData[0].value;
-                setGender(selected)
-               setRadioButtonsData(radioButtonsArray);
-      }
+        let selected = radioButtonsData.find(r => r.selected == true);
+        selected = selected ? selected.value : radioButtonsData[0].value;
+        setGender(selected)
+        setRadioButtonsData(radioButtonsArray);
+    }
 
     return (
-          <>
-          <StatusBar hidden={false} barStyle= 'light-content' backgroundColor="#0076B5" />
-        <KeyboardAvoidingView
-        behavior={Platform.OS == 'ios' ? 'padding' : 'position'}
-        style={styles.container}>
-         <SafeAreaView>  
-        <View >
-            <View style={{ flexDirection: "row", width: "100%", backgroundColor: "#FAFAFA", height: 60, alignItems: "center" }}>
-                <TouchableOpacity onPress={() => { navigation.goBack() }}><Image
-                    source={require('../assest/left_arrow.png')}
-                    style={{ height: 15, width: 15, marginStart: 20 }}
-                /></TouchableOpacity>
-                <Text style={{
-                    fontSize: 20,
-                    fontWeight: "bold",
-                    color: '#1D3557',
-                    marginStart: 10,
-                    flex: 1
-                }} >{t('Edit Profile')}</Text>
-                <TouchableOpacity onPress={() => { navigation.navigate("Settings") }}><Image
-                    source={require('../assest/setting_icon.png')}
-                    style={{ height: 15, width: 15, marginStart: 20, marginEnd: 25 }}
-                /></TouchableOpacity>
-            </View>
-            <View style={styles.parentView}>
-                <ScrollView>
-                    <View style={styles.scrollView}>
-                        <View style={styles.childView}>
-                            <View style={{ alignItems: "center", justifyContent: "center", marginTop: 30 }}>
-                                <Image
-                                    source={ imageUrl==''?require('../assest/drawer_user.png') :{ uri: imageUrl }}
-                                    //borderRadius will help to make Round Shape
-                                    style={{
-                                        width: 100,
-                                        height: 100,
-                                        borderWidth: 1,
-                                        borderColor: "#098DD4",
-                                        borderRadius: 200 / 2
-                                    }}
-                                />
+        <>
+            <StatusBar hidden={false} barStyle='light-content' backgroundColor="#0076B5" />
+            <KeyboardAvoidingView
+                behavior={Platform.OS == 'ios' ? 'padding' : 'position'}
+                style={styles.container}>
+                <SafeAreaView>
+                    <View >
+                        <View style={{ flexDirection: "row", width: "100%", backgroundColor: "#FAFAFA", height: 60, alignItems: "center" }}>
+                            <TouchableOpacity onPress={() => { navigation.goBack() }}><Image
+                                source={require('../assest/left_arrow.png')}
+                                style={{ height: 15, width: 15, marginStart: 20 }}
+                            /></TouchableOpacity>
+                            <Text style={{
+                                fontSize: 20,
+                                fontWeight: "bold",
+                                color: '#1D3557',
+                                marginStart: 10,
+                                flex: 1
+                            }} >{t('Edit Profile')}</Text>
+                            <TouchableOpacity onPress={() => { navigation.navigate("Settings") }}><Image
+                                source={require('../assest/setting_icon.png')}
+                                style={{ height: 15, width: 15, marginStart: 20, marginEnd: 25 }}
+                            /></TouchableOpacity>
+                        </View>
+                        <View style={styles.parentView}>
+                            <ScrollView>
+                                <View style={styles.scrollView}>
+                                    <View style={styles.childView}>
+                                        <View style={{ alignItems: "center", justifyContent: "center", marginTop: 30 }}>
+                                            <Image
+                                                source={imageUrl == '' ? require('../assest/drawer_user.png') : { uri: imageUrl }}
+                                                //borderRadius will help to make Round Shape
+                                                style={{
+                                                    width: 100,
+                                                    height: 100,
+                                                    borderWidth: 1,
+                                                    borderColor: "#098DD4",
+                                                    borderRadius: 200 / 2
+                                                }}
+                                            />
 
-                                <TouchableOpacity style={{ left: 160}} onPress={() => openDialog()}><Image
-                                    source={require('../assest/edit.png')}
-                                    style={styles.icon}
-                                />
-                                </TouchableOpacity>
-                            </View>
-                            
-                            {isProfileImg && <Text style={styles.errorText}>{t('Please select profile image')}</Text>}
+                                            <View style={{
+                                                position: 'absolute',
+                                                right: 110,
+                                                bottom: 70,
+                                            }}><TouchableOpacity onPress={() => openDialog()}><Image
+                                                source={require('../assest/edit.png')}
+                                                style={styles.icon}
+                                            />
+                                                </TouchableOpacity></View>
+                                        </View>
 
-                            <Text style={styles.subHeaderText}>{t('Name')}</Text>
+                                        {isProfileImg && <Text style={styles.errorText}>{t('Please select profile image')}</Text>}
 
-
-                            <View style={styles.textBackground}>
-                                <TextInput style={styles.text} placeholder={t('Please enter full name')}
-                                value={name}  onChangeText={text => setName(text)}></TextInput>
-
-                                <Image style={styles.image}
-                                    source={require('../assest/user.png')}
-                                />
-
-                            </View>
-                            {isFirstName && <Text style={styles.errorText}>{t('Please enter full name')}</Text>}
-
-                            <Text style={styles.subHeaderText}>{t('Email Address')}</Text>
-
-                            
-                            <View style={styles.textBackground}>
-                                <TextInput style={styles.text} placeholder={t('Please enter email')}
-                                value={emails}
-                                editable={false}
-                                selectTextOnFocus={false}
-                                autoCapitalize='none'
-                                onChangeText={text =>setEmail(text)}></TextInput>
-
-                                <Image style={styles.image}
-                                    source={require('../assest/email_ic.png')}
-                                />
-
-                            </View>
-                            {isEmailEmty && <Text style={styles.errorText}>{t('Please enter email')}</Text>}
-                            {isEmailCorrect && <Text style={styles.errorText}>{t('Please enter correct email')}</Text>}
-
-                            <Text style={styles.subHeaderText}>{t('Birthday')}</Text>
+                                        <Text style={styles.subHeaderText}>{t('Name')}</Text>
 
 
-                            <View style={styles.textBackground}>
-                                <TextInput style={styles.text} value={dob}
-                                 editable={false}
-                                 selectTextOnFocus={false}
-                                onChangeText={text => setDob(text)}
-                                    placeholder={t('Please select date of birth')}
-                                ></TextInput>
+                                        <View style={styles.textBackground}>
+                                            <TextInput style={styles.text} placeholder={t('Please enter full name')}
+                                                value={name} onChangeText={text => setName(text)}></TextInput>
 
-                                <TouchableOpacity onPress={()=>showPicker()}><Image style={styles.image}
-                                    source={require('../assest/calender_ic.png')}
-                                /></TouchableOpacity>
+                                            <Image style={styles.image}
+                                                source={require('../assest/user.png')}
+                                            />
 
-                            </View>
-                            {isDob && <Text style={styles.errorText}>{t('Please enter DOB')}</Text>}
+                                        </View>
+                                        {isFirstName && <Text style={styles.errorText}>{t('Please enter full name')}</Text>}
 
-                            {isPickerShow && (
-                                <DateTimePicker
-                                    value={date}
-                                    mode={'date'}
-                                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                                    is24Hour={true}
-                                    onChange={onChange}
-                                />
-                            )}
+                                        <Text style={styles.subHeaderText}>{t('Email Address')}</Text>
 
-                            <Text style={styles.subHeaderText}>{t('Gender')}</Text>
+
+                                        <View style={styles.textBackground}>
+                                            <TextInput style={styles.text} placeholder={t('Please enter email')}
+                                                value={emails}
+                                                editable={false}
+                                                selectTextOnFocus={false}
+                                                autoCapitalize='none'
+                                                onChangeText={text => setEmail(text)}></TextInput>
+
+                                            <Image style={styles.image}
+                                                source={require('../assest/email_ic.png')}
+                                            />
+
+                                        </View>
+                                        {isEmailEmty && <Text style={styles.errorText}>{t('Please enter email')}</Text>}
+                                        {isEmailCorrect && <Text style={styles.errorText}>{t('Please enter correct email')}</Text>}
+
+                                        <Text style={styles.subHeaderText}>{t('Birthday')}</Text>
+
+
+                                        <View style={styles.textBackground}>
+                                            <TextInput style={styles.text} value={dob}
+                                                editable={false}
+                                                selectTextOnFocus={false}
+                                                onChangeText={text => setDob(text)}
+                                                placeholder={t('Please select date of birth')}
+                                            ></TextInput>
+
+                                            <TouchableOpacity onPress={() => showPicker()}><Image style={styles.image}
+                                                source={require('../assest/calender_ic.png')}
+                                            /></TouchableOpacity>
+
+                                        </View>
+                                        {isDob && <Text style={styles.errorText}>{t('Please enter DOB')}</Text>}
+
+                                        {isPickerShow && (
+                                            <DateTimePicker
+                                                value={date}
+                                                mode={'date'}
+                                                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                                                is24Hour={true}
+                                                onChange={onChange}
+                                            />
+                                        )}
+
+                                        <Text style={styles.subHeaderText}>{t('Gender')}</Text>
+                                    </View>
+
+                                    <View style={{ marginTop: 10, marginStart: 8 }}>
+                                        <RadioGroup
+                                            radioButtons={radioButtonsData}
+                                            onPress={onPressRadioButton}
+                                            layout='row'
+                                        />
+                                    </View>
+
+                                    {isGender && <Text style={[styles.errorText, { marginStart: 20 }]}>{t('Please select gender')}</Text>}
+                                    <View></View>
+                                    <View style={{ marginBottom: 250, paddingStart: 20, paddingEnd: 30, backgroundColor: "#FFFFFF" }}>
+                                        <View style={{ flexDirection: "row", marginTop: 20 }}>
+                                            <TouchableOpacity style={{ flex: 1 }} ><Text style={styles.cancelButton}>{t('Cancel')}</Text></TouchableOpacity>
+                                            <TouchableOpacity style={{ flex: 1 }} onPress={() => submit()}><Text style={styles.button}>{t('Next')}</Text></TouchableOpacity>
+                                        </View>
+                                    </View>
+                                </View>
+
+
+                            </ScrollView>
                         </View>
 
-                        <View style={{ marginTop: 10, marginStart: 8 }}>
-                            <RadioGroup
-                                radioButtons={radioButtonsData}
-                                onPress={onPressRadioButton}
-                                layout='row'
-                            />
-                        </View>
-                        
-                        {isGender && <Text style={[styles.errorText,{marginStart:20}]}>{t('Please select gender')}</Text>}
-                        <View></View>
-                        <View style={{marginBottom:250,paddingStart:20,paddingEnd:30,backgroundColor: "#FFFFFF"} }>
-                            <View style={{ flexDirection: "row", marginTop: 20 }}>
-                                <TouchableOpacity style={{ flex: 1 }} ><Text style={styles.cancelButton}>{t('Cancel')}</Text></TouchableOpacity>
-                                <TouchableOpacity style={{ flex: 1 }} onPress={() => submit()}><Text style={styles.button}>{t('Next')}</Text></TouchableOpacity>
-                            </View>
-                        </View>
+
                     </View>
-
-
-                </ScrollView>
-            </View>
-         
-
-        </View>
-        </SafeAreaView> 
-        </KeyboardAvoidingView>
+                </SafeAreaView>
+            </KeyboardAvoidingView>
         </>
-    
+
     )
 }
 
@@ -702,9 +713,6 @@ const styles = StyleSheet.create({
 
     },
     icon: {
-        position: 'absolute',
-        right: 110,
-        bottom: 70,
         width: 30,
         height: 30
     },
@@ -746,7 +754,7 @@ const styles = StyleSheet.create({
     docker: {
         flex: 1,
         alignItems: 'center'
-        },
+    },
     headerText: {
         color: '#1D3557',
         fontWeight: "bold",

@@ -1,13 +1,13 @@
-import React, { useState,useEffect }  from 'react';
-import { Text, View, StyleSheet, Image, ImageBackground, TouchableOpacity,Pressable ,Alert} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, Image, ImageBackground, TouchableOpacity, Pressable, Alert } from 'react-native';
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer'
 import ImagePicker from 'react-native-image-crop-picker';
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
-import { useDrawerStatus,useDrawerProgress,createDrawerNavigator  } from '@react-navigation/drawer';
-import { useIsFocused,useFocusEffect } from '@react-navigation/native';
-import AsyncStorage  from '@react-native-async-storage/async-storage';
-import {useTranslation} from 'react-i18next';
+import { useDrawerStatus, useDrawerProgress, createDrawerNavigator } from '@react-navigation/drawer';
+import { useIsFocused, useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 import './langauge/i18n';
 import { AuthContext } from './component/context';
 
@@ -17,47 +17,46 @@ const CustomDrawer = (props) => {
     const { signOut } = React.useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(false)
     const [netInfo, setNetInfo] = useState('');
-    const [name,setName]=useState("")
-    const [image,setImage]=useState("")
+    const [name, setName] = useState("")
+    const [image, setImage] = useState("")
     const [imageUrl, setImageUrl] = useState('')
     const [imageType, setImageType] = useState('')
-    const [isWhoWe,setIsWhoWe]=useState(false)
+    const [isWhoWe, setIsWhoWe] = useState(false)
     const [currentLanguage, setLanguage] = useState('en');
     const { t, i18n } = useTranslation();
-    const isDrawerVisible =  useDrawerStatus();
+    const isDrawerVisible = useDrawerStatus();
 
 
-   
+
     useEffect(() => {
         console.log(currentLanguage)
         selectedLangauge()
-            getUserDetail()
-     
-      }, [isDrawerVisible]);
+        getUserDetail()
+
+    }, [isDrawerVisible]);
 
 
-      const selectedLangauge=async()=>{
+    const selectedLangauge = async () => {
 
-        const token=  await AsyncStorage.getItem("access_token")
+        const token = await AsyncStorage.getItem("access_token")
         const langauge = await AsyncStorage.getItem("langauge");
-          
-        if(langauge!=null)
-        {
+
+        if (langauge != null) {
             changeLanguage(langauge)
-        }else{
-            changeLanguage("en") 
+        } else {
+            changeLanguage("en")
         }
 
     }
-     
-      const changeLanguage = value => {
+
+    const changeLanguage = value => {
         i18n
             .changeLanguage(value)
             .then(() => setLanguage(value))
             .catch(err => console.log(err));
     };
 
-    const clearAppData = async function() {
+    const clearAppData = async function () {
         try {
 
             await AsyncStorage.removeItem("first_name");
@@ -87,10 +86,10 @@ const CustomDrawer = (props) => {
         }).then(image => {
             setImageUrl(image.path)
             setImageType(image.mime)
-            console.log("path==="+image.path);   
-            console.log("path==="+image.mime); 
-            
-       
+            console.log("path===" + image.path);
+            console.log("path===" + image.mime);
+
+
             next(image)
         });
     }
@@ -100,12 +99,12 @@ const CustomDrawer = (props) => {
             width: 300,
             height: 400,
             cropping: true,
-        }).then(image => {   
+        }).then(image => {
             setImageUrl(image.path)
             setImageType(image.mime)
-            console.log("path==="+image.path);   
-            console.log("path==="+image.path);   
-            console.log("path==="+image.mime); 
+            console.log("path===" + image.path);
+            console.log("path===" + image.path);
+            console.log("path===" + image.mime);
             next(image)
         });
     }
@@ -140,12 +139,12 @@ const CustomDrawer = (props) => {
 
     }
 
-    const success = (res,msg) => {
+    const success = (res, msg) => {
         // setImage(res.data.profile_img)
-        AsyncStorage.setItem("first_name",res.data.first_name)
-        AsyncStorage.setItem("profile_img",res.data.profile_img)
+        AsyncStorage.setItem("first_name", res.data.first_name)
+        AsyncStorage.setItem("profile_img", res.data.profile_img)
 
-       
+
         Alert.alert("Success", msg, [
             { text: 'Okay', onPress: () => { navigation.goBack() } }
         ])
@@ -171,7 +170,7 @@ const CustomDrawer = (props) => {
 
             const userId = await AsyncStorage.getItem("userId");
 
-            console.log("ImageUrl===",image.path+"  type=="+image.mime+" name=="+imageName)
+            console.log("ImageUrl===", image.path + "  type==" + image.mime + " name==" + imageName)
 
 
             setIsLoading(true)
@@ -180,7 +179,7 @@ const CustomDrawer = (props) => {
             const data = new FormData();
 
             data.append("image", { uri: image.path, type: image.mime, name: imageName });
-       
+
             fetch("http://50.28.104.48:3003/api/user/updateProfile", {
                 method: 'put',
                 headers: {
@@ -194,7 +193,7 @@ const CustomDrawer = (props) => {
                     setIsLoading(false)
                     if (res.code == 200) {
 
-                        success(res,res.massage)
+                        success(res, res.massage)
                     } else {
 
                         failure(res.massage)
@@ -258,15 +257,15 @@ const CustomDrawer = (props) => {
     // }
 
 
-    const getUserDetail=async()=> {
+    const getUserDetail = async () => {
         const firstName = await AsyncStorage.getItem("first_name");
         const profileImg = await AsyncStorage.getItem("profile_img");
         setName(firstName)
         setImage(profileImg)
-        console.log("===="+profileImg)
+        console.log("====" + profileImg)
         // setIsLoading(false)
-   
-} 
+
+    }
 
 
     if (isLoading) {
@@ -283,7 +282,7 @@ const CustomDrawer = (props) => {
 
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <Image
-                         source={ image == null ?require('../assest/drawer_user.png') :{ uri: `http://50.28.104.48:3003/images/${image}` }}
+                            source={image == null ? require('../assest/drawer_user.png') : { uri: `http://50.28.104.48:3003/images/${image}` }}
                             //borderRadius will help to make Round Shape
                             style={{
                                 width: 80,
@@ -293,10 +292,14 @@ const CustomDrawer = (props) => {
                                 borderRadius: 160 / 2
                             }}
                         />
-                        <TouchableOpacity onPress={() => openDialog() }><Image
+                        <View style={{
+                            position: 'absolute',
+                            top: 10,
+                            right: 95
+                        }}><TouchableOpacity onPress={() => openDialog()}><Image
                             source={require('../assest/edit.png')}
                             style={styles.icon}
-                        /></TouchableOpacity>
+                        /></TouchableOpacity></View>
 
                         <Text style={{
                             fontSize: 14,
@@ -305,10 +308,14 @@ const CustomDrawer = (props) => {
                             color: 'white'
                         }} >{name}</Text>
 
-                        <Pressable onPress={() => {navigation.closeDrawer()}}><Image
-                            source={require('../assest/cross.png')}
-                            style={styles.iconCross}
-                        /></Pressable>
+                        <View style={{
+                                 position: 'absolute',
+                                 right: 10,
+                                 bottom:115
+                        }}><TouchableOpacity onPress={() => { navigation.closeDrawer() }}><Image
+                                    source={require('../assest/cross.png')}
+                                    style={styles.iconCross}
+                                /></TouchableOpacity></View>
 
                     </View>
 
@@ -320,7 +327,7 @@ const CustomDrawer = (props) => {
 
                 <View style={{ flex: 1, backgroundColor: "#fff", paddingTop: 10 }}>
 
-                    <TouchableOpacity onPress={() => { navigation.navigate("Home",{screen:"Home"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("Home", { screen: "Home" }) }}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/home.png')}
                         />
@@ -328,35 +335,35 @@ const CustomDrawer = (props) => {
                     </View></TouchableOpacity>
 
 
-                    <TouchableOpacity onPress={() => { navigation.navigate("CategoryStack",{screen:"Category"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("CategoryStack", { screen: "Category" }) }}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/category.png')}
                         />
                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Category')}</Text>
                     </View></TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { navigation.navigate("Home",{screen:"InternetService"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("Home", { screen: "InternetService" }) }}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/internet.png')}
                         />
                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Internet Services')}</Text>
                     </View></TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { navigation.navigate("Home",{screen:"NetworkEquipment"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("Home", { screen: "NetworkEquipment" }) }}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/network.png')}
                         />
                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Network Equipment')}</Text>
                     </View></TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { navigation.navigate("Home",{screen:"CPE"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("Home", { screen: "CPE" }) }}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/cpe.png')}
                         />
                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('CPE')}</Text>
                     </View></TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => { navigation.navigate("CategoryStack",{screen:"Category"})}}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate("CategoryStack", { screen: "Category" }) }}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
                         <Image style={styles.image}
                             source={require('../assest/order.png')}
                         />
@@ -370,30 +377,30 @@ const CustomDrawer = (props) => {
                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Notification')}</Text>
                     </View></TouchableOpacity>
 
-                    <View style={{height:1,backgroundColor:"#EEF3F7",marginTop:5}}></View>
+                    <View style={{ height: 1, backgroundColor: "#EEF3F7", marginTop: 5 }}></View>
                     <View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
-                    {isWhoWe ? <Image style={styles.image}
-                                            source={require('../assest/question.png')}
-                                        /> : <Image style={styles.image}
-                                            source={require('../assest/digitotal.png')} />}
-                        <TouchableOpacity onPress={() => { navigation.navigate("Like",{screen:"ManagementMessage"})}}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20}}>{t('Who We Are')}</Text></TouchableOpacity><TouchableOpacity onPress={() => { setIsWhoWe(!isWhoWe) }}><View style={{marginStart:10}}>
-                        {isWhoWe ? <Image style={{ width: 10, height: 10 }}
-                                            source={require('../assest/arrow-up.png')}
-                                        /> : <Image style={{ width: 10, height: 10 }}
-                                            source={require('../assest/arrow-down.png')} />}
+                        {isWhoWe ? <Image style={styles.image}
+                            source={require('../assest/question.png')}
+                        /> : <Image style={styles.image}
+                            source={require('../assest/digitotal.png')} />}
+                        <TouchableOpacity onPress={() => { navigation.navigate("Like", { screen: "ManagementMessage" }) }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Who We Are')}</Text></TouchableOpacity><TouchableOpacity onPress={() => { setIsWhoWe(!isWhoWe) }}><View style={{ marginStart: 10 }}>
+                            {isWhoWe ? <Image style={{ width: 10, height: 10 }}
+                                source={require('../assest/arrow-up.png')}
+                            /> : <Image style={{ width: 10, height: 10 }}
+                                source={require('../assest/arrow-down.png')} />}
                         </View></TouchableOpacity>
                     </View>
                     {
-                     isWhoWe&&(<View style={{marginStart:50}}>
-                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Management Message')}</Text>
-                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Mission and Values')}</Text>
-                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('News')}</Text>
-                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Recruitment')}</Text>
-                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Sustainability')}</Text>
-                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Multitel Pride')}</Text>
-                         <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20,paddingVertical:5}}>{t('Companys Social Bodies')}</Text>
-                         
-                         </View>)
+                        isWhoWe && (<View style={{ marginStart: 50 }}>
+                            <TouchableOpacity onPress={() => { navigation.navigate("ManagementMessage") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Management Message')}</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { navigation.navigate("MissionValues") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Mission and Values')}</Text></TouchableOpacity>
+                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('News')}</Text>
+                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Recruitment')}</Text>
+                            <TouchableOpacity onPress={() => { navigation.navigate("Sustainability") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Sustainability')}</Text></TouchableOpacity>
+                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Multitel Pride')}</Text>
+                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Companys Social Bodies')}</Text>
+
+                        </View>)
                     }
 
                 </View>
@@ -403,12 +410,12 @@ const CustomDrawer = (props) => {
             <View style={{ backgroundColor: "white", marginTop: 20 }}>
                 <TouchableOpacity onPress={() => {
                     clearAppData()
-                 }}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
-                    <Image style={styles.image}
-                        source={require('../assest/logout.png')}
-                    />
-                    <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Logout')}</Text>
-                </View></TouchableOpacity>
+                }}><View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
+                        <Image style={styles.image}
+                            source={require('../assest/logout.png')}
+                        />
+                        <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Logout')}</Text>
+                    </View></TouchableOpacity>
 
             </View>
 
@@ -420,9 +427,6 @@ const CustomDrawer = (props) => {
 
 const styles = StyleSheet.create({
     icon: {
-        position: 'absolute',
-        left:15,
-        bottom: 50,
         width: 25,
         height: 25
     },
@@ -431,9 +435,6 @@ const styles = StyleSheet.create({
         height: 20,
     },
     iconCross: {
-        position: 'absolute',
-        left: 112,
-        bottom: 110,
         width: 12,
         height: 12
     },

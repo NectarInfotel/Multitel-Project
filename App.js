@@ -41,6 +41,9 @@ import MyCartScreen from './screens/MyCartScreen'
 import Setting from './screens/Setting'
 import MyWhiteList from './screens/MyWhiteList'
 import ManagementMessage from './screens/ManagementMessage'
+import Sustainability from './screens/Sustainability'
+import SocialInvestments from './screens/SocialInvestments'
+import MissionValues from './screens/MissionValues'
 import ActionBar from './screens/ActionBar'
 import Home from './screens/Home'
 import Category from './screens/Category'
@@ -440,11 +443,6 @@ function LikeStack() {
         component={MyWhiteList}
       />
 
-      <Stack.Screen
-        name="ManagementMessage"
-        component={ManagementMessage}
-      />
-
 
     </Stack.Navigator>
   );
@@ -492,6 +490,7 @@ function MainStack() {
       <Stack.Screen
         name="NotificationScreen"
         component={NotificationScreen} />
+        
 
       <Stack.Screen
         name="ProductDetail"
@@ -505,9 +504,25 @@ function MainStack() {
       />
 
       <Stack.Screen
-        name="SignIn"
-        component={SignIn}
-        options={{ headerShown: false }} />
+        name="ManagementMessage"
+        component={ManagementMessage}
+      />
+
+      <Stack.Screen
+        name="MissionValues"
+        component={MissionValues}
+      />
+
+      <Stack.Screen
+        name="Sustainability"
+        component={Sustainability}
+      />
+       <Stack.Screen
+        name="SocialInvestments"
+        component={SocialInvestments}
+      />
+
+
     </Stack.Navigator>
   );
 }
