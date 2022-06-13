@@ -387,7 +387,7 @@ const CustomDrawer = (props) => {
                             {isWhoWe ? <Image style={{ width: 10, height: 10 }}
                                 source={require('../assest/arrow-up.png')}
                             /> : <Image style={{ width: 10, height: 10 }}
-                                source={require('../assest/arrow-down.png')} />}
+                                source={require('../assest/arrow_down.png')} />}
                         </View></TouchableOpacity>
                     </View>
                     {
@@ -395,9 +395,9 @@ const CustomDrawer = (props) => {
                             <TouchableOpacity onPress={() => { navigation.navigate("ManagementMessage") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Management Message')}</Text></TouchableOpacity>
                             <TouchableOpacity onPress={() => { navigation.navigate("MissionValues") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Mission and Values')}</Text></TouchableOpacity>
                             <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('News')}</Text>
-                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Recruitment')}</Text>
+                            <TouchableOpacity onPress={() => { navigation.navigate("Recruitment") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Recruitment')}</Text></TouchableOpacity>
                             <TouchableOpacity onPress={() => { navigation.navigate("Sustainability") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Sustainability')}</Text></TouchableOpacity>
-                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Multitel Pride')}</Text>
+                            <TouchableOpacity onPress={() => { navigation.navigate("MultitelPride") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Multitel Pride')}</Text></TouchableOpacity>
                             <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Companys Social Bodies')}</Text>
 
                         </View>)

@@ -5,7 +5,7 @@ import AsyncStorage  from '@react-native-async-storage/async-storage';
 
 import { Card } from 'react-native-paper';
 
-const CPECart = (item) => {
+const PrideCart = (item) => {
 
 
  
@@ -21,25 +21,25 @@ const CPECart = (item) => {
       <View onPress={()=>{
         // AsyncStorage.setItem("product",JSON.stringify(item))
         // navigation.navigate('ProductDetail')
-        }} style={{ marginTop: 20, backgroundColor: "#FFFFFF", marginHorizontal: 20, paddingVertical: 10 }}>
+        }} style={{ marginTop: 2, backgroundColor: "#FFFFFF",marginHorizontal:10,paddingHorizontal:5, paddingVertical: 5,borderColor:"#098DD4",borderWidth:1}}>
         <View>
 
           <View>
             <Image
               source={{
                 uri:
-                `http://50.28.104.48:3003/images/${item.cover_img}`,
+                `http://50.28.104.48:3003/images/${item.image}`,
               }}
               resizeMode="stretch"
               style={styles.rectangleShapeImage}>
 
             </Image>
           </View>
-          <View style={{ flex: 1, marginStart: 10,marginTop:10 }}>
+          <View style={{alignItems:"center",marginTop:10 }}>
           
-              <Text numberOfLines={1} style={{ alignItems: "flex-start", flex: 1, color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{item.name}</Text>
+              <Text numberOfLines={1} style={{textAlign:"center", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{item.imageName}</Text>
           
-            <Text  numberOfLines={1}style={{ color: "#707070", fontWeight: "normal", fontSize: 11, }}>{item.description}</Text>
+            <Text  numberOfLines={1}style={{textAlign:"center",color: "#707070", fontWeight: "normal", fontSize: 11,marginTop:1 }}>{item.imageName}</Text>
 
       
             
@@ -56,10 +56,7 @@ const styles = StyleSheet.create({
 
   rectangleShapeImage: {
     flex:1,
-    height: 100,
-    marginEnd:8,
-    marginStart:8,
-    borderRadius: 5,
+    height: 100
   },
   icon: {
     position: 'absolute',
@@ -117,4 +114,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default CPECart
+export default PrideCart

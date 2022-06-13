@@ -30,6 +30,8 @@ const HEIGHT = Dimensions.get('window').height
 const HomeScreen = ({ navigation }) => {
 
 
+
+    
     const [imgActive, setImgActive] = useState(0);
     const [netInfo, setNetInfo] = useState('');
     const [images, setImages] = useState([]);
@@ -591,7 +593,7 @@ const HomeScreen = ({ navigation }) => {
 
                         />
 
-                        <Paginator data={images} scrollx={scrollx} />
+                        <Paginator data={listCms} scrollx={scrollx} />
                     </View>
 
 

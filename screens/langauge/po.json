@@ -114,6 +114,17 @@
       "management-message":"gestão-mensagem",
       "Private Networks":"Redes Privadas",
       "Social and Cultural Investments":"Investimentos Sociais e Culturais",
-      "Key Indicators":"Indicadores-chave"
+      "Key Indicators":"Indicadores-chave",
+      "Commercial":"Comercial",
+      "Graphic designer":"Designer gráfico",
+      "Marketing & Communication Technique":"Técnica de Marketing & Comunicação",
+      "Email":"Email",
+      "Household":"Agregado familiar",
+      "Telephone":"Telefone",
+      "Choose File":"Escolha o Arquivo",
+      "Message":"Mensagem",
+      "Submit Application":"Submissão de Pedido",
+      "Please enter household":"Por favor, entre em casa",
+      "Please enter telephone":"Por favor, insira o telefone"
     }
   }

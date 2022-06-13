@@ -24,6 +24,7 @@ import DetailsScreen from './screens/DetailScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import SettingsScreen from './screens/SettingScreen';
 import SignUpScreen from './screens/SignUpScreen';
+import MultitelPride from './screens/MultitelPride';
 import SignIn from './screens/SignIn';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { AuthContext } from './screens/component/context';
@@ -47,6 +48,7 @@ import MissionValues from './screens/MissionValues'
 import ActionBar from './screens/ActionBar'
 import Home from './screens/Home'
 import Category from './screens/Category'
+import Recruitment from './screens/Recruitment'
 import InternetService from './screens/InternetService'
 import CPE from './screens/CPE'
 import NetworkEquipment from './screens/NetworkEquipment'
@@ -54,6 +56,7 @@ import Order from './screens/Order'
 import CustomDrawer from './screens/CustomDrawer'
 import SmartPhone from './screens/SmartPhone'
 import Feather from 'react-native-vector-icons/Feather';
+
 
 
 
@@ -459,11 +462,12 @@ function WhislistStack() {
         component={SettingsScreen}
         options={{ headerShown: false }}
       />
-
       <Stack.Screen
         name="Profile"
         component={ProfileScreen}
         options={{ title: 'Profile Page' }} />
+
+
     </Stack.Navigator>
   );
 }
@@ -490,7 +494,7 @@ function MainStack() {
       <Stack.Screen
         name="NotificationScreen"
         component={NotificationScreen} />
-        
+
 
       <Stack.Screen
         name="ProductDetail"
@@ -517,9 +521,19 @@ function MainStack() {
         name="Sustainability"
         component={Sustainability}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="SocialInvestments"
         component={SocialInvestments}
+      />
+
+      <Stack.Screen
+        name="MultitelPride"
+        component={MultitelPride}
+      />
+
+      <Stack.Screen
+        name="Recruitment"
+        component={Recruitment}
       />
 
 

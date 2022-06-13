@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ActionBar from './ActionBar';
-import MyWhiteCart from './MyWhiteCart';
+import PrideCart from './PrideCart';
 import {
     KeyboardAvoidingView, SafeAreaView, LayoutAnimation, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
@@ -21,7 +21,7 @@ const HEIGHT = Dimensions.get('window').height
 const ExpandableComponent = ({ item, onClickFunction }) => {
     const numColumns=2
     const [layoutHeight, setLayoutHeight] = useState(0)
-    const [listImage, setListImage] = useState([])
+  
 
     useEffect(() => {
 
@@ -67,11 +67,11 @@ const ExpandableComponent = ({ item, onClickFunction }) => {
             </TouchableOpacity>
             <View style={{ height: layoutHeight, overflow: "hidden" }}>
 
-                <View style={{ paddingHorizontal: 30, backgroundColor: "#fff" }} >
+                <View style={{ paddingHorizontal: 20, backgroundColor: "#fff" }} >
                     <FlatList style={{ marginTop: 10 }}
-                        data={formatData(listImage, numColumns)}
+                        data={formatData(item.multitel_pride_images, numColumns)}
                         numColumns={2}
-                        renderItem={({ item }) => CPECart(item)}
+                        renderItem={({ item }) => PrideCart(item)}
                         keyExtractor={(item) => item.uid}
                     />
                 </View>
@@ -209,21 +209,20 @@ const MultitelPride = ({ navigation }) => {
 
                 setIsLoading(true)
                 let data = { slug: "social-and-cultural-investment" }
-                fetch("http://50.28.104.48:3003/api/sustainability/getSustainabilityByCategory", {
-                    method: 'post',
+                fetch("http://50.28.104.48:3003/api/multitelPride/getAllMultitelPride", {
+                    method: 'get',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'Authorization': accessToken
-                    },
-                    body: JSON.stringify(data)
+                    }
                 }).then((result) => {
 
                     result.json().then((res) => {
                         setIsLoading(false)
                         if (res.code == 200) {
                             setEmptyList(true)
-                            const arr = res.data.sustainabilities
+                            const arr = res.data
                             const newArr = arr.map(item => {
                                 return { ...item, isExpanded: false }
                             })
@@ -300,8 +299,8 @@ const MultitelPride = ({ navigation }) => {
                     </View>
                     {emptyList ?
                         <>
-                            <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 30, marginHorizontal: 20 }}>{t('Multitel Pride')}</Text>
-                            <ScrollView style={{ backgroundColor: "#fff", marginTop: 15 }}>
+                            <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 15, marginHorizontal: 20 }}>{t('Multitel Pride')}</Text>
+                            <ScrollView style={{ backgroundColor: "#fff", marginTop: 5 }}>
 
                                 {
                                     listSource.map((item, key) => (
