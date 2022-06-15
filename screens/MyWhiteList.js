@@ -72,6 +72,7 @@ const MyWhiteList = ({ navigation }) =>{
 
   useFocusEffect(
     React.useCallback(() => {
+        setIsLoading(true)
         setListFav([])
         getFavList()
      
@@ -153,6 +154,7 @@ const MyWhiteList = ({ navigation }) =>{
     const success = (msg) => {
         Alert.alert("Success", msg, [
             { text: 'Okay',onPress: () => {
+                setIsLoading(true)
                 setListFav([])
                 getFavList()
              } }
@@ -197,7 +199,7 @@ const MyWhiteList = ({ navigation }) =>{
 
        if (state.isConnected) {
       
-           setIsLoading(true)
+        //    setIsLoading(true)
            let data={userId:id}
            fetch("http://50.28.104.48:3003/api/cart/getFavCartData", {
                method: 'post',
@@ -231,6 +233,7 @@ const MyWhiteList = ({ navigation }) =>{
 
            })
        } else {
+         setIsLoading(false)
            checkInternet()
        }
 

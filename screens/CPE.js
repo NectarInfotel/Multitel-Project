@@ -58,6 +58,7 @@ const CPE = ({ navigation }) =>{
     // }, []);
 
     useEffect(() => {
+        setIsLoading(true)
         setListCPE([])
         getCpe()
     }, []);
@@ -110,7 +111,7 @@ const CPE = ({ navigation }) =>{
            
                 
                 console.log("token==="+token)
-                setIsLoading(true)
+                // setIsLoading(true)
                 // let data={userName:'kindal@getnada.com',password:'Shubh@1992'}
                 let data={userId:userId,id:item.id}
                 fetch("http://50.28.104.48:3003/api/cart/addFavCart", {
@@ -138,6 +139,7 @@ const CPE = ({ navigation }) =>{
 
                 })
             } else {
+                setIsLoading(false)
                 checkInternet()
             }
 

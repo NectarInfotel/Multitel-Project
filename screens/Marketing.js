@@ -18,7 +18,7 @@ import { teal500 } from 'react-native-paper/lib/typescript/styles/colors';
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
-const Recruitment = ({ navigation }) => {
+const Marketing = ({ navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
@@ -45,7 +45,8 @@ const Recruitment = ({ navigation }) => {
     const [description, setDescription] = useState('');
     const [descriptionTwo, setDescriptionTwo] = useState('');
     const [descriptionThree, setDescriptionThree] = useState('');
-    const [messageTag, setMessageTag] = useState("");
+    const [messageTag, setMessageTag] = useState([]);
+    const [messageTagTwo, setMessageTagTwo] = useState([]);
     const [isCommercial, setIscommercial] = useState(false);
     const [isGraphic, setIsGraphic] = useState(false);
     const [isMarketing, setIsMarketing] = useState(false);
@@ -160,15 +161,15 @@ const Recruitment = ({ navigation }) => {
             if (state.isConnected) {
 
 
-              
-                fetch("http://50.28.104.48:3003/api/recruitment/getAllRecruitment", {
-                    method: 'get',
+                let data = { slug: "marketing" }
+                fetch("http://50.28.104.48:3003/api/recruitment/getRecruitmentByCategory", {
+                    method: 'post',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'Authorization': accessToken
                     },
-                  
+                    body: JSON.stringify(data)
                 }).then((result) => {
 
                     result.json().then((res) => {
@@ -176,12 +177,10 @@ const Recruitment = ({ navigation }) => {
                         if (res.code == 200) {
 
                             console.log(JSON.stringify(res.data))
+                            const value = res.data.recruitments[0]
 
-                            // console.log("Description=--"+res.data[0].phone)
-                             const value=res.data[0]
                             // const url = `http://50.28.104.48:3003/images/${res.data.image}`
-
-                            const url="https://th.bing.com/th/id/R.456cd7d0abd66d2553f54752207a915f?rik=LAEtA8ZFMph4rQ&riu=http%3a%2f%2fwww.myink.in%2fwp-content%2fuploads%2f2016%2f08%2fAsus-Zenfone-Go-ZC451TG.jpg&ehk=PEn2Ch%2bMDybW054J8QsygPMadHKgXP0fgf33jIR3Kc0%3d&risl=&pid=ImgRaw&r=0"
+                            const url = "https://th.bing.com/th/id/R.456cd7d0abd66d2553f54752207a915f?rik=LAEtA8ZFMph4rQ&riu=http%3a%2f%2fwww.myink.in%2fwp-content%2fuploads%2f2016%2f08%2fAsus-Zenfone-Go-ZC451TG.jpg&ehk=PEn2Ch%2bMDybW054J8QsygPMadHKgXP0fgf33jIR3Kc0%3d&risl=&pid=ImgRaw&r=0"
 
                             setImageUrl(url)
                             // setName(res.data.name)
@@ -190,15 +189,20 @@ const Recruitment = ({ navigation }) => {
                             setEmail(value.email)
                             setMessage(value.message)
                             setHousehold(value.household)
-                            const phone=value.phone+""
+                            const phone = value.phone + ""
                             setTelephone(phone)
-                            console.log("DescriptionKushhelo=--"+telephone)
+                            setSubHeading(value.recruitment_heading)
+                            setSubHeadingTwo(value.description_heading)
+                            setDescriptionTwo(value.sub_description)
+                            // setName(res.data.name)
+                            // setDescription(res.data.description)
                             // setSubHeading(res.data.sub_heading)
                             // setSubHeadingTwo(res.data.sub_heading_2)
                             // setSubHeadingThree(res.data.sub_heading_3)
                             // setDescriptionTwo(res.data.description_2)
                             // setDescriptionThree(res.data.description_3)
-                            // setMessageTag(res.data.message_tags)
+                            setMessageTag(value.recruitment_requirement_tags)
+                            setMessageTagTwo(value.recruitment_description_tags)
 
                             setEmptyList(true)
 
@@ -227,11 +231,11 @@ const Recruitment = ({ navigation }) => {
         if (val.trim().length > 0) {
             console.log("name=" + val)
             setIsFirstName(false)
-    
+
             return false
         } else {
             setIsFirstName(true)
-    
+
             return true
         }
 
@@ -241,11 +245,11 @@ const Recruitment = ({ navigation }) => {
 
         if (val.trim().length > 0) {
             setIsHousehold(false)
-    
+
             return false
         } else {
             setIsHousehold(true)
-    
+
             return true
         }
 
@@ -255,11 +259,11 @@ const Recruitment = ({ navigation }) => {
 
         if (val.trim().length > 0) {
             setIsTelephone(false)
-    
+
             return false
         } else {
             setIsTelephone(true)
-    
+
             return true
         }
 
@@ -269,24 +273,25 @@ const Recruitment = ({ navigation }) => {
 
         if (val.trim().length > 0) {
             setIsChooseFile(false)
-    
+
             return false
         } else {
             setIsChooseFile(true)
-    
+
             return true
         }
 
     }
 
     const handleValidMessage = (val) => {
+
         if (val.trim().length > 0) {
             setIsMessage(false)
-    
+
             return false
         } else {
             setIsMessage(true)
-    
+
             return true
         }
 
@@ -327,7 +332,7 @@ const Recruitment = ({ navigation }) => {
                 const isPhone = handleValidHouseTelephone(telephone)
                 const isDocument = handleValidChooseFile(file)
                 const isMesaages = handleValidMessage(message)
-             
+
 
                 if (isName || isEmail || isHold || isPhone || isDocument || isMesaages) {
 
@@ -405,31 +410,12 @@ const Recruitment = ({ navigation }) => {
                             <ScrollView>
                                 <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
 
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 30 }}>
 
-                                        <TouchableOpacity style={[isCommercial ? styles.selectedButton : styles.unSelectedButton, { marginEnd: 10 }]} onPress={() => {
-                                            setIscommercial(true)
-                                            setIsMarketing(false)
-                                            setIsGraphic(false)
-                                            navigation.navigate("Commercial")
+                                    {/* <TouchableOpacity style={[isCommercial ? styles.selectedButton : styles.unSelectedButton, { width: "50%", marginEnd: 10, marginTop: 15 }]} onPress={() => {
+                                        setIscommercial(true)
 
-                                        }}><Text style={isCommercial ? styles.selectedText : styles.unSelectedText}>{t('Commercial')}</Text></TouchableOpacity>
-
-                                        <TouchableOpacity style={[isGraphic ? styles.selectedButton : styles.unSelectedButton, { marginStart: 10 }]} onPress={() => {
-                                            setIscommercial(false)
-                                            setIsMarketing(false)
-                                            setIsGraphic(true)
-                                            navigation.navigate("GraphicDesigner")
-                                        }}><Text style={isGraphic ? styles.selectedText : styles.unSelectedText}>{t('Graphic designer')}</Text></TouchableOpacity>
-                                    </View>
-
-                                    <TouchableOpacity style={[isMarketing ? styles.selectedButton : styles.unSelectedButton, { width: "50%", marginEnd: 10, marginTop: 15 }]} onPress={() => {
-                                        setIscommercial(false)
-                                        setIsMarketing(true)
-                                        setIsGraphic(false)
-                                        navigation.navigate("Marketing")
-                                    }}><Text style={isMarketing ? styles.selectedText : styles.unSelectedText}>{t('Marketing & Communication Technique')}</Text></TouchableOpacity>
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 30 }}>{t('Recruitment')}</Text>
+                                    }}><Text style={isMarketing ? styles.selectedText : styles.unSelectedText}>{t('Commercial')}</Text></TouchableOpacity> */}
+                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{t('Marketing And Communication Technique')}</Text>
                                     <Image
 
                                         resizeMode='stretch'
@@ -437,7 +423,46 @@ const Recruitment = ({ navigation }) => {
                                         source={{ uri: imageUrl }}
                                     />
 
-                                    <Text style={{ color: "#707070", fontSize: 12, marginTop: 12 }}>{description}</Text>
+                                    <Text style={{ color: "#707070", fontSize: 12, marginTop: 12, fontWeight: "bold" }}>{description}</Text>
+
+                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{subHeading}</Text>
+
+                                    {
+                                        messageTag.map((e, index) =>
+                                            <View style={{ flexDirection: 'row', paddingVertical: 1, marginTop: 10, alignItems: "center" }}>
+
+                                                <View style={{
+                                                    width: 5,
+                                                    height: 5,
+                                                    borderRadius: 10 / 2,
+                                                    backgroundColor: '#098DD4'
+                                                }} />
+                                                <Text style={{ color: "#707070", fontSize: 12, marginStart: 10 }}>{e.name}</Text>
+
+                                            </View>
+                                        )
+                                    }
+
+                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 12 }}>{subHeadingTwo}</Text>
+
+                                    {
+                                        messageTagTwo.map((e, index) =>
+                                            <View style={{ flexDirection: 'row', paddingVertical: 1, marginTop: 10, alignItems: "center" }}>
+
+                                                <View style={{
+                                                    width: 5,
+                                                    height: 5,
+                                                    borderRadius: 10 / 2,
+                                                    backgroundColor: '#098DD4'
+                                                }} />
+                                                <Text style={{ color: "#707070", fontSize: 12, marginStart: 10 }}>{e.name}</Text>
+
+                                            </View>
+                                        )
+                                    }
+
+                                    <Text style={{ color: "#707070", fontSize: 12, marginTop: 12 }}>{descriptionTwo}</Text>
+
 
                                     <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Name')}</Text>
 
@@ -458,99 +483,99 @@ const Recruitment = ({ navigation }) => {
                                     {isFirstName && <Text style={styles.errorText}>{t('Please enter full name')}</Text>}
 
                                     <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Email')}</Text>
-                                    <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
+                                        <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
 
-                                        source={require('../assest/star.png')}
-                                    />
+                                            source={require('../assest/star.png')}
+                                        />
+                                    </View>
+
+                                    <View style={styles.textBackground}>
+                                        <TextInput style={styles.text}
+                                            value={emails}
+                                            autoCapitalize='none'
+                                            onChangeText={text => setEmail(text)}></TextInput>
+
+                                    </View>
+                                    {isEmailEmty && <Text style={styles.errorText}>{t('Please enter email')}</Text>}
+                                    {isEmailCorrect && <Text style={styles.errorText}>{t('Please enter correct email')}</Text>}
+
+                                    <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Household')}</Text>
+                                        <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
+
+                                            source={require('../assest/star.png')}
+                                        />
+                                    </View>
+
+                                    <View style={styles.textBackground}>
+                                        <TextInput style={styles.text}
+                                            value={household}
+                                            onChangeText={text => setHousehold(text)}></TextInput>
+
+                                    </View>
+
+                                    {isHousehold && <Text style={styles.errorText}>{t('Please enter household')}</Text>}
+
+                                    <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Telephone')}</Text>
+                                        <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
+
+                                            source={require('../assest/star.png')}
+                                        />
+                                    </View>
+
+                                    <View style={styles.textBackground}>
+                                        <TextInput style={styles.text}
+                                            value={telephone}
+                                            keyboardType={'numeric'}
+                                            onChangeText={text => setTelephone(text)}></TextInput>
+
+                                    </View>
+                                    {isTelephone && <Text style={styles.errorText}>{t('Please enter telephone')}</Text>}
+
+                                    <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Choose File')}</Text>
+                                        <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
+
+                                            source={require('../assest/star.png')}
+                                        />
+                                    </View>
+
+                                    <View style={styles.textBackground}>
+                                        <TextInput style={styles.text}
+                                            value={file}
+                                            onChangeText={text => setFile(text)}></TextInput>
+
+                                    </View>
+
+                                    {isChooseFile && <Text style={styles.errorText}>{t('Please select file')}</Text>}
+
+                                    <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Message')}</Text>
+                                        <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
+
+                                            source={require('../assest/star.png')}
+                                        />
+                                    </View>
+
+                                    <View style={styles.textBackground}>
+                                        <TextInput style={styles.text}
+                                            value={message}
+                                            onChangeText={text => setMessageFile(text)}></TextInput>
+
+                                    </View>
+                                    {isMessage && <Text style={styles.errorText}>{t('Please enter message')}</Text>}
+
+                                    <View><TouchableOpacity onPress={() => { submit() }}><Text style={styles.button}>{t('Submit Application')}</Text></TouchableOpacity></View>
+
+
                                 </View>
-
-                                <View style={styles.textBackground}>
-                                    <TextInput style={styles.text}
-                                        value={emails}
-                                        autoCapitalize='none'
-                                        onChangeText={text => setEmail(text)}></TextInput>
-
-                                </View>
-                                {isEmailEmty && <Text style={styles.errorText}>{t('Please enter email')}</Text>}
-                                 {isEmailCorrect && <Text style={styles.errorText}>{t('Please enter correct email')}</Text>}
-
-                                <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Household')}</Text>
-                                    <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
-
-                                        source={require('../assest/star.png')}
-                                    />
-                                </View>
-
-                                <View style={styles.textBackground}>
-                                    <TextInput style={styles.text}
-                                        value={household}
-                                        onChangeText={text => setHousehold(text)}></TextInput>
-
-                                </View>
-
-                                {isHousehold && <Text style={styles.errorText}>{t('Please enter household')}</Text>}
-
-                                <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Telephone')}</Text>
-                                    <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
-
-                                        source={require('../assest/star.png')}
-                                    />
-                                </View>
-
-                                <View style={styles.textBackground}>
-                                    <TextInput style={styles.text}
-                                        keyboardType={'numeric'}
-                                        value={telephone}
-                                        onChangeText={text => setTelephone(text)}></TextInput>
-
-                                </View>
-                                {isTelephone && <Text style={styles.errorText}>{t('Please enter telephone')}</Text>}
-
-                                <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Choose File')}</Text>
-                                    <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
-
-                                        source={require('../assest/star.png')}
-                                    />
-                                </View>
-
-                                <View style={styles.textBackground}>
-                                    <TextInput style={styles.text}
-                                        value={file}
-                                        onChangeText={text => setFile(text)}></TextInput>
-
-                                </View>
-
-                                {isChooseFile && <Text style={styles.errorText}>{t('Please select file')}</Text>}
-
-                                <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Message')}</Text>
-                                    <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
-
-                                        source={require('../assest/star.png')}
-                                    />
-                                </View>
-
-                                <View style={styles.textBackground}>
-                                    <TextInput style={styles.text}
-                                        value={message}
-                                        onChangeText={text => setMessage(text)}></TextInput>
-
-                                </View>
-                                {isMessage && <Text style={styles.errorText}>{t('Please enter message')}</Text>}
-
-                                <View><TouchableOpacity onPress={() => {submit() }}><Text style={styles.button}>{t('Submit Application')}</Text></TouchableOpacity></View>
-
-
-                            </View>
-                        </ScrollView>
+                            </ScrollView>
 
 
                         </>
-                :
-                <ListEmptyView />
+                        :
+                        <ListEmptyView />
                     }
 
-            </View>
-        </SafeAreaView>
+                </View>
+            </SafeAreaView>
         </>
     )
 
@@ -748,4 +773,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Recruitment
+export default Marketing

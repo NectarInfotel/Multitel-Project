@@ -29,9 +29,6 @@ const HEIGHT = Dimensions.get('window').height
 
 const HomeScreen = ({ navigation }) => {
 
-
-
-    
     const [imgActive, setImgActive] = useState(0);
     const [netInfo, setNetInfo] = useState('');
     const [images, setImages] = useState([]);
@@ -40,6 +37,7 @@ const HomeScreen = ({ navigation }) => {
     const [listCPE, setListCPE] = useState([])
     const [listCategory, setListCategory] = useState([])
     const [listCms, setListCms] = useState([])
+    const [isData, setIsData] = useState(true)
     const [listProduct, setListProduct] = useState([])
     const [listEquipment, setListEquipment] = useState([])
     const [currentLanguage, setLanguage] = useState('po');
@@ -95,7 +93,7 @@ const HomeScreen = ({ navigation }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-
+            setIsLoading(true)
             getCms()
 
 
@@ -169,6 +167,7 @@ const HomeScreen = ({ navigation }) => {
 
                 })
             } else {
+                setIsLoading(false)
                 checkInternet()
             }
 
@@ -230,6 +229,7 @@ const HomeScreen = ({ navigation }) => {
 
                 })
             } else {
+                setIsLoading(false)
                 checkInternet()
             }
 
@@ -303,6 +303,7 @@ const HomeScreen = ({ navigation }) => {
 
                 })
             } else {
+                setIsLoading(false)
                 checkInternet()
             }
 
@@ -374,6 +375,8 @@ const HomeScreen = ({ navigation }) => {
 
                 })
             } else {
+                setIsData(false)
+                setIsLoading(false)
                 checkInternet()
             }
 
@@ -394,7 +397,7 @@ const HomeScreen = ({ navigation }) => {
 
             if (state.isConnected) {
 
-                setIsLoading(true)
+                // setIsLoading(true)
                 // let data={userName:'kindal@getnada.com',password:'Shubh@1992'}
 
                 fetch("http://50.28.104.48:3003/api/cms/getAllCms", {
@@ -439,6 +442,8 @@ const HomeScreen = ({ navigation }) => {
 
                 })
             } else {
+                setIsData(false)
+                setIsLoading(false)
                 checkInternet()
             }
 
@@ -447,6 +452,17 @@ const HomeScreen = ({ navigation }) => {
         });
 
 
+    }
+
+    const ListEmptyView = () => {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignContent: "center" }}>
+
+                <Text style={{ textAlign: 'center', color: "black" }}>{t('Sorry, No Data Present')}</Text>
+
+            </View>
+
+        );
     }
 
 
@@ -568,226 +584,233 @@ const HomeScreen = ({ navigation }) => {
                         style={{ height: 35, width: 35, marginEnd: 15 }}
                     /></TouchableOpacity>
                 </View>
-                <ScrollView style={{ backgroundColor: "#FFFFFF" }}>
-                    <View style={{ height: HEIGHT * 0.30 }}>
-                        <FlatList
-                            data={listCms}
-                            renderItem={({ item }) => imageView(item)}
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            pagingEnabled
-                            bounces={false}
-                            keyExtractor={(item) => item.id}
-                            onScroll={
-                                Animated.event([{ nativeEvent: { contentOffset: { x: scrollx } } }], {
-                                    useNativeDriver: false,
-
-                                })
-
-                            }
-                            scrollEventThrottle={32}
-
-                            onViewableItemsChanged={viewableItemChanged}
-                            viewabilityConfig={viewConfig}
-                            ref={slidesRef}
-
-                        />
-
-                        <Paginator data={listCms} scrollx={scrollx} />
-                    </View>
-
-
-                    <View style={{ paddingHorizontal: 15 }}>
-
-                        <View style={{ flexDirection: "row", width: "100%", marginTop: 15, justifyContent: "space-between" }}>
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('Browse by Category')}</Text>
-                            <Pressable onPress={() => { navigation.navigate("CategoryStack", { screen: "Category" }) }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
-                        </View>
-
-                        {/*
-                    <View style={{ flexDirection: "row", justifyContent: "space-between",marginTop:20 }}>
-
-                        <View style={{ alignItems: "center" }}>
-                          
-                                <Image
+                {
+                  isData? <>
+                  <ScrollView style={{ backgroundColor: "#FFFFFF" }}>
+                      <View style={{ height: HEIGHT * 0.30 }}>
+                          <FlatList
+                              data={listCms}
+                              renderItem={({ item }) => imageView(item)}
+                              horizontal
+                              showsHorizontalScrollIndicator={false}
+                              pagingEnabled
+                              bounces={false}
+                              keyExtractor={(item) => item.id}
+                              onScroll={
+                                  Animated.event([{ nativeEvent: { contentOffset: { x: scrollx } } }], {
+                                      useNativeDriver: false,
+  
+                                  })
+  
+                              }
+                              scrollEventThrottle={32}
+  
+                              onViewableItemsChanged={viewableItemChanged}
+                              viewabilityConfig={viewConfig}
+                              ref={slidesRef}
+  
+                          />
+  
+                          <Paginator data={listCms} scrollx={scrollx} />
+                      </View>
+  
+  
+                      <View style={{ paddingHorizontal: 15 }}>
+  
+                          <View style={{ flexDirection: "row", width: "100%", marginTop: 15, justifyContent: "space-between" }}>
+                              <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('Browse by Category')}</Text>
+                              <Pressable onPress={() => { navigation.navigate("CategoryStack", { screen: "Category" }) }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
+                          </View>
+  
+                          {/*
+                      <View style={{ flexDirection: "row", justifyContent: "space-between",marginTop:20 }}>
+  
+                          <View style={{ alignItems: "center" }}>
+                            
+                                  <Image
+                                      source={{uri :'https://th.bing.com/th?q=Samsung+Dual+Sim+Android+Phone&w=120&h=120&c=1&rs=1&qlt=90&cb=1&dpr=1.56&pid=InlineBlock&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1&mw=247'}}
+                                      style={{ height: 70, width: 70,borderRadius:140/2 }}
+                                  />
+  
+                           
+                              <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 14, marginTop: 10 }}>Cell Phone</Text>
+                          </View>
+  
+                          <View style={{ alignItems: "center" }}>
+                             
+                                  <Image
+                                     source={{uri :'https://th.bing.com/th?q=Samsung+Dual+Sim+Android+Phone&w=120&h=120&c=1&rs=1&qlt=90&cb=1&dpr=1.56&pid=InlineBlock&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1&mw=247'}}
+                                     style={{ height: 70, width: 70,borderRadius:140/2 }}
+                                  />
+  
+                            
+                              <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 14, marginTop: 10 }}>Cell Phone</Text>
+                          </View>
+  
+                          <View style={{ alignItems: "center" }}>
+                             
+                                  <Image
+                                     source={{uri :'https://th.bing.com/th?q=Samsung+Dual+Sim+Android+Phone&w=120&h=120&c=1&rs=1&qlt=90&cb=1&dpr=1.56&pid=InlineBlock&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1&mw=247'}}
+                                     style={{ height: 70, width: 70,borderRadius:140/2 }}
+                                  />
+  
+                            
+                              <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 14, marginTop: 10 }}>Cell Phone</Text>
+                          </View>
+  
+                          <View style={{ alignItems: "center" }}>
+                             
+                                  <Image
                                     source={{uri :'https://th.bing.com/th?q=Samsung+Dual+Sim+Android+Phone&w=120&h=120&c=1&rs=1&qlt=90&cb=1&dpr=1.56&pid=InlineBlock&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1&mw=247'}}
                                     style={{ height: 70, width: 70,borderRadius:140/2 }}
-                                />
-
-                         
-                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 14, marginTop: 10 }}>Cell Phone</Text>
-                        </View>
-
-                        <View style={{ alignItems: "center" }}>
-                           
-                                <Image
-                                   source={{uri :'https://th.bing.com/th?q=Samsung+Dual+Sim+Android+Phone&w=120&h=120&c=1&rs=1&qlt=90&cb=1&dpr=1.56&pid=InlineBlock&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1&mw=247'}}
-                                   style={{ height: 70, width: 70,borderRadius:140/2 }}
-                                />
-
-                          
-                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 14, marginTop: 10 }}>Cell Phone</Text>
-                        </View>
-
-                        <View style={{ alignItems: "center" }}>
-                           
-                                <Image
-                                   source={{uri :'https://th.bing.com/th?q=Samsung+Dual+Sim+Android+Phone&w=120&h=120&c=1&rs=1&qlt=90&cb=1&dpr=1.56&pid=InlineBlock&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1&mw=247'}}
-                                   style={{ height: 70, width: 70,borderRadius:140/2 }}
-                                />
-
-                          
-                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 14, marginTop: 10 }}>Cell Phone</Text>
-                        </View>
-
-                        <View style={{ alignItems: "center" }}>
-                           
-                                <Image
-                                  source={{uri :'https://th.bing.com/th?q=Samsung+Dual+Sim+Android+Phone&w=120&h=120&c=1&rs=1&qlt=90&cb=1&dpr=1.56&pid=InlineBlock&mkt=en-IN&cc=IN&setlang=en&adlt=moderate&t=1&mw=247'}}
-                                  style={{ height: 70, width: 70,borderRadius:140/2 }}
-                                />
-
-                            
-                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 14, marginTop: 10 }}>Cell Phone</Text>
-                        </View>
-
-
-                    </View> */}
-
-
-                        <View>
-                            <ScrollView
-                                onScroll={({ nativeEvent }) => { onChange(nativeEvent) }}
-                                showsHorizontalScrollIndicator={false}
-                                pagingEnabled
-                                horizontal
-
-                            >
-                                {
-                                    listCategory.map((e, index) =>
-                                        showCategory(e)
-                                    )
-                                }
-
-
-                            </ScrollView>
-                        </View>
-
-                        <View>
-                            <ScrollView
-                                onScroll={({ nativeEvent }) => { onChange(nativeEvent) }}
-                                showsHorizontalScrollIndicator={false}
-                                pagingEnabled
-                                horizontal
-
-                            >
-                                {
-                                    images.map((e, index) =>
-                                        <HomeNetworkCart />
-                                    )
-                                }
-
-
-                            </ScrollView>
-                        </View>
-
-                        <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}> 
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('Internet Services')}</Text>
-                            <Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text>
-                        </View>
-
-                        <View>
-                            <ScrollView
-                                onScroll={({ nativeEvent }) => { onChange(nativeEvent) }}
-                                showsHorizontalScrollIndicator={false}
-                                pagingEnabled
-                                horizontal
-
-                            >
-                                {
-                                    images.map((e, index) =>
-                                        <HomeNetworkCart />
-                                    )
-                                }
-
-
-                            </ScrollView>
-                        </View>
-
-                        <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('Network Equipment')}</Text>
-                            <Pressable onPress={() => { navigation.navigate("NetworkEquipment") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
-                        </View>
-
-
-                        <View>
-                            <ScrollView
-
-                                showsHorizontalScrollIndicator={false}
-                                pagingEnabled
-                                horizontal
-
-                            >
-                                {
-                                    listEquipment.map((e, index) =>
-                                        <HomeEquipmentCart item={e} />
-                                    )
-                                }
-
-
-                            </ScrollView>
-                        </View>
-
-
-                        <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('CPE')}</Text>
-                            <Pressable onPress={() => { navigation.navigate("CPE") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
-                        </View>
-
-                        <View>
-                            <ScrollView
-
-                                showsHorizontalScrollIndicator={false}
-                                pagingEnabled
-                                horizontal
-
-                            >
-                                {
-                                    listCPE.map((e, index) =>
-                                        <HomeCPECart item={e} />
-                                    )
-                                }
-
-
-                            </ScrollView>
-                        </View>
-
-                        <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
-                            <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('other product')}</Text>
-                            <Pressable onPress={() => { navigation.navigate("ProductService") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
-                        </View>
-
-
-                        <View style={{ marginBottom: 20 }}>
-                            <ScrollView
-
-                                showsHorizontalScrollIndicator={false}
-                                pagingEnabled
-                                horizontal
-
-                            >
-                                {
-                                    listProduct.map((e, index) =>
-                                        <HomeServicesCart item={e} t={t} />
-                                    )
-                                }
-
-
-                            </ScrollView>
-                        </View>
-
-                    </View>
-                </ScrollView>
+                                  />
+  
+                              
+                              <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 14, marginTop: 10 }}>Cell Phone</Text>
+                          </View>
+  
+  
+                      </View> */}
+  
+  
+                          <View>
+                              <ScrollView
+                                  onScroll={({ nativeEvent }) => { onChange(nativeEvent) }}
+                                  showsHorizontalScrollIndicator={false}
+                                  pagingEnabled
+                                  horizontal
+  
+                              >
+                                  {
+                                      listCategory.map((e, index) =>
+                                          showCategory(e)
+                                      )
+                                  }
+  
+  
+                              </ScrollView>
+                          </View>
+  
+                          <View>
+                              <ScrollView
+                                  onScroll={({ nativeEvent }) => { onChange(nativeEvent) }}
+                                  showsHorizontalScrollIndicator={false}
+                                  pagingEnabled
+                                  horizontal
+  
+                              >
+                                  {
+                                      images.map((e, index) =>
+                                          <HomeNetworkCart />
+                                      )
+                                  }
+  
+  
+                              </ScrollView>
+                          </View>
+  
+                          <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}> 
+                              <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('Internet Services')}</Text>
+                              <Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text>
+                          </View>
+  
+                          <View>
+                              <ScrollView
+                                  onScroll={({ nativeEvent }) => { onChange(nativeEvent) }}
+                                  showsHorizontalScrollIndicator={false}
+                                  pagingEnabled
+                                  horizontal
+  
+                              >
+                                  {
+                                      images.map((e, index) =>
+                                          <HomeNetworkCart />
+                                      )
+                                  }
+  
+  
+                              </ScrollView>
+                          </View>
+  
+                          <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
+                              <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('Network Equipment')}</Text>
+                              <Pressable onPress={() => { navigation.navigate("NetworkEquipment") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
+                          </View>
+  
+  
+                          <View>
+                              <ScrollView
+  
+                                  showsHorizontalScrollIndicator={false}
+                                  pagingEnabled
+                                  horizontal
+  
+                              >
+                                  {
+                                      listEquipment.map((e, index) =>
+                                          <HomeEquipmentCart item={e} />
+                                      )
+                                  }
+  
+  
+                              </ScrollView>
+                          </View>
+  
+  
+                          <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
+                              <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('CPE')}</Text>
+                              <Pressable onPress={() => { navigation.navigate("CPE") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
+                          </View>
+  
+                          <View>
+                              <ScrollView
+  
+                                  showsHorizontalScrollIndicator={false}
+                                  pagingEnabled
+                                  horizontal
+  
+                              >
+                                  {
+                                      listCPE.map((e, index) =>
+                                          <HomeCPECart item={e} />
+                                      )
+                                  }
+  
+  
+                              </ScrollView>
+                          </View>
+  
+                          <View style={{ flexDirection: "row", width: "100%", marginTop: 30, justifyContent: "space-between" }}>
+                              <Text style={{ alignItems: "flex-start", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{t('other product')}</Text>
+                              <Pressable onPress={() => { navigation.navigate("ProductService") }}><Text style={{ alignItems: "flex-start", color: "#098DD4", fontWeight: "normal", fontSize: 12, }}>{t('See More')}</Text></Pressable>
+                          </View>
+  
+  
+                          <View style={{ marginBottom: 20 }}>
+                              <ScrollView
+  
+                                  showsHorizontalScrollIndicator={false}
+                                  pagingEnabled
+                                  horizontal
+  
+                              >
+                                  {
+                                      listProduct.map((e, index) =>
+                                          <HomeServicesCart item={e} t={t} />
+                                      )
+                                  }
+  
+  
+                              </ScrollView>
+                          </View>
+  
+                      </View>
+                  </ScrollView>
+                  </>
+                  :
+                  <ListEmptyView />
+                }
+               
             </View>
         </SafeAreaView>
         </>

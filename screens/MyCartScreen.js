@@ -83,6 +83,7 @@ const MyCartScreen = ({ navigation }) => {
     // }, [])
 
     useEffect(() => {
+        setIsLoading(true)
         setListCart([])
         getCartScreen()
     }, []);
@@ -108,6 +109,7 @@ const MyCartScreen = ({ navigation }) => {
         Alert.alert("Success", msg, [
             {
                 text: 'Okay', onPress: () => {
+                    setIsLoading(true)
                     setListCart([])
                     getCartScreen()
                 }
@@ -212,7 +214,7 @@ const MyCartScreen = ({ navigation }) => {
 
             if (state.isConnected) {
 
-                setIsLoading(true)
+                // setIsLoading(true)
                 let data = { userId: id }
                 fetch("http://50.28.104.48:3003/api/cart/getCartData", {
                     method: 'post',
@@ -255,6 +257,7 @@ const MyCartScreen = ({ navigation }) => {
 
                 })
             } else {
+                setIsLoading(false)
                 checkInternet()
             }
 

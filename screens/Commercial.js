@@ -18,7 +18,7 @@ import { teal500 } from 'react-native-paper/lib/typescript/styles/colors';
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
-const Recruitment = ({ navigation }) => {
+const Commercial = ({ navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
@@ -160,15 +160,15 @@ const Recruitment = ({ navigation }) => {
             if (state.isConnected) {
 
 
-              
-                fetch("http://50.28.104.48:3003/api/recruitment/getAllRecruitment", {
-                    method: 'get',
+                let data = { slug: "marketing" }
+                fetch("http://50.28.104.48:3003/api/recruitment/getRecruitmentByCategory", {
+                    method: 'post',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'Authorization': accessToken
                     },
-                  
+                    body: JSON.stringify(data)
                 }).then((result) => {
 
                     result.json().then((res) => {
@@ -176,9 +176,8 @@ const Recruitment = ({ navigation }) => {
                         if (res.code == 200) {
 
                             console.log(JSON.stringify(res.data))
+                            const value=res.data.recruitments[0]
 
-                            // console.log("Description=--"+res.data[0].phone)
-                             const value=res.data[0]
                             // const url = `http://50.28.104.48:3003/images/${res.data.image}`
 
                             const url="https://th.bing.com/th/id/R.456cd7d0abd66d2553f54752207a915f?rik=LAEtA8ZFMph4rQ&riu=http%3a%2f%2fwww.myink.in%2fwp-content%2fuploads%2f2016%2f08%2fAsus-Zenfone-Go-ZC451TG.jpg&ehk=PEn2Ch%2bMDybW054J8QsygPMadHKgXP0fgf33jIR3Kc0%3d&risl=&pid=ImgRaw&r=0"
@@ -192,7 +191,6 @@ const Recruitment = ({ navigation }) => {
                             setHousehold(value.household)
                             const phone=value.phone+""
                             setTelephone(phone)
-                            console.log("DescriptionKushhelo=--"+telephone)
                             // setSubHeading(res.data.sub_heading)
                             // setSubHeadingTwo(res.data.sub_heading_2)
                             // setSubHeadingThree(res.data.sub_heading_3)
@@ -280,6 +278,7 @@ const Recruitment = ({ navigation }) => {
     }
 
     const handleValidMessage = (val) => {
+
         if (val.trim().length > 0) {
             setIsMessage(false)
     
@@ -405,31 +404,12 @@ const Recruitment = ({ navigation }) => {
                             <ScrollView>
                                 <View style={{ paddingHorizontal: 20, marginBottom: 30 }}>
 
-                                    <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 30 }}>
+                                    
+                                    {/* <TouchableOpacity style={[isCommercial ? styles.selectedButton : styles.unSelectedButton, { width: "50%", marginEnd: 10, marginTop: 15 }]} onPress={() => {
+                                        setIscommercial(true)
 
-                                        <TouchableOpacity style={[isCommercial ? styles.selectedButton : styles.unSelectedButton, { marginEnd: 10 }]} onPress={() => {
-                                            setIscommercial(true)
-                                            setIsMarketing(false)
-                                            setIsGraphic(false)
-                                            navigation.navigate("Commercial")
-
-                                        }}><Text style={isCommercial ? styles.selectedText : styles.unSelectedText}>{t('Commercial')}</Text></TouchableOpacity>
-
-                                        <TouchableOpacity style={[isGraphic ? styles.selectedButton : styles.unSelectedButton, { marginStart: 10 }]} onPress={() => {
-                                            setIscommercial(false)
-                                            setIsMarketing(false)
-                                            setIsGraphic(true)
-                                            navigation.navigate("GraphicDesigner")
-                                        }}><Text style={isGraphic ? styles.selectedText : styles.unSelectedText}>{t('Graphic designer')}</Text></TouchableOpacity>
-                                    </View>
-
-                                    <TouchableOpacity style={[isMarketing ? styles.selectedButton : styles.unSelectedButton, { width: "50%", marginEnd: 10, marginTop: 15 }]} onPress={() => {
-                                        setIscommercial(false)
-                                        setIsMarketing(true)
-                                        setIsGraphic(false)
-                                        navigation.navigate("Marketing")
-                                    }}><Text style={isMarketing ? styles.selectedText : styles.unSelectedText}>{t('Marketing & Communication Technique')}</Text></TouchableOpacity>
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 30 }}>{t('Recruitment')}</Text>
+                                    }}><Text style={isMarketing ? styles.selectedText : styles.unSelectedText}>{t('Commercial')}</Text></TouchableOpacity> */}
+                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{t('Commercial')}</Text>
                                     <Image
 
                                         resizeMode='stretch'
@@ -499,8 +479,8 @@ const Recruitment = ({ navigation }) => {
 
                                 <View style={styles.textBackground}>
                                     <TextInput style={styles.text}
-                                        keyboardType={'numeric'}
                                         value={telephone}
+                                        keyboardType={'numeric'}
                                         onChangeText={text => setTelephone(text)}></TextInput>
 
                                 </View>
@@ -520,7 +500,7 @@ const Recruitment = ({ navigation }) => {
 
                                 </View>
 
-                                {isChooseFile && <Text style={styles.errorText}>{t('Please select file')}</Text>}
+                                {isChooseFile && <Text style={styles.errorText}>{t('Please enter telephone')}</Text>}
 
                                 <View style={{ flexDirection: "row", marginTop: 20 }}><Text style={styles.subHeaderText}>{t('Message')}</Text>
                                     <Image style={{ height: 5, width: 5, marginTop: 3, marginStart: 3 }}
@@ -532,10 +512,10 @@ const Recruitment = ({ navigation }) => {
                                 <View style={styles.textBackground}>
                                     <TextInput style={styles.text}
                                         value={message}
-                                        onChangeText={text => setMessage(text)}></TextInput>
+                                        onChangeText={text => setMessageFile(text)}></TextInput>
 
                                 </View>
-                                {isMessage && <Text style={styles.errorText}>{t('Please enter message')}</Text>}
+                                {isChooseFile && <Text style={styles.errorText}>{t('Please enter message')}</Text>}
 
                                 <View><TouchableOpacity onPress={() => {submit() }}><Text style={styles.button}>{t('Submit Application')}</Text></TouchableOpacity></View>
 
@@ -748,4 +728,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Recruitment
+export default Commercial

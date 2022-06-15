@@ -70,6 +70,7 @@ const NetworkEquipment = ({ navigation }) =>{
 
 
     useEffect(() => {
+        setIsLoading(true)
         setListEquipment([])
         getNetworkEquipment()
     }, []);
@@ -143,7 +144,7 @@ const NetworkEquipment = ({ navigation }) =>{
             if (state.isConnected) {
            
               
-                setIsLoading(true)
+                // setIsLoading(true)
                 let data={slug:"network-equipments"}
                 fetch("http://50.28.104.48:3003/api/product/getProductsByCategory", {
                     method: 'post',
@@ -170,6 +171,7 @@ const NetworkEquipment = ({ navigation }) =>{
 
                 })
             } else {
+                setIsLoading(false)
                 checkInternet()
             }
 

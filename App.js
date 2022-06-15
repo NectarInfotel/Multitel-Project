@@ -37,7 +37,10 @@ import WelcomeScreen from './screens/WelcomeScreen'
 import EditProfile from './screens/EditProfile'
 import ProductService from './screens/ProductService'
 import EditProfileTwo from './screens/EditProfileTwo'
+import GraphicDesigner from './screens/GraphicDesigner'
+import Marketing from './screens/Marketing'
 import NotificationScreen from './screens/NotificationScreen'
+import Commercial from './screens/Commercial'
 import MyCartScreen from './screens/MyCartScreen'
 import Setting from './screens/Setting'
 import MyWhiteList from './screens/MyWhiteList'
@@ -534,6 +537,20 @@ function MainStack() {
       <Stack.Screen
         name="Recruitment"
         component={Recruitment}
+      />
+
+      <Stack.Screen
+        name="Commercial"
+        component={Commercial}
+      />
+      <Stack.Screen
+        name="GraphicDesigner"
+        component={GraphicDesigner}
+      />
+
+      <Stack.Screen
+        name="Marketing"
+        component={Marketing}
       />
 
 

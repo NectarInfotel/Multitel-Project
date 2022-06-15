@@ -46,6 +46,7 @@ const SmartPhone = ({ navigation }) =>{
 
       useFocusEffect(
         React.useCallback(() => {
+            setIsLoading(true)
             setListCPE([])
             getPromotion()
          
@@ -173,7 +174,7 @@ const SmartPhone = ({ navigation }) =>{
            
                 
                 console.log("token==="+token)
-                setIsLoading(true)
+                // setIsLoading(true)
                 let data={slug:"promotions"}
                 fetch("http://50.28.104.48:3003/api/product/getProductsByCategory", {
                     method: 'post',
@@ -200,6 +201,7 @@ const SmartPhone = ({ navigation }) =>{
 
                 })
             } else {
+                setIsLoading(false)
                 checkInternet()
             }
 

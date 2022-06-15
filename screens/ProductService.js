@@ -64,6 +64,7 @@ const ProductService = ({ navigation }) =>{
     // }, []);
 
     useEffect(() => {
+        setIsLoading(true)
         getProductService()
     }, []);
 
@@ -154,7 +155,7 @@ const ProductService = ({ navigation }) =>{
             if (state.isConnected) {
            
               
-                setIsLoading(true)
+                // setIsLoading(true)
                 // let data={userName:'kindal@getnada.com',password:'Shubh@1992'}
                 let data={slug:"other-productsservices-1"}
                 fetch("http://50.28.104.48:3003/api/product/getProductsByCategory", {
@@ -182,6 +183,7 @@ const ProductService = ({ navigation }) =>{
 
                 })
             } else {
+                setIsLoading(false)
                 checkInternet()
             }
 
