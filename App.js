@@ -39,6 +39,8 @@ import ProductService from './screens/ProductService'
 import EditProfileTwo from './screens/EditProfileTwo'
 import GraphicDesigner from './screens/GraphicDesigner'
 import Marketing from './screens/Marketing'
+import News from './screens/News'
+import EventGallary from './screens/EventGallary'
 import NotificationScreen from './screens/NotificationScreen'
 import Commercial from './screens/Commercial'
 import MyCartScreen from './screens/MyCartScreen'
@@ -551,6 +553,15 @@ function MainStack() {
       <Stack.Screen
         name="Marketing"
         component={Marketing}
+      />
+
+      <Stack.Screen
+        name="News"
+        component={News}
+      />
+      <Stack.Screen
+        name="EventGallary"
+        component={EventGallary}
       />
 
 

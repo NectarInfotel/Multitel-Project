@@ -19,7 +19,7 @@ const HEIGHT = Dimensions.get('window').height
 
 
 const ExpandableComponent = ({ item, onClickFunction }) => {
-    const numColumns=2
+    const numColumns=3
     const [layoutHeight, setLayoutHeight] = useState(0)
   
 
@@ -86,7 +86,7 @@ const ExpandableComponent = ({ item, onClickFunction }) => {
     )
 }
 
-const MultitelPride = ({ navigation }) => {
+const EventGallary = ({ navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
@@ -542,4 +542,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MultitelPride
+export default EventGallary

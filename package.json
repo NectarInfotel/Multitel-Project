@@ -23,6 +23,7 @@
     "react": "17.0.2",
     "react-i18next": "^11.16.9",
     "react-native": "0.67.4",
+    "react-native-document-picker": "^8.1.1",
     "react-native-gesture-handler": "^2.3.2",
     "react-native-google-signin": "^2.1.1",
     "react-native-image-crop-picker": "^0.37.3",

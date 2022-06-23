@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ActionBar from './ActionBar';
-import PrideCart from './PrideCart';
+import MyWhiteCart from './MyWhiteCart';
 import {
-    KeyboardAvoidingView, SafeAreaView, LayoutAnimation, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
+    KeyboardAvoidingView, SafeAreaView, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
 
 import ActivityLoader from './ActivityLoader'
@@ -12,99 +12,57 @@ import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import './langauge/i18n';
+import RecruitmentCart from './RecruitmentCart';
+import NewsCart from './NewsCart';
+import { color } from 'react-native-reanimated';
+import { teal500 } from 'react-native-paper/lib/typescript/styles/colors';
 
+import FilePicker, { types } from 'react-native-document-picker'
 
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
+const numColumns = 2
 
-
-const ExpandableComponent = ({ item, onClickFunction }) => {
-    const numColumns=2
-    const [layoutHeight, setLayoutHeight] = useState(0)
-  
-
-    useEffect(() => {
-
-        if (item.isExpanded) {
-            setLayoutHeight(null)
-        } else {
-            setLayoutHeight(0)
-        }
-
-    }, [item.isExpanded])
-
-    const formatData = (dataList, numColumns) => {
-        if(dataList!=null)
-        {
-            
-            const totalRows = Math.floor(dataList.length / numColumns)
-            let totalLastRow = dataList.length - (totalRows * numColumns)
-    
-            while (totalLastRow !== 0 && totalLastRow !== numColumns) {
-                dataList.push({
-                    id: "blank",
-                    name: "Zahan",
-                    empty: true,
-                    image: 'https://www.apple.com/newsroom/images/product/os/ios/standard/Apple_ios14-app-library-screen_06222020_inline.jpg.large.jpg'
-                })
-                totalLastRow++
-        }
-    
-        }
-        return dataList
-    }
-
-    return (
-        <View>
-            <TouchableOpacity style={styles.item}
-                onPress={onClickFunction}>
-                <View style={{
-                    paddingStart: 15, paddingEnd: 10,
-                    paddingVertical: 10, flexDirection: "row", alignItems: "center"
-                }}>
-                    <Text style={styles.itemText}>
-                        {item.title}
-                    </Text>
-                    <Image style={styles.image}
-                        source={require('../assest/plus.png')}
-                    />
-                </View>
-            </TouchableOpacity>
-            <View style={{ height: layoutHeight, overflow: "hidden" }}>
-
-                <View style={{ paddingHorizontal: 20, backgroundColor: "#fff" }} >
-                    <FlatList style={{ marginTop: 10 }}
-                        data={formatData(item.image, numColumns)}
-                        numColumns={2}
-                        renderItem={({ item }) => PrideCart(item)}
-                        keyExtractor={(item) => item.uid}
-                    />
-                </View>
-            </View>
-
-        </View>
-    )
-}
-
-const MultitelPride = ({ navigation }) => {
+const News = ({ navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
 
     const [emptyList, setEmptyList] = useState(false)
     const [imageUrl, setImageUrl] = useState('');
-    const [name, setName] = useState('');
+    const [name, setName] = useState('')
+    const [emails, setEmail] = useState('')
+    const [listRecruitment, setListRecruitment] = useState([])
+    const [newsList, setNewsList] = useState([])
+    const [isFirstName, setIsFirstName] = useState(false)
+    const [isEmailEmty, setIsEmailEmty] = useState(false)
+    const [isHousehold, setIsHousehold] = useState(false)
+    const [isTelephone, setIsTelephone] = useState(false)
+    const [isChooseFile, setIsChooseFile] = useState(false)
+    const [isMessage, setIsMessage] = useState(false)
+
+    const [isEmailCorrect, setIsEmailCorrect] = useState(false)
+    const [household, setHousehold] = useState('')
+    const [telephone, setTelephone] = useState('')
+    const [file, setFile] = useState('')
+    const [message, setMessage] = useState('')
+    const [uploadImage, setUploadImage] = useState('')
+    const [fileName, setFileName] = useState('')
+    const [fileType, setFileType] = useState('')
+
     const [subHeading, setSubHeading] = useState('')
     const [subHeadingTwo, setSubHeadingTwo] = useState('')
     const [subHeadingThree, setSubHeadingThree] = useState('')
     const [description, setDescription] = useState('');
+    const [categoryId, setCategoryId] = useState('');
     const [descriptionTwo, setDescriptionTwo] = useState('');
     const [descriptionThree, setDescriptionThree] = useState('');
     const [messageTag, setMessageTag] = useState("");
-    const [isCultural, setIsCultural] = useState(false);
-    const [isIndicator, setIsIndicator] = useState(false);
-    const [listSource, setListSource] = useState([]);
-    const [multiSelect, setMultiselect] = useState(false);
+    const [isCommercial, setIscommercial] = useState(false);
+    const [isGraphic, setIsGraphic] = useState(false);
+    const [isMarketing, setIsMarketing] = useState(false);
+
+
 
     const { t, i18n } = useTranslation();
 
@@ -130,7 +88,10 @@ const MultitelPride = ({ navigation }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-
+            setIsLoading(true)
+            setIscommercial(false)
+            setIsMarketing(false)
+            setIsGraphic(false)
             getManagementList()
 
             return () => {
@@ -147,6 +108,26 @@ const MultitelPride = ({ navigation }) => {
             .catch(err => console.log(err));
     };
 
+    const formatData = (dataList, numColumns) => {
+        if (dataList != null) {
+
+            const totalRows = Math.floor(dataList.length / numColumns)
+            let totalLastRow = dataList.length - (totalRows * numColumns)
+
+            while (totalLastRow !== 0 && totalLastRow !== numColumns) {
+                dataList.push({
+                    id: "blank",
+                    name: "Zahan",
+                    empty: true,
+                    image: 'https://www.apple.com/newsroom/images/product/os/ios/standard/Apple_ios14-app-library-screen_06222020_inline.jpg.large.jpg'
+                })
+                totalLastRow++
+            }
+
+        }
+        return dataList
+    }
+
     if (isLoading) {
         return (
             <ActivityLoader />
@@ -155,7 +136,24 @@ const MultitelPride = ({ navigation }) => {
 
     }
 
+    const pdfPicker = async () => {
+        try {
+            const response = await FilePicker.pick({
+                presentationStyle: 'fullScreen',
+                type: [types.pdf]
+            })
+            const res = response[0]
+            setUploadImage(res.uri)
+            setFileType(res.type)
+            setFileName(res.name)
 
+
+
+        } catch (e) {
+
+        }
+
+    }
 
     const checkInternet = () => {
         Alert.alert("Alert", "Please check internet", [
@@ -167,10 +165,7 @@ const MultitelPride = ({ navigation }) => {
     const success = (msg) => {
         Alert.alert("Success", msg, [
             {
-                text: 'Okay', onPress: () => {
-                    setListFav([])
-                    getFavList()
-                }
+                text: 'Okay'
             }
         ])
     }
@@ -212,27 +207,25 @@ const MultitelPride = ({ navigation }) => {
 
             if (state.isConnected) {
 
-                setIsLoading(true)
-                let data = { slug: "social-and-cultural-investment" }
-                fetch("http://50.28.104.48:3003/api/multitelPride/getAllMultitelPride", {
+                fetch("http://50.28.104.48:3003/api/news/getAllNews", {
                     method: 'get',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'Authorization': accessToken
-                    }
+                    },
+
                 }).then((result) => {
 
                     result.json().then((res) => {
-                        setIsLoading(false)
+                        // setIsLoading(false)
                         if (res.code == 200) {
-                            setEmptyList(true)
-                            const arr = res.data
-                            const newArr = arr.map(item => {
-                                return { ...item, isExpanded: false }
-                            })
 
-                            setListSource(newArr)
+                            console.log(JSON.stringify(res.data))
+                            setNewsList(res.data)
+                            setEmptyList(true)
+                            getRecruitmentList()
+
                         } else {
                             setEmptyList(false)
                             failure(res.massage)
@@ -242,6 +235,7 @@ const MultitelPride = ({ navigation }) => {
 
                 })
             } else {
+                setIsLoading(false)
                 checkInternet()
             }
 
@@ -252,23 +246,127 @@ const MultitelPride = ({ navigation }) => {
 
     }
 
-    const updateLayout = (index) => {
 
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        const array = [...listSource]
 
-        if (multiSelect) {
-            array[index]['isExpanded'] = !array[index]['isExpanded']
+    const getRecruitmentList = async () => {
+
+        const accessToken = await AsyncStorage.getItem("access_token");
+
+        const id = await AsyncStorage.getItem("userId")
+
+
+        NetInfo.fetch().then((state) => {
+
+            if (state.isConnected) {
+                fetch("http://50.28.104.48:3003/api/news/getAllNewsCategory", {
+                    method: 'get',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': accessToken
+                    },
+
+                }).then((result) => {
+
+                    result.json().then((res) => {
+                        setIsLoading(false)
+                        if (res.code == 200) {
+                            setListRecruitment(res.data)
+                            console.log(JSON.stringify(res.data))
+                        } else {
+
+                            // failure(res.massage)
+                        }
+                        console.log(res)
+                    })
+
+                })
+            } else {
+                setIsLoading(false)
+                checkInternet()
+            }
+
+
+
+        });
+
+
+    }
+
+    const handleValidUser = (val) => {
+
+        if (val.trim().length > 0) {
+            console.log("name=" + val)
+            setIsFirstName(false)
+
+            return false
         } else {
-            array.map((value, placeindex) =>
-                placeindex === index
-                    ? (array[placeindex]['isExpanded']) = !array[placeindex]['isExpanded']
-                    : (array[placeindex]['isExpanded']) = false
-            );
+            setIsFirstName(true)
+
+            return true
         }
 
-        setListSource(array)
     }
+
+    const handleValidHouseHold = (val) => {
+
+        if (val.trim().length > 0) {
+            setIsHousehold(false)
+
+            return false
+        } else {
+            setIsHousehold(true)
+
+            return true
+        }
+
+    }
+
+    const handleValidHouseTelephone = (val) => {
+
+        if (val.trim().length > 0) {
+            setIsTelephone(false)
+
+            return false
+        } else {
+            setIsTelephone(true)
+
+            return true
+        }
+
+    }
+
+    const handleValidChooseFile = (val) => {
+
+        if (val.trim().length > 0) {
+            setIsChooseFile(false)
+
+            return false
+        } else {
+            setIsChooseFile(true)
+
+            return true
+        }
+
+    }
+
+    const handleValidMessage = (val) => {
+        if (val.trim().length > 0) {
+            setIsMessage(false)
+
+            return false
+        } else {
+            setIsMessage(true)
+
+            return true
+        }
+
+    }
+
+
+
+
+
 
 
     return (
@@ -304,20 +402,28 @@ const MultitelPride = ({ navigation }) => {
                     </View>
                     {emptyList ?
                         <>
-                            <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 15, marginHorizontal: 20 }}>{t('Multitel Pride')}</Text>
-                            <ScrollView style={{ backgroundColor: "#fff", marginTop: 5 }}>
+                            <ScrollView>
+                                <View>
+                                    <FlatList style={{ marginTop: 10, marginEnd: 10, marginStart: 10 }}
+                                        data={formatData(listRecruitment, numColumns)}
+                                        numColumns={2}
+                                        renderItem={({ item }) => RecruitmentCart(item, navigation, t)}
+                                        keyExtractor={(item) => item.uid}
+                                    />
+                                    
 
-                                {
-                                    listSource.map((item, key) => (
-                                        <ExpandableComponent
-                                            item={item}
-                                            key={item.category_name}
-                                            onClickFunction={() => {
-                                                updateLayout(key)
-                                            }}
+                                        <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10, marginStart: 20 }}>{t('News')}</Text>
+
+                                        <FlatList style={{ marginTop: 10,marginStart: 15,marginEnd:15 }}
+                                            data={formatData(newsList, numColumns)}
+                                            numColumns={2}
+                                            renderItem={({ item }) => NewsCart(item,t)}
+                                            keyExtractor={(item) => item.uid}
                                         />
-                                    ))
-                                }
+
+
+                                    
+                                </View>
                             </ScrollView>
 
 
@@ -347,6 +453,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
+        justifyContent: 'center',
         backgroundColor: 'white',
     },
     radioLabel: {
@@ -395,9 +502,10 @@ const styles = StyleSheet.create({
 
         backgroundColor: '#FFFFFF',
         width: "100%",
-        marginTop: 20,
+        marginTop: 15,
         flexDirection: "row",
-        height: 50,
+        height: 45,
+        borderColor: "#DDDBDB",
         borderWidth: 1,
         borderRadius: 5,
         alignItems: "center"
@@ -423,9 +531,8 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         justifyContent: "center",
         height: 50,
+        marginTop: 30,
         marginBottom: 30,
-        marginEnd: 20,
-        marginStart: 20,
         borderRadius: 5,
         alignItems: "center",
         textAlign: "center",
@@ -457,6 +564,8 @@ const styles = StyleSheet.create({
     image: {
         height: 20,
         width: 20,
+        marginEnd: 15,
+        justifyContent: "flex-end"
     },
     socialImage: {
         height: 60,
@@ -464,6 +573,12 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         backgroundColor: 'white'
+    },
+    errorText: {
+        fontSize: 11,
+        fontWeight: "bold",
+        marginTop: 2,
+        color: 'red'
     },
     text: {
         fontSize: 12,
@@ -495,7 +610,6 @@ const styles = StyleSheet.create({
     subHeaderText: {
         fontSize: 14,
         fontWeight: "bold",
-        marginTop: 20,
         color: '#707070'
     },
     rectangleShapeView: {
@@ -514,32 +628,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         height: '50%',
         paddingHorizontal: 30
-    },
-    item: {
-        backgroundColor: '#EEF3F7',
-        marginTop: 10,
-        marginHorizontal: 20
-    },
-    itemText: {
-        fontSize: 12,
-        flex: 1,
-        fontWeight: "bold",
-        color: "#1D3557"
-    },
-    content: {
-        paddingRight: 10,
-        paddingEnd: 10,
-        backgroundColor: '#fff'
-    },
-    text: {
-        fontSize: 16,
-        padding: 10
-    },
-    separator: {
-        height: 0.5,
-        backgroundColor: "#c8c8c8",
-        width: "100%"
     }
 });
 
-export default MultitelPride
+export default News

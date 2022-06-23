@@ -5,10 +5,12 @@ import AsyncStorage  from '@react-native-async-storage/async-storage';
 
 import { Card } from 'react-native-paper';
 
-const PrideCart = (item) => {
+const NewsCart = (item,t) => {
 
-   console.log("hi==="+item)
- 
+  const dateOfBirth = item.news_date
+  let tempDate = new Date(dateOfBirth)
+  let fDate = tempDate.getDate() + "/" + (tempDate.getMonth() + 1) + "/" + tempDate.getFullYear()
+
   if(item.empty)
   {
    return <View style={{ flex: 1,backgroundColor:"transparent" }}>
@@ -21,14 +23,14 @@ const PrideCart = (item) => {
       <View onPress={()=>{
         // AsyncStorage.setItem("product",JSON.stringify(item))
         // navigation.navigate('ProductDetail')
-        }} style={{ marginTop: 2, backgroundColor: "#FFFFFF",marginHorizontal:10,paddingHorizontal:5, paddingVertical: 5,borderColor:"#098DD4",borderWidth:1,marginBottom:5}}>
+        }} style={{ marginTop: 2, backgroundColor: "#FFFFFF",marginHorizontal:5,paddingHorizontal:5, paddingVertical: 5,borderColor:"#098DD4",borderWidth:1,marginBottom:5}}>
         <View>
 
           <View>
             <Image
               source={{
                 uri:
-                `http://50.28.104.48:3003/images/${item}`,
+                `http://50.28.104.48:3003/images/${item.image[0]}`,
               }}
               resizeMode="stretch"
               style={styles.rectangleShapeImage}>
@@ -37,9 +39,15 @@ const PrideCart = (item) => {
           </View>
           <View style={{alignItems:"center",marginTop:10 }}>
           
-              <Text numberOfLines={1} style={{textAlign:"center", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{item}</Text>
+              <Text numberOfLines={1} style={{textAlign:"center", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{fDate}</Text>
           
-            <Text  numberOfLines={1}style={{textAlign:"center",color: "#707070", fontWeight: "normal", fontSize: 11,marginTop:1 }}>{item}</Text>
+            <Text  numberOfLines={1}style={{textAlign:"center",color: "#707070", fontWeight: "normal", fontSize: 11,marginTop:1 }}>{item.description}</Text>
+
+            <View style={styles.rectangleShapeView}>
+
+              <Text style={{ color: "#fff", fontWeight: "normal", fontSize: 8 }}>{t('Know More')}</Text>
+
+            </View>
 
       
             
@@ -70,8 +78,9 @@ const styles = StyleSheet.create({
     height: 20,
     justifyContent: "center",
     alignItems: "center",
+    marginTop:5,
     backgroundColor: "#098DD4",
-    borderRadius: 5
+    borderRadius: 3
 
   },
 
@@ -114,4 +123,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default PrideCart
+export default NewsCart

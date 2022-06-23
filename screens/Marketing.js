@@ -10,15 +10,15 @@ import {
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FilePicker, { types } from 'react-native-document-picker'
 import { useTranslation } from 'react-i18next';
 import './langauge/i18n';
-import { color } from 'react-native-reanimated';
-import { teal500 } from 'react-native-paper/lib/typescript/styles/colors';
+
 
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
-const Marketing = ({ navigation }) => {
+const Marketing = ({ route, navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
@@ -34,6 +34,10 @@ const Marketing = ({ navigation }) => {
     const [isChooseFile, setIsChooseFile] = useState(false)
     const [isMessage, setIsMessage] = useState(false)
 
+    const [uploadImage, setUploadImage] = useState('')
+    const [fileName, setFileName] = useState('')
+    const [fileType, setFileType] = useState('')
+    const [categoryId, setCategoryId] = useState('');
     const [isEmailCorrect, setIsEmailCorrect] = useState(false)
     const [household, setHousehold] = useState('')
     const [telephone, setTelephone] = useState('')
@@ -52,6 +56,10 @@ const Marketing = ({ navigation }) => {
     const [isMarketing, setIsMarketing] = useState(false);
 
     const { t, i18n } = useTranslation();
+
+    const { recruimentName } = route.params
+
+    const { slug } = route.params
 
     useFocusEffect(
         React.useCallback(() => {
@@ -115,10 +123,7 @@ const Marketing = ({ navigation }) => {
     const success = (msg) => {
         Alert.alert("Success", msg, [
             {
-                text: 'Okay', onPress: () => {
-                    setListFav([])
-                    getFavList()
-                }
+                text: 'Okay'
             }
         ])
     }
@@ -161,7 +166,7 @@ const Marketing = ({ navigation }) => {
             if (state.isConnected) {
 
 
-                let data = { slug: "marketing" }
+                let data = { slug: slug }
                 fetch("http://50.28.104.48:3003/api/recruitment/getRecruitmentByCategory", {
                     method: 'post',
                     headers: {
@@ -185,12 +190,13 @@ const Marketing = ({ navigation }) => {
                             setImageUrl(url)
                             // setName(res.data.name)
                             setDescription(value.description)
-                            setName(value.name)
-                            setEmail(value.email)
-                            setMessage(value.message)
-                            setHousehold(value.household)
-                            const phone = value.phone + ""
-                            setTelephone(phone)
+                            setCategoryId(value.categoryId)
+                            // setName(value.name)
+                            // setEmail(value.email)
+                            // setMessage(value.message)
+                            // setHousehold(value.household)
+                            // const phone = value.phone + ""
+                            // setTelephone(phone)
                             setSubHeading(value.recruitment_heading)
                             setSubHeadingTwo(value.description_heading)
                             setDescriptionTwo(value.sub_description)
@@ -298,79 +304,127 @@ const Marketing = ({ navigation }) => {
     }
 
     const handleValidEmail = (val) => {
-        if (val.trim().length > 0) {
-            let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-            if (reg.test(val) === true) {
-                console.log("email=" + val)
-                setIsEmailCorrect(false)
+        if(val!=null)
+        {
+            if (val.trim().length > 0) {
+                let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+                if (reg.test(val) === true) {
+                    console.log("email=" + val)
+                    setIsEmailCorrect(false)
+                    setIsEmailEmty(false)
+                    return false
+                } else {
+                    setIsEmailCorrect(true)
+                    setIsEmailEmty(false)
+                    return true
+                }
+    
                 setIsEmailEmty(false)
                 return false
             } else {
-                setIsEmailCorrect(true)
-                setIsEmailEmty(false)
+                setIsEmailEmty(true)
                 return true
             }
-
-            setIsEmailEmty(false)
-            return false
-        } else {
+        }else{
             setIsEmailEmty(true)
-            return true
+                return true 
+        }
+       
+
+    }
+
+    const pdfPicker = async () => {
+        try {
+            const response = await FilePicker.pick({
+                presentationStyle: 'fullScreen',
+                type: [types.pdf]
+            })
+            const res = response[0]
+            setUploadImage(res.uri)
+            setFileType(res.type)
+            setFileName(res.name)
+        } catch (e) {
+
         }
 
     }
 
 
-    const submit = () => {
+    const submit = async () => {
+        try {
 
-        NetInfo.fetch().then((state) => {
+            console.log("Uri===" + uploadImage)
+            console.log("type===" + fileType)
+            console.log("name===" + fileName)
+            const accessToken = await AsyncStorage.getItem("access_token");
+            const id = await AsyncStorage.getItem("userId")
+            NetInfo.fetch().then((state) => {
 
-            if (state.isConnected) {
-                const isName = handleValidUser(name)
-                const isEmail = handleValidEmail(emails)
-                const isHold = handleValidHouseHold(household)
-                const isPhone = handleValidHouseTelephone(telephone)
-                const isDocument = handleValidChooseFile(file)
-                const isMesaages = handleValidMessage(message)
+                if (state.isConnected) {
+                    const isName = handleValidUser(name)
+                    const isEmail = handleValidEmail(emails)
+                    const isHold = handleValidHouseHold(household)
+                    const isPhone = handleValidHouseTelephone(telephone)
+                    const isDocument = handleValidChooseFile(uploadImage)
+                    const isMesaages = handleValidMessage(message)
 
 
-                if (isName || isEmail || isHold || isPhone || isDocument || isMesaages) {
+                    if (isName || isEmail || isHold || isPhone || isDocument || isMesaages) {
 
-                    return
+                        return
+                    }
+                    setIsLoading(true)
+                    const data = new FormData();
+                    data.append('name', name);
+                    data.append('userId', id);
+                    data.append('categoryId', categoryId);
+                    data.append('email', emails);
+                    data.append('message', message);
+                    data.append('phone', telephone);
+                    data.append('description', description)
+                    data.append('household', household);
+                    data.append("image", { uri: uploadImage, type: fileType, name: fileName });
+
+
+                    fetch("http://50.28.104.48:3003/api/recruitment/addRecruitment", {
+                        method: 'post',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'multipart/form-data',
+                            'Authorization': accessToken
+                        },
+                        body: data
+                    }).then((result) => {
+
+                        result.json().then((res) => {
+                            setIsLoading(false)
+                            if (res.code == 200) {
+
+                                success(res.massage)
+                            } else {
+
+                                failure(res.massage)
+                            }
+                            console.log(res)
+                        })
+
+                    }).catch((error) => {
+                        console.log("value==" + error)
+                    })
+
+
+
+                } else {
+                    checkInternet()
                 }
-                // setIsLoading(true)
-                // let data = { first_name: name, last_name: name, email: emails, password: pass }
-                // fetch("http://50.28.104.48:3003/api/user/userRegistration", {
-                //     method: 'post',
-                //     headers: {
-                //         'Accept': 'application/json',
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify(data)
-                // }).then((result) => {
-
-                //     result.json().then((res) => {
-                //         setIsLoading(false)
-                //         if (res.code == 200) {
-
-                //             success(res.massage)
-                //         } else {
-
-                //             failure(res.massage)
-                //         }
-                //         console.log(res)
-                //     })
-
-                // })
-            } else {
-                checkInternet()
-            }
 
 
 
-        });
-
-
+            });
+        } catch (error) {
+            setIsLoading(false)
+            console.log(error);
+        }
     }
 
 
@@ -415,7 +469,7 @@ const Marketing = ({ navigation }) => {
                                         setIscommercial(true)
 
                                     }}><Text style={isMarketing ? styles.selectedText : styles.unSelectedText}>{t('Commercial')}</Text></TouchableOpacity> */}
-                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{t('Marketing And Communication Technique')}</Text>
+                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{recruimentName}</Text>
                                     <Image
 
                                         resizeMode='stretch'
@@ -540,8 +594,14 @@ const Marketing = ({ navigation }) => {
 
                                     <View style={styles.textBackground}>
                                         <TextInput style={styles.text}
-                                            value={file}
+                                            editable={false}
+                                            value={fileName}
                                             onChangeText={text => setFile(text)}></TextInput>
+
+                                        <TouchableOpacity style={{ marginEnd: 10 }} onPress={() => pdfPicker()}><Image style={{ height: 20, width: 20 }}
+
+                                            source={require('../assest/upload.png')}
+                                        /></TouchableOpacity>
 
                                     </View>
 
@@ -557,7 +617,7 @@ const Marketing = ({ navigation }) => {
                                     <View style={styles.textBackground}>
                                         <TextInput style={styles.text}
                                             value={message}
-                                            onChangeText={text => setMessageFile(text)}></TextInput>
+                                            onChangeText={text => setMessage(text)}></TextInput>
 
                                     </View>
                                     {isMessage && <Text style={styles.errorText}>{t('Please enter message')}</Text>}
