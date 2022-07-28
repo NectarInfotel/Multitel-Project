@@ -4,9 +4,9 @@ import RadioGroup from 'react-native-radio-buttons-group';
 import ActionBar from './ActionBar';
 import MyWhiteCart from './MyWhiteCart';
 import {
-    KeyboardAvoidingView, SafeAreaView, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
+    KeyboardAvoidingView, useWindowDimensions, SafeAreaView, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
-
+import RenderHtml from 'react-native-render-html';
 import ActivityLoader from './ActivityLoader'
 import NetInfo from '@react-native-community/netinfo'
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,7 +23,7 @@ const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 const numColumns = 2
 
-const News = ({ navigation }) => {
+const Internet = ({ navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
@@ -58,11 +58,15 @@ const News = ({ navigation }) => {
     const [descriptionTwo, setDescriptionTwo] = useState('');
     const [descriptionThree, setDescriptionThree] = useState('');
     const [messageTag, setMessageTag] = useState("");
-    const [isCommercial, setIscommercial] = useState(false);
-    const [isGraphic, setIsGraphic] = useState(false);
-    const [isMarketing, setIsMarketing] = useState(false);
+    const [isPrivateNetwork, setIsPrivateNetwork] = useState(false);
+    const [isPrimeDate, setIsPrimeDate] = useState(false);
+    const [isSecuredAccess, setIsSecuredAccess] = useState(false);
+    const [isSatDate, setIsSatDate] = useState(false);
+    const [isLantoLan, setIsLantoLan] = useState(false);
+    const [isP2PLink, setIsP2PLink] = useState(false);
+    const [isLinkEN, setIsLinkEN] = useState(false);
 
-
+    const { width } = useWindowDimensions();
 
     const { t, i18n } = useTranslation();
 
@@ -88,11 +92,9 @@ const News = ({ navigation }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-            setIsLoading(true)
-            setIscommercial(false)
-            setIsMarketing(false)
-            setIsGraphic(false)
-            getManagementList()
+
+
+            getManagementList("internet")
 
             return () => {
             };
@@ -190,8 +192,8 @@ const News = ({ navigation }) => {
 
 
 
-    const getManagementList = async () => {
-
+    const getManagementList = async (slug) => {
+        setIsLoading(true)
         const accessToken = await AsyncStorage.getItem("access_token");
         const langauge = await AsyncStorage.getItem("langauge");
 
@@ -206,25 +208,28 @@ const News = ({ navigation }) => {
         NetInfo.fetch().then((state) => {
 
             if (state.isConnected) {
-
-                fetch("http://50.28.104.48:3003/api/news/getAllNews", {
-                    method: 'get',
+                let data = { slug: slug }
+                fetch("http://50.28.104.48:3003/api/telecommunication/getTelecommunicationBySlug", {
+                    method: 'post',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'Authorization': accessToken
                     },
-
+                    body: JSON.stringify(data)
                 }).then((result) => {
 
                     result.json().then((res) => {
-                        // setIsLoading(false)
+                        setIsLoading(false)
                         if (res.code == 200) {
 
-                            console.log("all News"+JSON.stringify(res.data))
-                            setNewsList(res.data)
+                            console.log("all News" + JSON.stringify(res.data))
+                            if(res.data.image!=null)
+                            setImageUrl(res.data.image)
+                            setName(res.data.name)
+                            setDescription(res.data.description)
                             setEmptyList(true)
-                            getRecruitmentList()
+                            // getRecruitmentList()
 
                         } else {
                             setEmptyList(false)
@@ -246,7 +251,80 @@ const News = ({ navigation }) => {
 
     }
 
+    const clickPrivateNetworks = () => {
+        setIsPrivateNetwork(true)
+        setIsPrimeDate(false)
+        setIsSecuredAccess(false);
+        setIsSatDate(false);
+        setIsLantoLan(false);
+        setIsP2PLink(false);
+        setIsLinkEN(false)
+        getManagementList("private-network")
+    }
+    const clickPrimeDate = () => {
+        setIsPrivateNetwork(false)
+        setIsPrimeDate(true)
+        setIsSecuredAccess(false);
+        setIsSatDate(false);
+        setIsLantoLan(false);
+        setIsP2PLink(false);
+        setIsLinkEN(false)
+        getManagementList("prime-date-heading")
+    }
+    const clickSecuredAccess = () => {
+        setIsPrivateNetwork(false)
+        setIsPrimeDate(false)
+        setIsSecuredAccess(true);
+        setIsSatDate(false);
+        setIsLantoLan(false);
+        setIsP2PLink(false);
+        setIsLinkEN(false)
+        getManagementList("secured-access")
+    }
+    const clickSatDate = () => {
+        setIsPrivateNetwork(false)
+        setIsPrimeDate(false)
+        setIsSecuredAccess(false);
+        setIsSatDate(true);
+        setIsLantoLan(false);
+        setIsP2PLink(false);
+        setIsLinkEN(false)
+        getManagementList("sat-date")
+    }
+    const clickLantoLan = () => {
+        setIsPrivateNetwork(false)
+        setIsPrimeDate(false)
+        setIsSecuredAccess(false);
+        setIsSatDate(false);
+        setIsLantoLan(true);
+        setIsP2PLink(false);
+        setIsLinkEN(false)
+        getManagementList("lan-to-lan")
+    }
+    const p2pLink = () => {
+        setIsPrivateNetwork(false)
+        setIsPrimeDate(false)
+        setIsSecuredAccess(false);
+        setIsSatDate(false);
+        setIsLantoLan(false);
+        setIsP2PLink(true);
+        setIsLinkEN(false)
+        getManagementList("p2p-link")
+    }
+    const LinkEN = () => {
+        setIsPrivateNetwork(false)
+        setIsPrimeDate(false)
+        setIsSecuredAccess(false);
+        setIsSatDate(false);
+        setIsLantoLan(false);
+        setIsP2PLink(false);
+        setIsLinkEN(true)
+        getManagementList("link-en")
+    }
 
+    const source = {
+        html: `${description}`
+    };
 
     const getRecruitmentList = async () => {
 
@@ -277,7 +355,7 @@ const News = ({ navigation }) => {
 
                             // failure(res.massage)
                         }
-                        console.log("News detail=="+JSON.stringify(res.data))
+                        console.log("News detail==" + JSON.stringify(res.data))
                     })
 
                 })
@@ -363,12 +441,6 @@ const News = ({ navigation }) => {
 
     }
 
-
-
-
-
-
-
     return (
         <>
             <StatusBar hidden={false} barStyle='light-content' backgroundColor="#0076B5" />
@@ -403,26 +475,55 @@ const News = ({ navigation }) => {
                     {emptyList ?
                         <>
                             <ScrollView>
-                                <View>
-                                    <FlatList style={{ marginTop: 10, marginEnd: 10, marginStart: 10 }}
+                                <View style={{ marginHorizontal: 5 }}>
+                                    {/* <FlatList style={{ marginTop: 10, marginEnd: 10, marginStart: 10 }}
                                         data={formatData(listRecruitment, numColumns)}
                                         numColumns={2}
                                         renderItem={({ item }) => NewsBulletCart(item, navigation, t)}
                                         keyExtractor={(item) => item.uid}
-                                    />
-                                    
+                                    /> */}
 
-                                        <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10, marginStart: 20 }}>{t('News')}</Text>
+                                    <View style={{ flexDirection: "row" }}>
+                                        <View style={{ flex: 1, marginStart: 10, marginEnd: 10, marginBottom: 10 }}>
+                                            <TouchableOpacity style={isPrivateNetwork ? styles.selectedButton : styles.unSelectedButton} onPress={() => {
+                                                clickPrivateNetworks()
+                                            }}><Text style={isPrivateNetwork ? styles.selectedText : styles.unSelectedText}>{t('Net Prime')}</Text></TouchableOpacity>
+                                        </View>
+                                        <View style={{ flex: 1, marginStart: 10, marginEnd: 10, marginBottom: 10 }}>
+                                            <TouchableOpacity style={isPrimeDate ? styles.selectedButton : styles.unSelectedButton} onPress={() => {
+                                                clickPrimeDate()
+                                            }}><Text style={isPrimeDate ? styles.selectedText : styles.unSelectedText}>{t('Net Pro')}</Text></TouchableOpacity>
+                                        </View>
+                                    </View>
 
-                                        <FlatList style={{ marginTop: 10,marginStart: 15,marginEnd:15 }}
-                                            data={formatData(newsList, numColumns)}
-                                            numColumns={2}
-                                            renderItem={({ item }) => NewsCart(item,navigation,t)}
-                                            keyExtractor={(item) => item.uid}
+                                    <View style={{ flexDirection: "row" }}>
+                                        <View style={{ flex: 1, marginStart: 10, marginEnd: 10, marginBottom: 10 }}>
+                                            <TouchableOpacity style={isSecuredAccess ? styles.selectedButton : styles.unSelectedButton} onPress={() => {
+                                                clickSecuredAccess()
+                                            }}><Text style={isSecuredAccess ? styles.selectedText : styles.unSelectedText}>{t('Net Sat')}</Text></TouchableOpacity>
+                                        </View>
+                                        <View style={{ flex: 1, marginStart: 10, marginEnd: 10, marginBottom: 10 }}>
+                                            <TouchableOpacity style={isSatDate ? styles.selectedButton : styles.unSelectedButton} onPress={() => {
+                                                clickSatDate()
+                                            }}><Text style={isSatDate ? styles.selectedText : styles.unSelectedText}>{t('Web Services')}</Text></TouchableOpacity>
+                                        </View>
+                                    </View>
+
+                                    {imageUrl!=''&&<Image
+                                        resizeMode='stretch'
+                                        style={[styles.wrap, { marginTop: 10 }]}
+                                        source={{ uri: imageUrl }}
+                                    />}
+
+                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10, marginStart: 10 }}>{name}</Text>
+                                    <View style={{ marginHorizontal: 10 }}>
+                                        <RenderHtml
+                                            contentWidth={width}
+                                            source={source}
                                         />
+                                    </View>
 
 
-                                    
                                 </View>
                             </ScrollView>
 
@@ -631,4 +732,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default News
+export default Internet

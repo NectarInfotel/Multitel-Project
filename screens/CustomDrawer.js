@@ -22,6 +22,7 @@ const CustomDrawer = (props) => {
     const [imageUrl, setImageUrl] = useState('')
     const [imageType, setImageType] = useState('')
     const [isWhoWe, setIsWhoWe] = useState(false)
+    const [isTelecomunication, setIsTelecomunication] = useState(false)
     const [currentLanguage, setLanguage] = useState('en');
     const { t, i18n } = useTranslation();
     const isDrawerVisible = useDrawerStatus();
@@ -156,10 +157,6 @@ const CustomDrawer = (props) => {
         ])
 
     }
-
-
-
-
 
     const getAccessToken = async function (image) {
         try {
@@ -309,13 +306,13 @@ const CustomDrawer = (props) => {
                         }} >{name}</Text>
 
                         <View style={{
-                                 position: 'absolute',
-                                 right: 10,
-                                 bottom:115
+                            position: 'absolute',
+                            right: 10,
+                            bottom: 115
                         }}><TouchableOpacity onPress={() => { navigation.closeDrawer() }}><Image
-                                    source={require('../assest/cross.png')}
-                                    style={styles.iconCross}
-                                /></TouchableOpacity></View>
+                            source={require('../assest/cross.png')}
+                            style={styles.iconCross}
+                        /></TouchableOpacity></View>
 
                     </View>
 
@@ -383,7 +380,7 @@ const CustomDrawer = (props) => {
                             source={require('../assest/question.png')}
                         /> : <Image style={styles.image}
                             source={require('../assest/digitotal.png')} />}
-                        <TouchableOpacity onPress={() => { navigation.navigate("Like", { screen: "ManagementMessage" }) }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Who We Are')}</Text></TouchableOpacity><TouchableOpacity onPress={() => { setIsWhoWe(!isWhoWe) }}><View style={{ marginStart: 10 }}>
+                        <TouchableOpacity onPress={() => { navigation.navigate("WhoWeAre") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Who We Are')}</Text></TouchableOpacity><TouchableOpacity onPress={() => { setIsWhoWe(!isWhoWe) }}><View style={{ marginStart: 10 }}>
                             {isWhoWe ? <Image style={{ width: 10, height: 10 }}
                                 source={require('../assest/arrow-up.png')}
                             /> : <Image style={{ width: 10, height: 10 }}
@@ -398,8 +395,31 @@ const CustomDrawer = (props) => {
                             <TouchableOpacity onPress={() => { navigation.navigate("Recruitment") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Recruitment')}</Text></TouchableOpacity>
                             <TouchableOpacity onPress={() => { navigation.navigate("Sustainability") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Sustainability')}</Text></TouchableOpacity>
                             <TouchableOpacity onPress={() => { navigation.navigate("MultitelPride") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Multitel Pride')}</Text></TouchableOpacity>
-                            <Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Companys Social Bodies')}</Text>
+                            <TouchableOpacity onPress={() => { navigation.navigate("SocialResponsibility") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Companys Social Bodies')}</Text></TouchableOpacity>
 
+                        </View>)
+                    }
+
+                    <View style={{ flexDirection: "row", marginStart: 20, paddingVertical: 15, alignItems: "center" }}>
+                       <Image style={styles.image}
+                            source={require('../assest/smartphone.png')}
+                        /> 
+                        <TouchableOpacity onPress={() => { navigation.navigate("Telecomunication") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 16, marginStart: 20 }}>{t('Telecommunications')}</Text></TouchableOpacity><TouchableOpacity onPress={() => { 
+                            setIsWhoWe(false)
+                            setIsTelecomunication(!isTelecomunication) }}><View style={{ marginStart: 10 }}>
+                            {isTelecomunication ? <Image style={{ width: 10, height: 10 }}
+                                source={require('../assest/arrow-up.png')}
+                            /> : <Image style={{ width: 10, height: 10 }}
+                                source={require('../assest/arrow_down.png')} />}
+                        </View></TouchableOpacity>
+                    </View>
+                    {
+                        isTelecomunication && (<View style={{ marginStart: 50 }}>
+                            <TouchableOpacity onPress={() => { navigation.navigate("PrivateNetwork") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Private Networks')}</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { navigation.navigate("Internet") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Internet')}</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { navigation.navigate("News") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('VSAT')}</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { navigation.navigate("Recruitment") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('Video Conferencing')}</Text></TouchableOpacity>
+                            <TouchableOpacity onPress={() => { navigation.navigate("Sustainability") }}><Text style={{ color: "#1D3557", fontWeight: "normal", fontSize: 15, marginStart: 20, paddingVertical: 5 }}>{t('CPEs')}</Text></TouchableOpacity>
                         </View>)
                     }
 

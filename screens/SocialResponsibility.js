@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ActionBar from './ActionBar';
-import GallaryCart from './GallaryCart';
+import ResponsibityCart from './ResponsibityCart';
 import {
     KeyboardAvoidingView, SafeAreaView, LayoutAnimation, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
@@ -19,30 +19,28 @@ const HEIGHT = Dimensions.get('window').height
 
 
 const ExpandableComponent = ({ item, onClickFunction }) => {
-    const numColumns=3
-    const [layoutHeight, setLayoutHeight] = useState(0)
-    const [icon, setIcon] = useState(true)
-  
+    const numColumns = 2
+    const [layoutHeight, setLayoutHeight] = useState(null)
 
-    useEffect(() => {
 
-        if (item.isExpanded) {
-            setLayoutHeight(null)
-            setIcon(false)
-        } else {
-            setIcon(true)
-            setLayoutHeight(0)
-        }
+    // useEffect(() => {
 
-    }, [item.isExpanded])
+    //     if (item.isExpanded) {
+    //         console.log("hiiii=="+"open")
+    //         setLayoutHeight(null)
+    //     } else {
+    //         console.log("hiiii=="+"close")
+    //         setLayoutHeight(0)
+    //     }
+
+    // }, [item.isExpanded])
 
     const formatData = (dataList, numColumns) => {
-        if(dataList!=null)
-        {
-            
+        if (dataList != null) {
+
             const totalRows = Math.floor(dataList.length / numColumns)
             let totalLastRow = dataList.length - (totalRows * numColumns)
-    
+
             while (totalLastRow !== 0 && totalLastRow !== numColumns) {
                 dataList.push({
                     id: "blank",
@@ -51,37 +49,28 @@ const ExpandableComponent = ({ item, onClickFunction }) => {
                     image: 'https://www.apple.com/newsroom/images/product/os/ios/standard/Apple_ios14-app-library-screen_06222020_inline.jpg.large.jpg'
                 })
                 totalLastRow++
-        }
-    
+            }
+
         }
         return dataList
     }
 
     return (
         <View>
-            <TouchableOpacity style={styles.item}
-                onPress={onClickFunction}>
-                <View style={{
-                    paddingStart: 15, paddingEnd: 10,
-                    paddingVertical: 10, flexDirection: "row", alignItems: "center"
-                }}>
-                    <Text style={styles.itemText}>
-                        {item.title}
-                    </Text>
-                    {icon?<Image style={styles.image}
-                        source={require('../assest/plus.png')}
-                    />:<Image style={styles.image}
-                    source={require('../assest/substract.png')}
-                />}
-                </View>
-            </TouchableOpacity>
-            <View style={{ height: layoutHeight, overflow: "hidden" }}>
+            <View style={{
+                marginTop:20, flexDirection: "row", alignItems: "center"
+            }}>
+                <Text style={styles.itemText}>
+                    {item.name}
+                </Text>
 
-                <View style={{  backgroundColor: "#fff" }} >
-                    <FlatList style={{ marginTop: 10,marginHorizontal:5 }}
-                        data={formatData(item.image, numColumns)}
-                        numColumns={3}
-                        renderItem={({ item }) => GallaryCart(item)}
+            </View>
+
+            <View>
+                <View style={{ backgroundColor: "#fff" }} >
+                    <FlatList style={{ marginHorizontal: 20 }}
+                        data={item.corporates}
+                        renderItem={({ item }) => ResponsibityCart(item)}
                         keyExtractor={(item) => item.uid}
                     />
                 </View>
@@ -91,7 +80,7 @@ const ExpandableComponent = ({ item, onClickFunction }) => {
     )
 }
 
-const EventGallary = ({route, navigation }) => {
+const SocialResponsibility = ({ navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
@@ -112,10 +101,6 @@ const EventGallary = ({route, navigation }) => {
     const [multiSelect, setMultiselect] = useState(false);
 
     const { t, i18n } = useTranslation();
-
-    const { recruimentName } = route.params
-
-    const { slug } = route.params
 
     useFocusEffect(
         React.useCallback(() => {
@@ -139,8 +124,8 @@ const EventGallary = ({route, navigation }) => {
 
     useFocusEffect(
         React.useCallback(() => {
-            setIsLoading(true)
-            getManagementList()
+
+            getResponsibilities()
 
             return () => {
             };
@@ -204,7 +189,7 @@ const EventGallary = ({route, navigation }) => {
 
 
 
-    const getManagementList = async () => {
+    const getResponsibilities = async () => {
 
         const accessToken = await AsyncStorage.getItem("access_token");
         const langauge = await AsyncStorage.getItem("langauge");
@@ -221,23 +206,22 @@ const EventGallary = ({route, navigation }) => {
 
             if (state.isConnected) {
 
-                
-                let data = { slug: slug }
-                fetch("http://50.28.104.48:3003/api/news/getNewsByCategory", {
-                    method: 'post',
+                setIsLoading(true)
+                let data = { slug: "social-and-cultural-investment" }
+                fetch("http://50.28.104.48:3003/api/corporate/getAllCorporateCategory", {
+                    method: 'get',
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'Authorization': accessToken
-                    },
-                    body: JSON.stringify(data)
+                    }
                 }).then((result) => {
 
                     result.json().then((res) => {
                         setIsLoading(false)
                         if (res.code == 200) {
                             setEmptyList(true)
-                            const arr = res.data.news
+                            const arr = res.data
                             const newArr = arr.map(item => {
                                 return { ...item, isExpanded: false }
                             })
@@ -252,7 +236,6 @@ const EventGallary = ({route, navigation }) => {
 
                 })
             } else {
-                setIsLoading(false)
                 checkInternet()
             }
 
@@ -315,14 +298,14 @@ const EventGallary = ({route, navigation }) => {
                     </View>
                     {emptyList ?
                         <>
-                            <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 15, marginHorizontal: 20 }}>{recruimentName}</Text>
-                            <ScrollView style={{ backgroundColor: "#fff", marginTop: 5 }}>
 
+                            <ScrollView style={{ backgroundColor: "#fff", marginTop: 5 }}>
+                                <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 15, marginHorizontal: 20 }}>{t('Corporate Bodies and Corporate Composition')}</Text>
                                 {
                                     listSource.map((item, key) => (
                                         <ExpandableComponent
                                             item={item}
-                                            key={item.category_name}
+                                            key={item.id}
                                             onClickFunction={() => {
                                                 updateLayout(key)
                                             }}
@@ -532,8 +515,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 20
     },
     itemText: {
-        fontSize: 12,
+        fontSize: 15,
         flex: 1,
+        marginHorizontal: 20,
         fontWeight: "bold",
         color: "#1D3557"
     },
@@ -553,4 +537,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default EventGallary
+export default SocialResponsibility

@@ -1,17 +1,13 @@
 import React from 'react'
 import { View, StyleSheet, Image, Text, TouchableOpacity,ImageBackground,Dimensions,Pressable} from 'react-native'
 import AsyncStorage  from '@react-native-async-storage/async-storage';
-import moment from 'moment';
+
+
 import { Card } from 'react-native-paper';
 
-const NewsCart = (item,navigation,t) => {
+const FullViewCart = (item,navigation,t) => {
 
-  const dateOfBirth = item.news_date
-  let tempDate = new Date(dateOfBirth)
-    
-  let fDate = tempDate.getDate() + "/" + (tempDate.getMonth() + 1) + "/" + tempDate.getFullYear()
-  let convertDate=moment(tempDate).format('DD MMM yyyy') 
-  console.log("dateTime="+convertDate)
+
 
   if(item.empty )
   {
@@ -22,42 +18,24 @@ const NewsCart = (item,navigation,t) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <TouchableOpacity onPress={()=>{
-        AsyncStorage.setItem("News",JSON.stringify(item))
-        navigation.navigate('NewsFullView')
-        }} ><View style={{ marginTop: 2, backgroundColor: "#FFFFFF",marginHorizontal:5,paddingHorizontal:5, paddingVertical: 5,borderColor:"#098DD4",borderWidth:1,marginBottom:5}}>
+      <View style={{ backgroundColor: "#FFFFFF",marginStart:5,marginEnd:5 ,marginBottom:10}}>
         <View>
 
           <View>
-          {item.image!=null&&<Image
+            <Image
               source={{
                 uri:
-                `http://50.28.104.48:3003/images/${item.image[0]}`,
+                `http://50.28.104.48:3003/images/${item}`,
               }}
               resizeMode="stretch"
               style={styles.rectangleShapeImage}>
 
-            </Image>}
-            
+            </Image>
           </View>
-          <View style={{alignItems:"center",marginTop:10 }}>
-          
-              <Text numberOfLines={1} style={{textAlign:"center", color: "#1D3557", fontWeight: "bold", fontSize: 14, }}>{convertDate}</Text>
-          
-            <Text  numberOfLines={1}style={{textAlign:"center",color: "#707070", fontWeight: "normal", fontSize: 11,marginTop:1 }}>{item.description}</Text>
-
-            <View style={styles.rectangleShapeView}>
-
-              <Text style={{ color: "#fff", fontWeight: "normal", fontSize: 8 }}>{t('Know More')}</Text>
-
-            </View>
-
-      
-            
-          </View>
+    
 
         </View>
-      </View></TouchableOpacity>
+      </View>
     </View>
 
   )
@@ -126,4 +104,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default NewsCart
+export default FullViewCart

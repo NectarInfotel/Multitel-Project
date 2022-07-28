@@ -401,6 +401,7 @@ const SignIn = ({ navigation }) => {
 const styles = StyleSheet.create({
     parentView: {
         backgroundColor: 'white',
+        flex:1
 
     },
     textBackground: {

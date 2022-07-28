@@ -25,6 +25,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import SettingsScreen from './screens/SettingScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import MultitelPride from './screens/MultitelPride';
+import NewsFullView from './screens/NewsFullView';
 import SignIn from './screens/SignIn';
 import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper';
 import { AuthContext } from './screens/component/context';
@@ -41,6 +42,8 @@ import GraphicDesigner from './screens/GraphicDesigner'
 import Marketing from './screens/Marketing'
 import News from './screens/News'
 import EventGallary from './screens/EventGallary'
+import WhoWeAre from './screens/WhoWeAre'
+import SocialResponsibility from './screens/SocialResponsibility'
 import NotificationScreen from './screens/NotificationScreen'
 import Commercial from './screens/Commercial'
 import MyCartScreen from './screens/MyCartScreen'
@@ -60,7 +63,10 @@ import NetworkEquipment from './screens/NetworkEquipment'
 import Order from './screens/Order'
 import CustomDrawer from './screens/CustomDrawer'
 import SmartPhone from './screens/SmartPhone'
+import Telecomunication from './screens/Telecomunication'
+import PrivateNetwork from './screens/PrivateNetwork'
 import Feather from 'react-native-vector-icons/Feather';
+import Internet from './screens/Internet'
 
 
 
@@ -113,6 +119,14 @@ function HomeStack() {
       <Stack.Screen
         name="ProductService"
         component={ProductService}
+        options={{
+          headerShown: false
+        }}
+      />
+
+      <Stack.Screen
+        name="Internet"
+        component={Internet}
         options={{
           headerShown: false
         }}
@@ -551,6 +565,11 @@ function MainStack() {
       />
 
       <Stack.Screen
+        name="NewsFullView"
+        component={NewsFullView}
+      />
+
+      <Stack.Screen
         name="Marketing"
         component={Marketing}
       />
@@ -562,6 +581,26 @@ function MainStack() {
       <Stack.Screen
         name="EventGallary"
         component={EventGallary}
+      />
+
+      <Stack.Screen
+        name="WhoWeAre"
+        component={WhoWeAre}
+      />
+
+      <Stack.Screen
+        name="SocialResponsibility"
+        component={SocialResponsibility}
+      />
+
+      <Stack.Screen
+        name="Telecomunication"
+        component={Telecomunication}
+      />
+
+      <Stack.Screen
+        name="PrivateNetwork"
+        component={PrivateNetwork}
       />
 
 

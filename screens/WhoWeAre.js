@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useIsFocused, useFocusEffect } from '@react-navigation/native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import ActionBar from './ActionBar';
-import GallaryCart from './GallaryCart';
+import MyWhiteCart from './MyWhiteCart';
 import {
-    KeyboardAvoidingView, SafeAreaView, LayoutAnimation, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
+    KeyboardAvoidingView, SafeAreaView, Dimensions, Button, Alert, View, Image, StatusBar, StyleSheet, Text, TouchableOpacity, ScrollView, FlatList, TextInput
 } from "react-native";
 
 import ActivityLoader from './ActivityLoader'
@@ -13,109 +13,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import './langauge/i18n';
 
-
 const WIDTH = Dimensions.get('window').width
 const HEIGHT = Dimensions.get('window').height
 
-
-const ExpandableComponent = ({ item, onClickFunction }) => {
-    const numColumns=3
-    const [layoutHeight, setLayoutHeight] = useState(0)
-    const [icon, setIcon] = useState(true)
-  
-
-    useEffect(() => {
-
-        if (item.isExpanded) {
-            setLayoutHeight(null)
-            setIcon(false)
-        } else {
-            setIcon(true)
-            setLayoutHeight(0)
-        }
-
-    }, [item.isExpanded])
-
-    const formatData = (dataList, numColumns) => {
-        if(dataList!=null)
-        {
-            
-            const totalRows = Math.floor(dataList.length / numColumns)
-            let totalLastRow = dataList.length - (totalRows * numColumns)
-    
-            while (totalLastRow !== 0 && totalLastRow !== numColumns) {
-                dataList.push({
-                    id: "blank",
-                    name: "Zahan",
-                    empty: true,
-                    image: 'https://www.apple.com/newsroom/images/product/os/ios/standard/Apple_ios14-app-library-screen_06222020_inline.jpg.large.jpg'
-                })
-                totalLastRow++
-        }
-    
-        }
-        return dataList
-    }
-
-    return (
-        <View>
-            <TouchableOpacity style={styles.item}
-                onPress={onClickFunction}>
-                <View style={{
-                    paddingStart: 15, paddingEnd: 10,
-                    paddingVertical: 10, flexDirection: "row", alignItems: "center"
-                }}>
-                    <Text style={styles.itemText}>
-                        {item.title}
-                    </Text>
-                    {icon?<Image style={styles.image}
-                        source={require('../assest/plus.png')}
-                    />:<Image style={styles.image}
-                    source={require('../assest/substract.png')}
-                />}
-                </View>
-            </TouchableOpacity>
-            <View style={{ height: layoutHeight, overflow: "hidden" }}>
-
-                <View style={{  backgroundColor: "#fff" }} >
-                    <FlatList style={{ marginTop: 10,marginHorizontal:5 }}
-                        data={formatData(item.image, numColumns)}
-                        numColumns={3}
-                        renderItem={({ item }) => GallaryCart(item)}
-                        keyExtractor={(item) => item.uid}
-                    />
-                </View>
-            </View>
-
-        </View>
-    )
-}
-
-const EventGallary = ({route, navigation }) => {
+const WhoWeAre = ({ navigation }) => {
 
     const [netInfo, setNetInfo] = useState('');
     const [isLoading, setIsLoading] = useState(false)
-
+    
     const [emptyList, setEmptyList] = useState(false)
     const [imageUrl, setImageUrl] = useState('');
-    const [name, setName] = useState('');
-    const [subHeading, setSubHeading] = useState('')
-    const [subHeadingTwo, setSubHeadingTwo] = useState('')
-    const [subHeadingThree, setSubHeadingThree] = useState('')
     const [description, setDescription] = useState('');
-    const [descriptionTwo, setDescriptionTwo] = useState('');
-    const [descriptionThree, setDescriptionThree] = useState('');
-    const [messageTag, setMessageTag] = useState("");
-    const [isCultural, setIsCultural] = useState(false);
-    const [isIndicator, setIsIndicator] = useState(false);
-    const [listSource, setListSource] = useState([]);
-    const [multiSelect, setMultiselect] = useState(false);
-
+ 
     const { t, i18n } = useTranslation();
-
-    const { recruimentName } = route.params
-
-    const { slug } = route.params
 
     useFocusEffect(
         React.useCallback(() => {
@@ -140,7 +50,7 @@ const EventGallary = ({route, navigation }) => {
     useFocusEffect(
         React.useCallback(() => {
             setIsLoading(true)
-            getManagementList()
+            getWhoWwAre()
 
             return () => {
             };
@@ -204,7 +114,7 @@ const EventGallary = ({route, navigation }) => {
 
 
 
-    const getManagementList = async () => {
+    const getWhoWwAre = async () => {
 
         const accessToken = await AsyncStorage.getItem("access_token");
         const langauge = await AsyncStorage.getItem("langauge");
@@ -222,8 +132,8 @@ const EventGallary = ({route, navigation }) => {
             if (state.isConnected) {
 
                 
-                let data = { slug: slug }
-                fetch("http://50.28.104.48:3003/api/news/getNewsByCategory", {
+                let data = { slug: "who-we-are" }
+                fetch("http://50.28.104.48:3003/api/WhoTeliDigi/getWho_teli_digiBySlug", {
                     method: 'post',
                     headers: {
                         'Accept': 'application/json',
@@ -236,13 +146,15 @@ const EventGallary = ({route, navigation }) => {
                     result.json().then((res) => {
                         setIsLoading(false)
                         if (res.code == 200) {
-                            setEmptyList(true)
-                            const arr = res.data.news
-                            const newArr = arr.map(item => {
-                                return { ...item, isExpanded: false }
-                            })
 
-                            setListSource(newArr)
+                            console.log(JSON.stringify(res.data))
+
+                            const url = `http://50.28.104.48:3003/images/${res.data.image}`
+
+                            setImageUrl(url)
+                            setDescription(res.data.description)
+                            setEmptyList(true)
+
                         } else {
                             setEmptyList(false)
                             failure(res.massage)
@@ -255,30 +167,9 @@ const EventGallary = ({route, navigation }) => {
                 setIsLoading(false)
                 checkInternet()
             }
-
-
-
         });
 
 
-    }
-
-    const updateLayout = (index) => {
-
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        const array = [...listSource]
-
-        if (multiSelect) {
-            array[index]['isExpanded'] = !array[index]['isExpanded']
-        } else {
-            array.map((value, placeindex) =>
-                placeindex === index
-                    ? (array[placeindex]['isExpanded']) = !array[placeindex]['isExpanded']
-                    : (array[placeindex]['isExpanded']) = false
-            );
-        }
-
-        setListSource(array)
     }
 
 
@@ -288,10 +179,10 @@ const EventGallary = ({route, navigation }) => {
             <SafeAreaView style={styles.container}>
                 <View style={{ backgroundColor: "#fff", flex: 1 }}>
                     <View style={{ flexDirection: "row", width: "100%", backgroundColor: "#FAFAFA", height: 60, alignItems: "center" }}>
-                        <TouchableOpacity onPress={() => { navigation.goBack() }}><Image
-                            source={require('../assest/left_arrow.png')}
-                            style={{ height: 15, width: 15, marginStart: 20 }}
-                        /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => {navigation.goBack() }}><Image
+                        source={require('../assest/left_arrow.png')}
+                        style={{ height: 15, width: 15,marginStart:20 }}
+                    /></TouchableOpacity>
 
 
                         <Image
@@ -315,20 +206,19 @@ const EventGallary = ({route, navigation }) => {
                     </View>
                     {emptyList ?
                         <>
-                            <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 15, marginHorizontal: 20 }}>{recruimentName}</Text>
-                            <ScrollView style={{ backgroundColor: "#fff", marginTop: 5 }}>
+                            <ScrollView>
+                                <View style={{ paddingHorizontal: 20 }}>
+                                    <Text style={{ fontWeight: "bold", color: "#1D3557", fontSize: 15, marginTop: 10 }}>{t('Who We Are')}</Text>
+                                    <Image
 
-                                {
-                                    listSource.map((item, key) => (
-                                        <ExpandableComponent
-                                            item={item}
-                                            key={item.category_name}
-                                            onClickFunction={() => {
-                                                updateLayout(key)
-                                            }}
-                                        />
-                                    ))
-                                }
+                                        resizeMode='stretch'
+                                        style={[styles.wrap, { marginTop: 10 }]}
+                                        source={{ uri: imageUrl }}
+                                    />
+
+                                    <Text style={{color: "#707070", fontSize: 12, marginTop: 10 }}>{description}</Text>
+
+                                </View>
                             </ScrollView>
 
 
@@ -358,6 +248,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
+        justifyContent: 'center',
         backgroundColor: 'white',
     },
     radioLabel: {
@@ -366,42 +257,6 @@ const styles = StyleSheet.create({
 
 
     },
-    selectedButton: {
-        flex: 1,
-        padding: 5,
-        borderRadius: 5,
-        borderColor: "#098DD4",
-        backgroundColor: '#098DD4',
-        color: "#fff",
-        borderWidth: 1,
-        textAlign: "center",
-        fontSize: 12
-
-
-    },
-    unSelectedButton: {
-        flex: 1,
-        padding: 5,
-        borderRadius: 5,
-        borderColor: "#00000073",
-        backgroundColor: '#fff',
-        color: "#676767",
-        borderWidth: 1,
-        textAlign: "center",
-        fontSize: 12
-    },
-    selectedText: {
-        color: "#fff",
-        fontSize: 12,
-        textAlign: "center"
-    },
-    unSelectedText: {
-        color: "#676767",
-        fontSize: 12,
-        textAlign: "center"
-    },
-
-
     textBackground: {
 
         backgroundColor: '#FFFFFF',
@@ -416,7 +271,7 @@ const styles = StyleSheet.create({
     },
     wrap: {
         width: "100%",
-        borderRadius: 5,
+        borderRadius: 15,
         height: HEIGHT * 0.30
     },
     icon: {
@@ -468,6 +323,8 @@ const styles = StyleSheet.create({
     image: {
         height: 20,
         width: 20,
+        marginEnd: 15,
+        justifyContent: "flex-end"
     },
     socialImage: {
         height: 60,
@@ -525,32 +382,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         height: '50%',
         paddingHorizontal: 30
-    },
-    item: {
-        backgroundColor: '#EEF3F7',
-        marginTop: 10,
-        marginHorizontal: 20
-    },
-    itemText: {
-        fontSize: 12,
-        flex: 1,
-        fontWeight: "bold",
-        color: "#1D3557"
-    },
-    content: {
-        paddingRight: 10,
-        paddingEnd: 10,
-        backgroundColor: '#fff'
-    },
-    text: {
-        fontSize: 16,
-        padding: 10
-    },
-    separator: {
-        height: 0.5,
-        backgroundColor: "#c8c8c8",
-        width: "100%"
     }
 });
 
-export default EventGallary
+export default WhoWeAre
